@@ -1,0 +1,515 @@
+﻿#name "Junes Journey bot"
+// Author: Vint
+// Version: 0.4 (23.12.2020)
+// Скрипт для Clickermann v4.14.003b
+
+#define @CRLF: STRCONCAT(char(13),char(10))
+#define \n: STRCONCAT(char(13),char(10))
+#define @TAB: char(9)
+
+
+//                              Настройки
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//Настройки NoxPlayer
+// разрешение окна NoxPlayer            1604x934
+// разрешение экрана рабочей области    1600x900
+// ориентация  - альбомная
+
+// уровень логирования
+$log = 2
+
+// главная задержка после клика (при автомате)
+$wait_click_found = 1000 //250
+
+// тест 1 - без ожидания стадий, 2 - по скрину
+$test = 1
+
+
+//-------------------------------------------
+$ocrexe = "Capture2Text\Capture2Text_CLI.exe"  // lnk
+$ocrimg1 = "levels\ocr_img1.bmp"
+$ocrimg2 = "levels\ocr_img2.bmp"
+$ocrimg3 = "levels\ocr_img3.bmp"
+$ocrimgdummy = "textures\ocr_imgdummy.bmp"
+$ocroutfile = "levels\ocr_result.txt"
+$levels_ini = "levels\levels.ini"
+$allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789«»"
+
+//Capture2Text\Capture2Text_CLI.exe --language Russian -o ocr_result.txt -i levels\ocr_img1.bmp -i levels\ocr_img2.bmp -i levels\ocr_img3.bmp --blacklist "`‘/\*'.,:;+-" --whitelist абвгдеёжзийклмнопрстуфхцчшщъыьэюя
+// out clipboard
+//$ocrparbase = "--output-format ${capture} --debug --debug-timestamp --language English --clipboard"
+// out file
+$ocrparbase = STRCONCAT(" --language Russian -o ", $ocroutfile)
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+
+SUB(nox_window)
+    // получение параметров NoxPlayer
+    $nox = WNDFIND("NoxPlayer")
+    WNDGETINFO($nox, $win_x, $win_y, $win_w, $win_h)
+    IF($log > 1)
+        LOGWRITE("Nox: ", $nox, ", ", $win_x, ",", $win_y, "  ", $win_w, "x", $win_h)
+        // 227, 87      1604x934
+        // 229, 119     1600x900
+    END_IF
+    
+    IF($nox = 0)
+        LOGWRITEC("Не найдено окно Nox", 255)
+        HALT
+    END_IF
+    IF(($win_x < 0) | ($win_y < 0))
+        LOGWRITEC("Окно Nox свёрнуто", 255)
+        HALT
+    END_IF
+END_SUB
+
+SUB(init)
+    LOGCLEAR
+    IF($log > 0)
+        LOGSHOW(1, 0, 510)
+        $hwnd_log = WNDFIND("Лог")
+        WNDSIZE($hwnd_log,335,400)
+    END_IF
+    
+    $imdelta_x = 0
+    $imdelta_y = 0
+    
+    // window NoxPlayer
+    IF($test < 2)
+        nox_window()
+    ELSE
+        $win_x = 160 - 2
+        $win_y = 115 - 32
+        $win_w = 1604
+        $win_h = 934
+    END_IF
+    
+    // window sub
+    $wx1 = $win_x + 2
+    $wy1 = $win_y + 32
+    $win_w = $win_w - 4
+    $win_h = $win_h - 34
+    $wx2 = $wx1 + $win_w - 1
+    $wy2 = $wy1 + $win_h - 1
+    LOGWRITE($wx1, ",", $wy1, "  ", $wx2, ",", $wy2, "  ", $win_w, "x", $win_h)
+    
+    // items zone
+    $itx1 = $wx1 + 36
+    $ity1 = $wy1 + 821
+    $itx2 = $wx1 + 1407
+    $ity2 = $wy1 + 864
+    
+    // play button delta
+    $play_x = 1490
+    $play_y = 800
+    
+    LOGWRITE(\n, \n, "****************************************")
+END_SUB
+
+SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent, $fpnw_colorm)
+    // поиск картинки без ожидания
+    $found = 0
+    $fpnw_x1 = $wx1 + $fpnw_x1
+    $fpnw_y1 = $wy1 + $fpnw_y1
+    $fpnw_x2 = $wx1 + $fpnw_x2
+    $fpnw_y2 = $wy1 + $fpnw_y2
+    GETSCREEN($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
+    IF($fpnw_colorm ! 0)
+        COLORMODE($fpnw_colorm, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
+    END_IF
+    IF_PICTURE_IN($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, STRCONCAT("textures\", $fpnw_image), 65280, $fpnw_percent)
+        $found = 1
+        $found_x = $_return1
+        $found_y = $_return2
+        IF($log > 1)
+            LOGWRITE("Найдено  ", $fpnw_image, "  в ", $_return1, "/", $_return2)
+        END_IF
+    ELSE
+        WAITMS(20)
+    END_IF
+END_SUB
+
+SUB(find_pic_wait, $fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2,$fpw_image, $fpw_percent, $fpw_colorm)
+    // ожидание картинки
+    $found = 0
+    $time_notfound = $_ms + 20000		// 20 сек
+    WHILE(($found = 0) & ($time_notfound > $_ms))
+        find_pic_nw($fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2, $fpw_image, $fpw_percent, $fpw_colorm)
+    END_CYC
+    IF($found = 0)
+        LOGWRITE("время истекло, картинка не найдена")
+    END_IF
+END_SUB
+
+SUB(get_hash_level)
+    $isDataLevel = 0
+    
+    GETSCREEN($wx1,$wy1, $wx1+999,$wy1+4)
+    $hash_level = PXLCRC($wx1,$wy1, $wx1+999,$wy1+4)
+    LOGWRITE("hash_level ", $hash_level)
+    
+    $hash_level_file = INIREAD($levels_ini, "hash_level", $hash_level)
+    IF($hash_level_file ! "")
+        $isDataLevel = 1
+    END_IF
+END_SUB
+
+SUB(is_task_fill)
+    // проверяем какие задания есть, а какие закончились (из 3-х)
+    UNDEFINE($tasks)
+    // task 1
+    IF_PICTURE_IN($wx1+50,$wy1+865, $wx1+430,$wy1+882, "textures\is_task.bmp", -1, 100)
+        ARRPUSH($tasks, 1)
+    ELSE
+        ARRPUSH($tasks, 0)
+    END_IF
+    // task 2
+    IF_PICTURE_IN($wx1+530,$wy1+865, $wx1+910,$wy1+882, "textures\is_task.bmp", -1, 100)
+        ARRPUSH($tasks, 1)
+    ELSE
+        ARRPUSH($tasks, 0)
+    END_IF
+    // task 3
+    IF_PICTURE_IN($wx1+1000,$wy1+865, $wx1+1380,$wy1+882, "textures\is_task.bmp", -1, 100)
+        ARRPUSH($tasks, 1)
+    ELSE
+        ARRPUSH($tasks, 0)
+    END_IF
+    IF($log > 1)
+        LOGWRITE("Tasks  ", $tasks[0], "-", $tasks[1], "-", $tasks[2])
+    END_IF
+END_SUB
+
+SUB(photo_items_all)
+    GETSCREEN($itx1, $ity1, $itx2, $ity2+18)
+    COLORMODE(8, $itx1, $ity1, $itx2, $ity2+18)
+    //SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "screens\items.bmp", 0)
+    is_task_fill()
+END_SUB
+
+SUB(photo_items)
+    // сохранение снимков слов
+    photo_items_all()
+    // интервал X  477,
+    // Ширина поля 417    $ipw = 417
+    SCREENSHOTFIX($wx1+ 36,$ity1, $wx1+ 453,$ity2, $ocrimg1, 0)
+    SCREENSHOTFIX($wx1+513,$ity1, $wx1+ 930,$ity2, $ocrimg2, 0)
+    SCREENSHOTFIX($wx1+990,$ity1, $wx1+1407,$ity2, $ocrimg3, 0)
+END_SUB
+
+SUB(main_screenshot)
+    GETSCREEN($wx1,$wy1, $wx2,$wy2)
+    SCREENSHOTEX($wx1,$wy1, $wx2,$wy2, "main_", 0)
+    //SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "main.bmp", 0)
+END_SUB
+
+SUB(click, $cldelta_x, $cldelta_y)
+    IF($found = 1)
+        LCLICK($wx1+$cldelta_x, $wy1+$cldelta_y)
+        IF($log > 1)
+            LOGWRITE("Клик ", $wx1+$cldelta_x, "  ", $wy1+$cldelta_y)
+        END_IF
+        WAITMS(300)
+    END_IF
+END_SUB
+
+SUB(click_found, $clf_delta_x, $clf_delta_y)
+    IF($found = 1)
+        LCLICK($found_x + $clf_delta_x, $found_y + $clf_delta_y)
+        IF($log > 1)
+            LOGWRITE("Клик ", $found_x+$clf_delta_x, "  ", $found_y+$clf_delta_y)
+        END_IF
+        WAITMS(300)
+    END_IF
+END_SUB
+
+SUB(read_data_level)
+    UNDEFINE($items)
+    
+    $items_filename = STRCONCAT("levels\", $input_level, "_", $hash_level, ".txt")
+    $level_folder = STRCONCAT("levels\level_", $input_level)
+    //LOGWRITE($items_filename)
+    
+    IF($isDataLevel = 0)
+        IF($log > 0)
+            LOGWRITE("Нет данных по уровню")
+        END_IF
+        INIWRITE($levels_ini, "level", $input_level, $hash_level)
+        INIWRITE($levels_ini, "hash_level", $hash_level, $hash_level)
+        //FCREATE($level_folder)
+    ELSE
+        IF($log > 0)
+            LOGWRITE("Найдены данные уровня ", $hash_level_file)
+        END_IF
+        TFREADARR($items_filename, $items)
+    END_IF
+END_SUB
+
+SUB(read_items)
+    UNDEFINE($items_str)
+    UNDEFINE($items)
+    $items_filename = STRCONCAT("levels\", $input_level, "_", $hash_level, ".txt")
+    TFREADARR($items_filename, $items_str)
+    $items_str_size = ARRSIZE($items_str)
+    PRINT("size ", $items_str_size)
+    FOR($i=0, $i < $items_str_size)
+        STRSEPARATE($items_str[$i], ",", $data)
+        ARRPUSH($items, $data[0])
+        ARRPUSH($items, $data[1])
+        ARRPUSH($items, $data[2])
+    END_CYC
+END_SUB
+
+SUB(filter_char)
+    FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
+        $ocr_result[$res_i] = STRFILTER($ocr_result[$res_i], $allowed_char, 1)
+    END_CYC
+END_SUB
+
+SUB(filter_endspace)
+    FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
+        $end_char = STRCUT($ocr_result[$res_i], STRLEN($ocr_result[$res_i]), 1)
+        IF($end_char = " ")
+            $ocr_result[$res_i] = STRCUT2($ocr_result[$res_i], 1, STRLEN($ocr_result[$res_i])-1)
+        END_IF
+    END_CYC
+END_SUB
+
+SUB(read_ocr_result)
+    UNDEFINE($ocr_result)
+    TFREADARR($ocroutfile, $ocr_result)
+    $ocr_result[1] = STRCUT($ocr_result[1], 2, 40)
+    $ocr_result[2] = STRCUT($ocr_result[2], 2, 40)
+    filter_char()
+    filter_endspace()
+    LOGWRITE("Слова: -", $ocr_result[0], "-", $ocr_result[1], "-", $ocr_result[2], "-")
+END_SUB
+
+SUB(add_item, $it_name, $it_x, $it_y)
+    LOGWRITEC(STRCONCAT("Добавяем предмет: '", $it_name, "' ", $it_x, "x", $it_y), 16711680) // синий
+    ARRPUSH($items, $it_name)
+    ARRPUSH($items, $it_x)
+    ARRPUSH($items, $it_y)
+    $new_item = STRCONCAT($it_name, ",", $it_x, ",", $it_y)
+    TFWRITE($items_filename, $new_item)
+END_SUB
+
+SUB(ocr, $ocr_par)
+    EXECUTE($ocrexe, $ocr_par)
+    WAITMS(100)
+    
+    $waitw = $_time_t + 10 //Ждать $ocrexe не больше секунд
+    WHILE(WNDFIND($ocrexe) > 0 & $waitw >= $_time_t)
+        WAITMS(50)
+    END_CYC
+END_SUB
+
+SUB(find_click_3words)
+    $found_words = 0
+    FOR($iocr=0, $iocr < 3)
+        $word = $ocr_result[$iocr]
+        IF($word != "")
+            $found_item = 0
+            $items_size = ARRSIZE($items)
+            FOR($index=0, $index < $items_size, 3)
+                $item_name = $items[$index]
+                $item_x = $items[$index+1]
+                $item_y = $items[$index+2]
+                //PRINT($word, "==", $item_name)
+                IF($word = $item_name)
+                    $found_item = 1
+                    $found_words = 1
+                    $index = 1000
+                END_IF
+            END_CYC
+            
+            IF($found_item == 1)
+                LOGWRITEC(STRCONCAT("Найден предмет: '", $word, "' ", $item_x, "x", $item_y), 433934)
+                IF($test > 1)
+                    MOVE($wx1 + $item_x, $wy1 + $item_y)  // тест
+                ELSE
+                    LCLICK($wx1 + $item_x, $wy1 + $item_y)
+                END_IF
+                WAITMS($wait_click_found)
+            ELSE
+                LOGWRITE("нет данных для - ", $word)
+            END_IF
+        END_IF
+    END_CYC
+END_SUB
+
+SUB(automat_click_words)
+    // поиск извесных картинок автоматом
+    photo_items()
+    ocr($ocrpar)
+    read_ocr_result()
+    //read_items()
+    find_click_3words()
+END_SUB
+
+SUB(is_end_mainloop)
+    find_pic_nw(1518,32,1562,73, "pause.bmp", 100, 7)
+    IF($found = 0)
+        $mainloop = 0
+    END_IF
+END_SUB
+
+SUB(check_pause_zone)
+    // Проверка зоны паузы
+    IF(($setX > 1510) & ($setY < 85))
+        $set = 1
+    END_IF
+END_SUB
+
+SUB(check_help_zone)
+    // Проверка зоны помощи
+    IF(($setX > 1470) & ($setY > 760))
+        $set = 1
+    END_IF
+END_SUB
+
+SUB(waiting_for_items_to_click)
+    // ожидание клика по предмету
+    $wait_time = $_time_t - 1
+    $set = 1
+    WHILE($set = 1)
+        IF($wait_time < $_time_t)
+            //HINTPOPUP("Внимание! Готов принять команду")
+            LOGWRITEC("Внимание! Готов принять команду", 8355839)
+            $wait_time = $_time_t + 10
+            WAITMS(50)
+        END_IF
+        
+        IF(ISKEYDOWN(1) = 1)
+            $setX = $_xmouse - $wx1
+            $setY = $_ymouse - $wy1
+            $set = 0
+            WHILE(ISKEYDOWN(1) = 1)	// ожидаем отпускания LM
+                WAITMS(50)
+            END_CYC
+            
+            check_pause_zone()
+            check_help_zone()
+        END_IF
+        
+        IF(ISKEYDOWN(#ESC) = 1)
+            $set = 0
+            LOGWRITEC("Работа прервана", 255)
+            HINTPOPUP("Работа прервана")
+            HALT
+        END_IF
+        WAITMS(30)
+    END_CYC
+    WAITMS(2500)
+END_SUB
+
+SUB(manual_click_words)
+    // ручной поиск неизвесных картинок
+    LOGWRITEC("Ручной поиск. Внимание!", 8355839)
+    photo_items()
+    ocr($ocrpar)
+    read_ocr_result()
+    
+    UNDEFINE($need_words)
+    ARRPUSH($need_words, $ocr_result[0])
+    ARRPUSH($need_words, $ocr_result[1])
+    ARRPUSH($need_words, $ocr_result[2])
+    
+    $manual_select_word = 0
+    WHILE($manual_select_word = 0)
+        waiting_for_items_to_click()
+        photo_items()
+        ocr($ocrpar)
+        read_ocr_result()
+        FOR($i = 0, $i < 3)
+            IF($need_words[$i] ! $ocr_result[$i])
+                $manual_select_word = 1
+                $need_word = $need_words[$i]
+                add_item($need_word, $setX, $setY)
+                $i = 100
+            END_IF
+        END_CYC
+    END_CYC
+END_SUB
+
+//==============================================================================
+//******************************************************************************
+
+
+WAITMS(300)
+init()
+
+find_pic_nw(0,0,$win_w-1,$win_h-1, "money.bmp", 80, 0)
+IF($found = 1)
+    click($play_x, $play_y)
+    WAITMS(500)
+END_IF
+
+//main_screenshot()
+//HALT
+
+
+$input_level = INPUTBOX("Номер уровня", "9", 10)
+IF($input_level = "")
+    LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
+    HALT
+END_IF
+LOGWRITE("уровень: ", $input_level)
+
+
+IF($test = 0)
+    $found = 0
+    WHILE($found = 0)
+        find_pic_wait(270, 420, 800, 470, "touch.bmp", 95, 0)
+    END_CYC
+    click(800, 450)
+    WAITMS(500)
+END_IF
+
+get_hash_level()
+read_data_level()
+
+read_items()
+
+// TO DO формировать запрос ocr
+$ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg1)
+$ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg2)
+$ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg3)
+//PRINT($ocrpar)
+
+$mainloop = 1
+WHILE($mainloop = 1)
+    $found_words = 1  // ставим для принудительного первого пуска цикла
+    WHILE($found_words = 1)
+        automat_click_words()
+        IF($test > 1)  // после тестов убрать
+            $found_words = 0
+        END_IF
+    END_CYC
+    
+    is_end_mainloop()
+    
+    // ручная часть
+    IF($mainloop = 1)
+        manual_click_words()
+        is_end_mainloop()
+    END_IF
+END_CYC
+LOGWRITE("Уровень ", $input_level, " закончен.")
+
+
+HALT
+
+
+
+//GETSCREEN($wx1,$wy1, $wx2,$wy2)
+//SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "main.bmp", 0)
+
+
+// cd /d D:\YandexDisk\Clickermann v4.13.14x32\projects\Большие проекты\Junes_Journey
+// D:\YandexDisk\Programs_portable\Media\Capture2Text\Capture2Text_CLI.exe --language Russian -i img1.png  -o result.txt
+// D:\YandexDisk\Programs_portable\Media\Capture2Text\Capture2Text_CLI.exe --language Russian -i img1.bmp -i img2.bmp --clipboard
+
+// D:\YandexDisk\Programs_portable\Media\Capture2Text\Capture2Text_CLI.exe --clipboard --language English -i img1.bmp -i img2.bmp

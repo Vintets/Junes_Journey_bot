@@ -1,0 +1,28 @@
+# System
+Thumbs.db
+
+# Venv
+
+
+# Configs
+
+
+# Project files
+/ocr_result*.txt
+
+
+# Project dirs
+**/__pycache__/
+/Capture2Text/
+/levels/
+/screens/
+/Скрины/
+/zJJBotDevelopment/*
+
+# Other files
+OCR.cms
+!/zJJBotDevelopment/_JJBotDescription.txt
+
+# User other data
+
+

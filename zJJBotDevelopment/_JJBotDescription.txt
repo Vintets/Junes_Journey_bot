@@ -1,0 +1,34 @@
+
+# расположение
+#WIN#
+cd /d "%YandexDisk%\Clickermann v4.13.14x32\projects\BigProjects\Junes_Journey_bot"
+
+
+# запуск
+
+
+
+# ==================================================================================================
+            *** Git ***
+
+Проект Junes_Journey_bot
+    cd "$YandexDisk/Clickermann v4.13.14x32/projects/BigProjects/Junes_Journey_bot"
+    git remote add origin git@bitbucket.org:Vintets/junes_journey_bot.git
+    git remote set-url origin --add git@github.com:Vintets/Junes_Journey_bot.git
+
+    git it
+    git push -u origin master
+    git push origin master
+
+
+
+# ==================================================================================================
+            *** Анализ ***
+
+
+
+
+
+// *************************************************************************************************
+# ==================================================================================================
+
