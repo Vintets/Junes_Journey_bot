@@ -20,9 +20,8 @@ Thumbs.db
 /zJJBotDevelopment/*
 
 # Other files
-OCR.cms
+**/*.lnk
 !/zJJBotDevelopment/_JJBotDescription.txt
+# OCR.cms
 
 # User other data
-
-
