@@ -1,0 +1,72 @@
+﻿#name "string_lib"
+// Author: Vint
+// Version: 0.1 (09.07.2024)
+// Скрипт для Clickermann v4.13.014
+// подключение string_lib:
+// #include "..\Libs\string.cms"
+
+
+
+//==============================================================================
+//========== Удаление пробельных символов в начале строки ======================
+SUB(lstrip, $strip_str_inner)
+    // Пример вызова:
+    // lstrip("   Искомая фраза  ")
+    // Результат в $strip_str
+    // LOGWRITE("-", $strip_str, "-")
+    
+    WHILE(STRCUT($strip_str_inner, 1, 1) == " ")
+        $strip_str_inner = STRCUT($strip_str_inner, 2, 1000)
+    END_CYC
+    $strip_str = $strip_str_inner
+END_SUB
+
+//==============================================================================
+//========== Удаление пробельных символов в конце строки ======================
+SUB(rstrip, $strip_str_inner)
+    // Пример вызова:
+    // rstrip("   Искомая фраза  ")
+    // Результат в $strip_str
+    // LOGWRITE("-", $strip_str, "-")
+    
+    WHILE(STRCUT($strip_str_inner, STRLEN($strip_str_inner), 1) == " ")
+        $strip_str_inner = STRCUT($strip_str_inner, 1, STRLEN($strip_str_inner) - 1)
+    END_CYC
+    $strip_str = $strip_str_inner
+END_SUB
+
+//==============================================================================
+//========== Удаление пробельных символов в начале и в конце строки ============
+SUB(strip, $strip_str_inner)
+    // Пример вызова:
+    // strip("   Искомая фраза  ")
+    // Результат в $strip_str
+    // LOGWRITE("-", $strip_str, "-")
+    lstrip($strip_str_inner)
+    rstrip($strip_str)
+END_SUB
+
+//==============================================================================
+//========== Test strip functions ==============================================
+SUB(test_strip)
+    // test functions
+    $test_str = "   Искомая фраза  "
+    UNDEFINE($strip_str)
+    
+    lstrip($test_str)
+    LOGWRITE("Test lstrip   -", $strip_str, "-")
+    UNDEFINE($strip_str)
+    
+    rstrip($test_str)
+    LOGWRITE("Test rstrip   -", $strip_str, "-")
+    UNDEFINE($strip_str)
+    
+    strip($test_str)
+    LOGWRITE("Test  strip   -", $strip_str, "-")
+    UNDEFINE($strip_str)
+END_SUB
+
+//==============================================================================
+
+//test_strip()
+//HALT

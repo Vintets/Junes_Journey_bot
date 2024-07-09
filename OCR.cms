@@ -6,6 +6,7 @@
 #define @quotes: CHAR(34)
 
 #include "arrey.cms"
+#include "string.cms"
 
 //===== ОПЦИИ ==========================//
 //////////////////////////////////////////
@@ -66,6 +67,8 @@ SUB(read_ocr_result)
         IF($filter != "")
             $ocr_result[$i] = STRFILTER($ocr_result[$i], $filter, 1)
         END_IF
+        strip($ocr_result[$i])
+        $ocr_result[$i] = $strip_str
     END_CYC
     LOGWRITE("Слова: ")
     LOG_ARR("$ocr_result", ARRSIZE($ocr_result))
@@ -95,7 +98,6 @@ SUB(find_click_3words)
     $found_words = 0
     FOR($iocr=0, $iocr < 3)
         $word = $ocr_result[$iocr]
-        print("$word ", $word)
         IF($word != "")
             $found_item = 0
             $items_size = ARRSIZE($items)
