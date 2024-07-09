@@ -16,8 +16,8 @@
 // разрешение экрана рабочей области    1600x900
 // ориентация  - альбомная
 
-// уровень логирования
-$log = 2
+// уровень логирования 0-NOTSET, 1-CRITICAL 2-ERROR 3-WARNING 4-INFO 5-DEBUG
+$loglevel = 5
 
 // главная задержка после клика (при автомате)
 $wait_click_found = 1000 //250
@@ -49,7 +49,7 @@ SUB(nox_window)
     // получение параметров NoxPlayer
     $nox = WNDFIND("NoxPlayer")
     WNDGETINFO($nox, $win_x, $win_y, $win_w, $win_h)
-    IF($log > 1)
+    IF($loglevel >= 4)
         LOGWRITE("Nox: ", $nox, ", ", $win_x, ",", $win_y, "  ", $win_w, "x", $win_h)
         // 227, 87      1604x934
         // 229, 119     1600x900
@@ -67,7 +67,7 @@ END_SUB
 
 SUB(init)
     LOGCLEAR
-    IF($log > 0)
+    IF($loglevel > 0)
         LOGSHOW(1, 0, 510)
         $hwnd_log = WNDFIND("Лог")
         WNDSIZE($hwnd_log,335,400)
@@ -123,7 +123,7 @@ SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent
         $found = 1
         $found_x = $_return1
         $found_y = $_return2
-        IF($log > 1)
+        IF($loglevel >= 4)
             LOGWRITE("Найдено  ", $fpnw_image, "  в ", $_return1, "/", $_return2)
         END_IF
     ELSE
@@ -177,7 +177,7 @@ SUB(is_task_fill)
     ELSE
         ARRPUSH($tasks, 0)
     END_IF
-    IF($log > 1)
+    IF($loglevel >= 4)
         LOGWRITE("Tasks  ", $tasks[0], "-", $tasks[1], "-", $tasks[2])
     END_IF
 END_SUB
@@ -208,7 +208,7 @@ END_SUB
 SUB(click, $cldelta_x, $cldelta_y)
     IF($found = 1)
         LCLICK($wx1+$cldelta_x, $wy1+$cldelta_y)
-        IF($log > 1)
+        IF($loglevel >= 5)
             LOGWRITE("Клик ", $wx1+$cldelta_x, "  ", $wy1+$cldelta_y)
         END_IF
         WAITMS(300)
@@ -218,7 +218,7 @@ END_SUB
 SUB(click_found, $clf_delta_x, $clf_delta_y)
     IF($found = 1)
         LCLICK($found_x + $clf_delta_x, $found_y + $clf_delta_y)
-        IF($log > 1)
+        IF($loglevel >= 5)
             LOGWRITE("Клик ", $found_x+$clf_delta_x, "  ", $found_y+$clf_delta_y)
         END_IF
         WAITMS(300)
@@ -233,14 +233,14 @@ SUB(read_data_level)
     //LOGWRITE($items_filename)
     
     IF($isDataLevel = 0)
-        IF($log > 0)
+        IF($loglevel >= 3)
             LOGWRITE("Нет данных по уровню")
         END_IF
         INIWRITE($levels_ini, "level", $input_level, $hash_level)
         INIWRITE($levels_ini, "hash_level", $hash_level, $hash_level)
         //FCREATE($level_folder)
     ELSE
-        IF($log > 0)
+        IF($loglevel >= 4)
             LOGWRITE("Найдены данные уровня ", $hash_level_file)
         END_IF
         TFREADARR($items_filename, $items)
