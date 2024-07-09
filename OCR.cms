@@ -50,7 +50,7 @@ SUB(read_items)
     TFREADARR($items_filename, $items_str)
     $items_str_size = ARRSIZE($items_str)
     IF($loglevel >= 5)
-        PRINT("-INFO- size items ", $items_str_size)
+        LOGWRITE("-INFO- size items ", $items_str_size)
     END_IF
     FOR($i=0, $i < $items_str_size)
         STRSEPARATE($items_str[$i], ",", $data)
@@ -161,7 +161,7 @@ LOG_ARR("$items", ARRSIZE($items))
 $ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg1)
 $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg2)
 $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg3)
-// PRINT($ocrpar)
+// LOGWRITE($ocrpar)
 
 $found_words = 1  // ставим для принудительного первого пуска цикла
 WHILE($found_words = 1)
@@ -179,5 +179,5 @@ HALT
 //D:\YandexDisk\Programs_portable\Media\Capture2Text\Capture2Text_CLI.exe --language Russian -o ocr_result.txt -i textures\ocr_img1.bmp -i textures\ocr_img2.bmp -i textures\ocr_img3.bmp
 
 
-//PRINT("ocr: '", FROMCLIP(), "'")
+//LOGWRITE("ocr: '", FROMCLIP(), "'")
 //$result_size = ARRSIZE($ocr_result)
