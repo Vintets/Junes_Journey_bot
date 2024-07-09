@@ -508,7 +508,7 @@ HALT
 //SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "main.bmp", 0)
 
 
-// cd /d D:\YandexDisk\Clickermann v4.13.14x32\projects\Большие проекты\Junes_Journey
+// cd /d D:\YandexDisk\Clickermann v4.13.14x32\projects\BigProjects\Junes_Journey
 // D:\YandexDisk\Programs_portable\Media\Capture2Text\Capture2Text_CLI.exe --language Russian -i img1.png  -o result.txt
 // D:\YandexDisk\Programs_portable\Media\Capture2Text\Capture2Text_CLI.exe --language Russian -i img1.bmp -i img2.bmp --clipboard
 
