@@ -1,0 +1,55 @@
+//#name "arrey"
+// Author: Vint
+// Version: 2.0 (07.03.2024)
+// Скрипт для Clickermann v4.13.014
+// подключение arrey:
+// #include "..\Libs\arrey.cms"
+
+#define \n: STRCONCAT(CHAR(13),CHAR(10))
+
+
+//==============================================================================
+//===  LOG_ARR вывод массива в лог  ============================================
+SUB(LOG_ARR, $la_arr, $la_arrsize)
+    // Пример вызова:
+    // LOG_ARR("$arr", ARRSIZE($arr))
+    IF($loglevel >= 5)
+        LOGWRITE("Размер массива $la_arr: ", $la_arrsize)
+    END_IF
+    FOR($i_=0, $i_ < $la_arrsize)
+        LOGWRITE("[", $i_, "] = ", GETVAR(STRCONCAT($la_arr, "[", $i_, "]")))
+    END_CYC
+    LOGWRITE(\n)
+END_SUB
+
+//==============================================================================
+//=== Минимальный и макс. элемент массива ======================================
+SUB(arrmin, $__arrname, $__amount)
+    // Минимальный элемент массива
+    // параметры: $__arrname - имя массива
+    // $__amount - количество элементов
+    // пример: arrmin("$arr", ARRSIZE($arr))
+    $return = GETVAR(STRCONCAT($__arrname, "[0]"))
+    FOR($i_=0, $i_ < $__amount)
+        IF($return > GETVAR(STRCONCAT($__arrname, "[", $i_, "]")))
+            $return = GETVAR(STRCONCAT($__arrname, "[", $i_, "]"))
+        END_IF
+    END_CYC
+    LOGWRITE($return)
+END_SUB
+
+SUB(arrmax, $__arrname, $__amount)
+    // Максимальный элемент массива
+    // параметры: $__arrname - имя массива
+    // $__amount - количество элементов
+    // пример: arrmax("$arr", ARRSIZE($arr))
+    $return = GETVAR(STRCONCAT($__arrname, "[0]"))
+    FOR($i_=0, $i_ < $__amount)
+        IF($return < GETVAR(STRCONCAT($__arrname, "[", $i_, "]")))
+            $return = GETVAR(STRCONCAT($__arrname, "[", $i_, "]"))
+        END_IF
+    END_CYC
+    LOGWRITE($return)
+END_SUB
+
+//==============================================================================
