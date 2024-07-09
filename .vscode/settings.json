@@ -1,0 +1,120 @@
+{
+    // рабочая папка проекта (глубже чем сам корень проекта)
+    //"terminal.integrated.cwd": "app",
+
+
+    // --- Command Prompt
+    // "terminal.integrated.shellArgs.windows": [
+    //     ""
+    // ],
+
+    // --- Git Bash
+    // "terminal.integrated.shellArgs.windows": ["--cd=C:/Server/data/htdocs/flask_blog/app"]
+    // "terminal.integrated.shellArgs.windows": [
+    // "--cd=C:/Server/data/htdocs/flask_blog/app",
+    // "-c",
+    // "source C:/Server/venv_flask3/Scripts/activate"
+    // "python main.py"
+    // ],
+
+
+    "python.pythonPath": "env\\Scripts\\python.exe",
+    "python.terminal.activateEnvironment": true,
+    //"terminal.integrated.env.windows": null,
+
+    "python.venvFolders": [
+        "env"
+    ],
+    "python.venvPath": "env\\Scripts\\python.exe",
+    // "python.terminal.activateEnvInCurrentTerminal": true,
+
+    "window.zoomLevel": 0,
+    //"files.autoSaveDelay": 1000,
+    //"files.encoding": "utf8",
+    //"files.eol": "auto",  //  - \n: LF    \r\n: CRLF
+
+    // не удалять завершающие пробелы
+    "files.trimTrailingWhitespace": false,
+
+    // исключаем файлы и папки
+    "files.exclude": {
+        //".vscode/": true,
+        "**/__pycache__/": true,
+        "env/": true,
+        "env2/": true,
+        "logs/": true,
+        "**/*.ico": true,
+        "**/*.bat": true,
+        "**/*.exe": true,
+        "**/*.lnk": true,
+        "**/*.png": true,
+        "**/*.jpg": true,
+        "**/*.webm": true,
+        "**/*.xlsx": true,
+        "**/*.docx": true,
+        "**/*.pdf": true,
+        "**/*.csv": true,
+        "**/*.xml": true,
+        "**/*.mp4": true,
+        "**/*.mkv": true,
+        "**/*.avi": true,
+        "**/*.wav": true,
+        "**/*.mp3": true,
+        "**/*.m4a": true,
+        "**/*.zip": true,
+        "**/*.7z": true,
+        "**/*.rar": true,
+        "zJJBotDevelopment/[^_]**": true,
+        "zJJBotDevelopment/_[^J]**": true,
+        "zJJBotDevelopment/_J[^J]**": true,
+        "LICENSE*": true,
+        "screens": true,
+        "Скрины": true,
+        "levels/*.bmp": true,
+        "zJJBotDevelopment/*.bmp": true,
+    },
+    "search.exclude": {
+        "**/__pycache__/": true,
+        "env/": true,
+        "env2/": true,
+        ".vscode/": true,
+        "logs/": true,
+        "**/*.ico": true,
+        "**/*.bat": true,
+        "**/*.exe": true,
+        "**/*.lnk": true,
+        "**/*.png": true,
+        "**/*.jpg": true,
+        "**/*.bmp": true,
+        "**/*.webm": true,
+        "**/*.xlsx": true,
+        "**/*.docx": true,
+        "**/*.pdf": true,
+        "**/*.csv": true,
+        "**/*.xml": true,
+        "**/*.mp4": true,
+        "**/*.mkv": true,
+        "**/*.avi": true,
+        "**/*.wav": true,
+        "**/*.mp3": true,
+        "**/*.m4a": true,
+        "**/*.zip": true,
+        "**/*.7z": true,
+        "**/*.rar": true,
+        "zJJBotDevelopment/[^_]**": true,
+        "zJJBotDevelopment/_[^J]**": true,
+        "zJJBotDevelopment/_J[^J]**": true,
+        "LICENSE*": true,
+        "screens": true,
+        "Скрины": true,
+        "Capture2Text": true,
+    },
+
+    // линтер python
+    // "python.linting.pylintEnabled": true,
+    // "python.linting.pylintPath": "env\\Scripts\\pylint.exe",
+    // "python.linting.flake8Enabled": true,
+    // "python.linting.enabled": true,
+    "flake8.args": ["--config=.flake8"],
+    "python.analysis.ignore": ["*"],
+}
