@@ -33,7 +33,7 @@ $ocrimgdummy = "textures\ocr_imgdummy.bmp"
 $ocroutfile = "ocr_result1.txt"
 
 // отфильтровать символы кроме
-$filter = " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789«»"
+$allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789«»"
 
 // out clipboard
 //$ocrparbase = "--output-format ${capture} --debug --debug-timestamp --language English --clipboard"
@@ -49,6 +49,9 @@ SUB(read_items)
     $items_filename = STRCONCAT("levels\", $input_level, "_", $hash_level, ".txt")
     TFREADARR($items_filename, $items_str)
     $items_str_size = ARRSIZE($items_str)
+    IF($loglevel >= 5)
+        PRINT("-INFO- size items ", $items_str_size)
+    END_IF
     FOR($i=0, $i < $items_str_size)
         STRSEPARATE($items_str[$i], ",", $data)
         ARRPUSH($items, $data[0])
@@ -57,22 +60,34 @@ SUB(read_items)
     END_CYC
 END_SUB
 
+SUB(ocr_result_filter_char)
+    IF($allowed_char != "")
+        FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
+            $ocr_result[$res_i] = STRFILTER($ocr_result[$res_i], $allowed_char, 1)
+        END_CYC
+    END_IF
+END_SUB
+
+SUB(ocr_result_strip)
+    FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
+        strip($ocr_result[$res_i])
+        $ocr_result[$res_i] = $strip_str
+    END_CYC
+END_SUB
+
 SUB(read_ocr_result)
     UNDEFINE($ocr_result)
     TFREADARR($ocroutfile, $ocr_result)
-    FOR($i=1, $i < 3)
-        IF($i > 0)
-            $ocr_result[$i] = STRCUT($ocr_result[$i], 2, 40)
-        END_IF
-        IF($filter != "")
-            $ocr_result[$i] = STRFILTER($ocr_result[$i], $filter, 1)
-        END_IF
-        strip($ocr_result[$i])
-        $ocr_result[$i] = $strip_str
+    FOR($res_i=1, $res_i < 3)
+        $ocr_result[$res_i] = STRCUT($ocr_result[$res_i], 2, 40)
     END_CYC
-    LOGWRITE("Слова: ")
-    LOG_ARR("$ocr_result", ARRSIZE($ocr_result))
-    // LOGWRITE("Слова: -", $ocr_result[0], "-", $ocr_result[1], "-", $ocr_result[2], "-")
+    ocr_result_filter_char()
+    ocr_result_strip()
+    IF($loglevel >= 4)
+        LOGWRITE("Слова: ")
+        LOG_ARR("$ocr_result", ARRSIZE($ocr_result))
+        // LOGWRITE("Слова: -", $ocr_result[0], "-", $ocr_result[1], "-", $ocr_result[2], "-")
+    END_IF
 END_SUB
 
 SUB(add_item, $it_name, $it_x, $it_y)

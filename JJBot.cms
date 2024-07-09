@@ -7,6 +7,9 @@
 #define \n: STRCONCAT(char(13),char(10))
 #define @TAB: char(9)
 
+#include "arrey.cms"
+#include "string.cms"
+
 
 //                              Настройки
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -262,29 +265,34 @@ SUB(read_items)
     END_CYC
 END_SUB
 
-SUB(filter_char)
-    FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
-        $ocr_result[$res_i] = STRFILTER($ocr_result[$res_i], $allowed_char, 1)
-    END_CYC
+SUB(ocr_result_filter_char)
+    IF($allowed_char != "")
+        FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
+            $ocr_result[$res_i] = STRFILTER($ocr_result[$res_i], $allowed_char, 1)
+        END_CYC
+    END_IF
 END_SUB
 
-SUB(filter_endspace)
+SUB(ocr_result_strip)
     FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
-        $end_char = STRCUT($ocr_result[$res_i], STRLEN($ocr_result[$res_i]), 1)
-        IF($end_char = " ")
-            $ocr_result[$res_i] = STRCUT2($ocr_result[$res_i], 1, STRLEN($ocr_result[$res_i])-1)
-        END_IF
+        strip($ocr_result[$res_i])
+        $ocr_result[$res_i] = $strip_str
     END_CYC
 END_SUB
 
 SUB(read_ocr_result)
     UNDEFINE($ocr_result)
     TFREADARR($ocroutfile, $ocr_result)
-    $ocr_result[1] = STRCUT($ocr_result[1], 2, 40)
-    $ocr_result[2] = STRCUT($ocr_result[2], 2, 40)
-    filter_char()
-    filter_endspace()
-    LOGWRITE("Слова: -", $ocr_result[0], "-", $ocr_result[1], "-", $ocr_result[2], "-")
+    FOR($res_i=1, $res_i < 3)
+        $ocr_result[$res_i] = STRCUT($ocr_result[$res_i], 2, 40)
+    END_CYC
+    ocr_result_filter_char()
+    ocr_result_strip()
+    IF($loglevel >= 4)
+        LOGWRITE("Слова: ")
+        LOG_ARR("$ocr_result", ARRSIZE($ocr_result))
+        // LOGWRITE("Слова: -", $ocr_result[0], "-", $ocr_result[1], "-", $ocr_result[2], "-")
+    END_IF
 END_SUB
 
 SUB(add_item, $it_name, $it_x, $it_y)
