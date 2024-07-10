@@ -156,7 +156,10 @@ $hwnd_log = WNDFIND("Лог")
 WNDSIZE($hwnd_log,335,400)
 
 read_items()
-LOG_ARR("$items", ARRSIZE($items))
+IF($loglevel >= 5)
+    LOGWRITE("Массив $items:")
+    LOG_ARR("$items", ARRSIZE($items))
+END_IF
 
 $ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg1)
 $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg2)

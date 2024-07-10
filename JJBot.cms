@@ -96,7 +96,9 @@ SUB(init)
     $win_h = $win_h - 34
     $wx2 = $wx1 + $win_w - 1
     $wy2 = $wy1 + $win_h - 1
-    LOGWRITE($wx1, ",", $wy1, "  ", $wx2, ",", $wy2, "  ", $win_w, "x", $win_h)
+    IF($loglevel >= 4)
+        LOGWRITE("Main field: ", $wx1, ",", $wy1, "  ", $wx2, ",", $wy2, "  ", $win_w, "x", $win_h)
+    END_IF
     
     // items zone
     $itx1 = $wx1 + 36
@@ -164,21 +166,21 @@ SUB(is_task_fill)
     UNDEFINE($tasks)
     // task 1
     IF_PICTURE_IN($wx1+50,$wy1+865, $wx1+430,$wy1+882, "textures\is_task.bmp", -1, 100)
-        ARRPUSH($tasks, 1)
+        ARRPUSH($tasks, #TRUE)
     ELSE
-        ARRPUSH($tasks, 0)
+        ARRPUSH($tasks, #FALSE)
     END_IF
     // task 2
     IF_PICTURE_IN($wx1+530,$wy1+865, $wx1+910,$wy1+882, "textures\is_task.bmp", -1, 100)
-        ARRPUSH($tasks, 1)
+        ARRPUSH($tasks, #TRUE)
     ELSE
-        ARRPUSH($tasks, 0)
+        ARRPUSH($tasks, #FALSE)
     END_IF
     // task 3
     IF_PICTURE_IN($wx1+1000,$wy1+865, $wx1+1380,$wy1+882, "textures\is_task.bmp", -1, 100)
-        ARRPUSH($tasks, 1)
+        ARRPUSH($tasks, #TRUE)
     ELSE
-        ARRPUSH($tasks, 0)
+        ARRPUSH($tasks, #FALSE)
     END_IF
     IF($loglevel >= 4)
         LOGWRITE("Tasks  ", $tasks[0], "-", $tasks[1], "-", $tasks[2])
@@ -246,7 +248,7 @@ SUB(read_data_level)
         IF($loglevel >= 4)
             LOGWRITE("Найдены данные уровня ", $hash_level_file)
         END_IF
-        TFREADARR($items_filename, $items)
+        //TFREADARR($items_filename, $items)
     END_IF
 END_SUB
 
@@ -460,14 +462,12 @@ END_IF
 //main_screenshot()
 //HALT
 
-
 $input_level = INPUTBOX("Номер уровня", "9", 10)
 IF($input_level = "")
     LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
     HALT
 END_IF
 LOGWRITE("уровень: ", $input_level)
-
 
 IF($test = 0)
     $found = 0
@@ -482,6 +482,10 @@ get_hash_level()
 read_data_level()
 
 read_items()
+IF($loglevel >= 5)
+    LOGWRITE("Массив $items:")
+    LOG_ARR("$items", ARRSIZE($items))
+END_IF
 
 // TO DO формировать запрос ocr
 $ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg1)
