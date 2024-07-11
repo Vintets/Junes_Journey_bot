@@ -311,7 +311,7 @@ END_SUB
 
 SUB(find_click_3words)  // TODO учесть is_task_fill
     $found_words = 0
-    FOR($iocr=0, $iocr < 3)
+    FOR($iocr=0, $iocr < ARRSIZE($ocr_result))
         $word = $ocr_result[$iocr]
         IF($word != "")
             $found_item = 0
