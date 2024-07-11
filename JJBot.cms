@@ -511,7 +511,7 @@ WHILE($mainloop == #TRUE)
     is_end_mainloop()
     IF($test > 1)  // после тестов убрать
         LOGWRITE("$mainloop = ", $mainloop)
-        $mainloop == #FALSE
+        $mainloop = #FALSE
     END_IF
     // SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "CM_1.bmp", 0)
     
