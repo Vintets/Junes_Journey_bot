@@ -338,7 +338,9 @@ SUB(find_click_3words)  // TODO учесть is_task_fill
                 END_IF
                 WAITMS($wait_click_found)
             ELSE
-                LOGWRITE("нет данных для - ", $word)
+                IF($loglevel >= 4)
+                    LOGWRITE("нет данных для - ", $word)
+                END_IF
             END_IF
         END_IF
     END_CYC
