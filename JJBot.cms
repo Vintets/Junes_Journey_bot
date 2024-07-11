@@ -73,7 +73,7 @@ SUB(init)
     IF($loglevel > 0)
         LOGSHOW(1, 0, 510)
         $hwnd_log = WNDFIND("Лог")
-        WNDSIZE($hwnd_log,335,400)
+        WNDSIZE($hwnd_log,366,400)
     END_IF
     
     $imdelta_x = 0
@@ -110,7 +110,7 @@ SUB(init)
     $play_x = 1490
     $play_y = 800
     
-    LOGWRITE(\n, \n, "****************************************")
+    LOGWRITE(\n, \n, "*************************************************")
 END_SUB
 
 SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent, $fpnw_colorm)
