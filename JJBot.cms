@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 0.5 (11.07.2024)
+// Version: 0.6 (11.07.2024)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -319,10 +319,10 @@ SUB(find_click_3words)  // TODO учесть is_task_fill
             $items_size = ARRSIZE($items)
             FOR($index=0, $index < $items_size, 3)
                 $item_name = $items[$index]
-                $item_x = $items[$index+1]
-                $item_y = $items[$index+2]
                 //LOGWRITE($word, "==", $item_name)
                 IF($word = $item_name)
+                    $item_x = $items[$index+1]
+                    $item_y = $items[$index+2]
                     $index = 1000
                     $found_item = #TRUE
                     $found_words = #TRUE
