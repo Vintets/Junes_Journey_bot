@@ -367,7 +367,7 @@ END_SUB
 SUB(is_end_mainloop)
     find_pic_nw(1518,32,1562,73, "pause.bmp", 100, 7)
     IF($is_found == #FALSE)
-        $mainloop = 0
+        $mainloop = #FALSE
     END_IF
 END_SUB
 
@@ -494,8 +494,8 @@ $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg2)
 $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg3)
 //LOGWRITE($ocrpar)
 
-$mainloop = 1
-WHILE($mainloop = 1)
+$mainloop = #TRUE
+WHILE($mainloop == #TRUE)
     $found_words = #TRUE  // ставим для принудительного первого пуска цикла
     WHILE($found_words == #TRUE)
         automat_click_words()
@@ -507,7 +507,7 @@ WHILE($mainloop = 1)
     is_end_mainloop()
     
     // ручная часть
-    IF($mainloop == 1)
+    IF($mainloop == #TRUE)
         manual_click_words()
         is_end_mainloop()
     END_IF
