@@ -13,9 +13,9 @@
 SUB(LOG_ARR, $la_arr, $la_arrsize)
     // Пример вызова:
     // LOG_ARR("$arr", ARRSIZE($arr))
-    IF($loglevel >= 5)
-        LOGWRITE("Размер массива $la_arr: ", $la_arrsize)
-    END_IF
+    // IF($loglevel >= 5)
+    //     LOGWRITE("Размер массива $la_arr: ", $la_arrsize)
+    // END_IF
     FOR($i_=0, $i_ < $la_arrsize)
         LOGWRITE("[", $i_, "] = ", GETVAR(STRCONCAT($la_arr, "[", $i_, "]")))
     END_CYC
