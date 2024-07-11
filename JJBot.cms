@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 0.4 (23.12.2020)
+// Version: 0.5 (11.07.2024)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -269,6 +269,16 @@ SUB(read_items)
     END_CYC
 END_SUB
 
+SUB(ocr, $ocr_par)
+    EXECUTE($ocrexe, $ocr_par)
+    WAITMS(100)
+    
+    $waitw = $_time_t + 10 //Ждать $ocrexe не больше секунд
+    WHILE(WNDFIND($ocrexe) > 0 & $waitw >= $_time_t)
+        WAITMS(50)
+    END_CYC
+END_SUB
+
 SUB(ocr_result_filter_char)
     IF($allowed_char != "")
         FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
@@ -299,26 +309,7 @@ SUB(read_ocr_result)
     END_IF
 END_SUB
 
-SUB(add_item, $it_name, $it_x, $it_y)
-    LOGWRITEC(STRCONCAT("Добавяем предмет: '", $it_name, "' ", $it_x, "x", $it_y), 16711680) // синий
-    ARRPUSH($items, $it_name)
-    ARRPUSH($items, $it_x)
-    ARRPUSH($items, $it_y)
-    $new_item = STRCONCAT($it_name, ",", $it_x, ",", $it_y)
-    TFWRITE($items_filename, $new_item)
-END_SUB
-
-SUB(ocr, $ocr_par)
-    EXECUTE($ocrexe, $ocr_par)
-    WAITMS(100)
-    
-    $waitw = $_time_t + 10 //Ждать $ocrexe не больше секунд
-    WHILE(WNDFIND($ocrexe) > 0 & $waitw >= $_time_t)
-        WAITMS(50)
-    END_CYC
-END_SUB
-
-SUB(find_click_3words)
+SUB(find_click_3words)  // TODO учесть is_task_fill
     $found_words = 0
     FOR($iocr=0, $iocr < 3)
         $word = $ocr_result[$iocr]
@@ -359,6 +350,15 @@ SUB(automat_click_words)
     read_ocr_result()
     //read_items()
     find_click_3words()
+END_SUB
+
+SUB(add_item, $it_name, $it_x, $it_y)
+    LOGWRITEC(STRCONCAT("Добавяем предмет: '", $it_name, "' ", $it_x, "x", $it_y), 16711680) // синий
+    ARRPUSH($items, $it_name)
+    ARRPUSH($items, $it_x)
+    ARRPUSH($items, $it_y)
+    $new_item = STRCONCAT($it_name, ",", $it_x, ",", $it_y)
+    TFWRITE($items_filename, $new_item)
 END_SUB
 
 SUB(is_end_mainloop)
