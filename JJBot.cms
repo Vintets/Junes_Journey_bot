@@ -59,7 +59,7 @@ SUB(nox_window)
         // 229, 119     1600x900
     END_IF
     
-    IF($nox = 0)
+    IF($nox == 0)
         LOGWRITEC("Не найдено окно Nox", 255)
         HALT
     END_IF
@@ -116,17 +116,17 @@ END_SUB
 
 SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent, $fpnw_colorm)
     // поиск картинки без ожидания
-    $found = 0
+    $is_found = #FALSE
     $fpnw_x1 = $wx1 + $fpnw_x1
     $fpnw_y1 = $wy1 + $fpnw_y1
     $fpnw_x2 = $wx1 + $fpnw_x2
     $fpnw_y2 = $wy1 + $fpnw_y2
     GETSCREEN($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
-    IF($fpnw_colorm ! 0)
+    IF($fpnw_colorm != 0)
         COLORMODE($fpnw_colorm, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
     END_IF
     IF_PICTURE_IN($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, STRCONCAT("textures\", $fpnw_image), 65280, $fpnw_percent)
-        $found = 1
+        $is_found = #TRUE
         $found_x = $_return1
         $found_y = $_return2
         IF($loglevel >= 4)
@@ -139,26 +139,26 @@ END_SUB
 
 SUB(find_pic_wait, $fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2,$fpw_image, $fpw_percent, $fpw_colorm)
     // ожидание картинки
-    $found = 0
+    $is_found = #FALSE
     $time_notfound = $_ms + 20000		// 20 сек
-    WHILE(($found = 0) & ($time_notfound > $_ms))
+    WHILE(($is_found == #FALSE) & ($time_notfound > $_ms))
         find_pic_nw($fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2, $fpw_image, $fpw_percent, $fpw_colorm)
     END_CYC
-    IF($found = 0)
+    IF($is_found == #FALSE)
         LOGWRITE("время истекло, картинка не найдена")
     END_IF
 END_SUB
 
 SUB(get_hash_level)
-    $isDataLevel = 0
+    $isDataLevel = #FALSE
     
     GETSCREEN($wx1,$wy1, $wx1+999,$wy1+4)
     $hash_level = PXLCRC($wx1,$wy1, $wx1+999,$wy1+4)
     LOGWRITE("hash_level ", $hash_level)
     
     $hash_level_file = INIREAD($levels_ini, "hash_level", $hash_level)
-    IF($hash_level_file ! "")
-        $isDataLevel = 1
+    IF($hash_level_file != "")
+        $isDataLevel = #TRUE
     END_IF
 END_SUB
 
@@ -212,7 +212,7 @@ SUB(main_screenshot_level)
 END_SUB
 
 SUB(click, $cldelta_x, $cldelta_y)
-    IF($found = 1)
+    IF($is_found == #TRUE)
         LCLICK($wx1+$cldelta_x, $wy1+$cldelta_y)
         IF($loglevel >= 5)
             LOGWRITE("Клик ", $wx1+$cldelta_x, "  ", $wy1+$cldelta_y)
@@ -222,7 +222,7 @@ SUB(click, $cldelta_x, $cldelta_y)
 END_SUB
 
 SUB(click_found, $clf_delta_x, $clf_delta_y)
-    IF($found = 1)
+    IF($is_found == #TRUE)
         LCLICK($found_x + $clf_delta_x, $found_y + $clf_delta_y)
         IF($loglevel >= 5)
             LOGWRITE("Клик ", $found_x+$clf_delta_x, "  ", $found_y+$clf_delta_y)
@@ -238,7 +238,7 @@ SUB(read_data_level)
     $level_folder = STRCONCAT("levels\level_", $input_level)
     //LOGWRITE($items_filename)
     
-    IF($isDataLevel = 0)
+    IF($isDataLevel == #FALSE)
         IF($loglevel >= 3)
             LOGWRITE("Нет данных по уровню")
         END_IF
@@ -311,11 +311,11 @@ SUB(read_ocr_result)
 END_SUB
 
 SUB(find_click_3words)  // TODO учесть is_task_fill
-    $found_words = 0
+    $found_words = #FALSE
     FOR($iocr=0, $iocr < ARRSIZE($ocr_result))
         $word = $ocr_result[$iocr]
         IF($word != "")
-            $found_item = 0
+            $found_item = #FALSE
             $items_size = ARRSIZE($items)
             FOR($index=0, $index < $items_size, 3)
                 $item_name = $items[$index]
@@ -323,13 +323,13 @@ SUB(find_click_3words)  // TODO учесть is_task_fill
                 $item_y = $items[$index+2]
                 //LOGWRITE($word, "==", $item_name)
                 IF($word = $item_name)
-                    $found_item = 1
-                    $found_words = 1
                     $index = 1000
+                    $found_item = #TRUE
+                    $found_words = #TRUE
                 END_IF
             END_CYC
             
-            IF($found_item == 1)
+            IF($found_item == #TRUE)
                 LOGWRITEC(STRCONCAT("Найден предмет: '", $word, "' ", $item_x, "x", $item_y), 433934)
                 IF($test > 1)
                     MOVE($wx1 + $item_x, $wy1 + $item_y)  // тест
@@ -366,7 +366,7 @@ END_SUB
 
 SUB(is_end_mainloop)
     find_pic_nw(1518,32,1562,73, "pause.bmp", 100, 7)
-    IF($found = 0)
+    IF($is_found == #FALSE)
         $mainloop = 0
     END_IF
 END_SUB
@@ -374,22 +374,22 @@ END_SUB
 SUB(check_pause_zone)
     // Проверка зоны паузы
     IF(($setX > 1510) & ($setY < 85))
-        $set = 1
+        $set = #TRUE
     END_IF
 END_SUB
 
 SUB(check_help_zone)
     // Проверка зоны помощи
     IF(($setX > 1470) & ($setY > 760))
-        $set = 1
+        $set = #TRUE
     END_IF
 END_SUB
 
 SUB(waiting_for_items_to_click)
     // ожидание клика по предмету
     $wait_time = $_time_t - 1
-    $set = 1
-    WHILE($set = 1)
+    $set = #TRUE
+    WHILE($set == #TRUE)
         IF($wait_time < $_time_t)
             //HINTPOPUP("Внимание! Готов принять команду")
             LOGWRITEC("Внимание! Готов принять команду", 8355839)
@@ -397,11 +397,11 @@ SUB(waiting_for_items_to_click)
             WAITMS(50)
         END_IF
         
-        IF(ISKEYDOWN(1) = 1)
+        IF(ISKEYDOWN(1) == #TRUE)
             $setX = $_xmouse - $wx1
             $setY = $_ymouse - $wy1
-            $set = 0
-            WHILE(ISKEYDOWN(1) = 1)	// ожидаем отпускания LM
+            $set = #FALSE
+            WHILE(ISKEYDOWN(1) == #TRUE)  // ожидаем отпускания LM
                 WAITMS(50)
             END_CYC
             
@@ -409,8 +409,8 @@ SUB(waiting_for_items_to_click)
             check_help_zone()
         END_IF
         
-        IF(ISKEYDOWN(#ESC) = 1)
-            $set = 0
+        IF(ISKEYDOWN(#ESC) == #TRUE)
+            $set = #FALSE
             LOGWRITEC("Работа прервана", 255)
             HINTPOPUP("Работа прервана")
             HALT
@@ -432,15 +432,15 @@ SUB(manual_click_words)
     ARRPUSH($need_words, $ocr_result[1])
     ARRPUSH($need_words, $ocr_result[2])
     
-    $manual_select_word = 0
-    WHILE($manual_select_word = 0)
+    $manual_select_word = #FALSE
+    WHILE($manual_select_word == #FALSE)
         waiting_for_items_to_click()
         photo_items()
         ocr($ocrpar)
         read_ocr_result()
         FOR($i = 0, $i < 3)
-            IF($need_words[$i] ! $ocr_result[$i])
-                $manual_select_word = 1
+            IF($need_words[$i] != $ocr_result[$i])
+                $manual_select_word = #TRUE
                 $need_word = $need_words[$i]
                 add_item($need_word, $setX, $setY)
                 $i = 100
@@ -457,21 +457,21 @@ WAITMS(300)
 init()
 
 find_pic_nw(0,0,$win_w-1,$win_h-1, "money.bmp", 80, 0)
-IF($found = 1)
+IF($is_found == #TRUE)
     click($play_x, $play_y)
     WAITMS(500)
 END_IF
 
 $input_level = INPUTBOX("Номер уровня", "9", 10)
-IF($input_level = "")
+IF($input_level == "")
     LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
     HALT
 END_IF
 LOGWRITE("уровень: ", $input_level)
 
-IF($test = 0)
-    $found = 0
-    WHILE($found = 0)
+IF($test == 0)
+    $is_found = #FALSE
+    WHILE($is_found == #FALSE)
         find_pic_wait(270, 420, 800, 470, "touch.bmp", 95, 0)
     END_CYC
     click(800, 450)
@@ -496,18 +496,18 @@ $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg3)
 
 $mainloop = 1
 WHILE($mainloop = 1)
-    $found_words = 1  // ставим для принудительного первого пуска цикла
-    WHILE($found_words = 1)
+    $found_words = #TRUE  // ставим для принудительного первого пуска цикла
+    WHILE($found_words == #TRUE)
         automat_click_words()
         IF($test > 1)  // после тестов убрать
-            $found_words = 0
+            $found_words = #FALSE
         END_IF
     END_CYC
     
     is_end_mainloop()
     
     // ручная часть
-    IF($mainloop = 1)
+    IF($mainloop == 1)
         manual_click_words()
         is_end_mainloop()
     END_IF
