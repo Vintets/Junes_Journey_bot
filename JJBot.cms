@@ -287,7 +287,7 @@ END_SUB
 SUB(read_ocr_result)
     UNDEFINE($ocr_result)
     TFREADARR($ocroutfile, $ocr_result)
-    FOR($res_i=1, $res_i < 3)
+    FOR($res_i=1, $res_i < ARRSIZE($ocr_result))
         $ocr_result[$res_i] = STRCUT($ocr_result[$res_i], 2, 40)
     END_CYC
     ocr_result_filter_char()
