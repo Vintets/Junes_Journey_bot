@@ -37,6 +37,7 @@ $ocrimg3 = "levels\ocr_img3.bmp"
 $ocrimgdummy = "textures\ocr_imgdummy.bmp"
 $ocroutfile = "levels\ocr_result.txt"
 $levels_ini = "levels\levels.ini"
+$screenshots_levels_path = "levels\screenshots_levels\"
 $allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789«»"
 
 //Capture2Text\Capture2Text_CLI.exe --language Russian -o ocr_result.txt -i levels\ocr_img1.bmp -i levels\ocr_img2.bmp -i levels\ocr_img3.bmp --blacklist "`‘/\*'.,:;+-" --whitelist абвгдеёжзийклмнопрстуфхцчшщъыьэюя
@@ -204,10 +205,10 @@ SUB(photo_items)
     SCREENSHOTFIX($wx1+990,$ity1, $wx1+1407,$ity2, $ocrimg3, 0)
 END_SUB
 
-SUB(main_screenshot)
+SUB(main_screenshot_level)
+    $screenshot_level = STRCONCAT($screenshots_levels_path, "Level_", $input_level, "_", $hash_level, ".bmp")
     GETSCREEN($wx1,$wy1, $wx2,$wy2)
-    SCREENSHOTEX($wx1,$wy1, $wx2,$wy2, "main_", 0)
-    //SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "main.bmp", 0)
+    SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_level, 0)
 END_SUB
 
 SUB(click, $cldelta_x, $cldelta_y)
@@ -459,9 +460,6 @@ IF($found = 1)
     WAITMS(500)
 END_IF
 
-//main_screenshot()
-//HALT
-
 $input_level = INPUTBOX("Номер уровня", "9", 10)
 IF($input_level = "")
     LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
@@ -480,6 +478,7 @@ END_IF
 
 get_hash_level()
 read_data_level()
+main_screenshot_level()
 
 read_items()
 IF($loglevel >= 5)
