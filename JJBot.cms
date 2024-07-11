@@ -26,7 +26,7 @@ $loglevel = 5
 $wait_click_found = 1000 //250
 
 // тест 1 - без ожидания стадий, 2 - по скрину
-$test = 1
+$test = 2
 
 
 //-------------------------------------------
@@ -500,11 +500,20 @@ WHILE($mainloop == #TRUE)
     WHILE($found_words == #TRUE)
         automat_click_words()
         IF($test > 1)  // после тестов убрать
+            LOGWRITE("$found_words = ", $found_words)
             $found_words = #FALSE
+        END_IF
+        IF($mainloop == #TRUE)
+            print("mainloop true")
         END_IF
     END_CYC
     
     is_end_mainloop()
+    IF($test > 1)  // после тестов убрать
+        LOGWRITE("$mainloop = ", $mainloop)
+        $mainloop == #FALSE
+    END_IF
+    // SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "CM_1.bmp", 0)
     
     // ручная часть
     IF($mainloop == #TRUE)
