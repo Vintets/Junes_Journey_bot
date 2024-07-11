@@ -310,7 +310,7 @@ SUB(read_ocr_result)
     END_IF
 END_SUB
 
-SUB(find_click_3words)  // TODO учесть is_task_fill
+SUB(find_click_3words)
     $found_words = #FALSE
     FOR($iocr=0, $iocr < ARRSIZE($ocr_result))
         $word = $ocr_result[$iocr]
@@ -420,7 +420,7 @@ SUB(waiting_for_items_to_click)
     WAITMS(2500)
 END_SUB
 
-SUB(manual_click_words)
+SUB(manual_click_words)  // TODO учесть is_task_fill
     // ручной поиск неизвесных картинок
     LOGWRITEC("Ручной поиск. Внимание!", 8355839)
     photo_items()
@@ -432,15 +432,15 @@ SUB(manual_click_words)
     ARRPUSH($need_words, $ocr_result[1])
     ARRPUSH($need_words, $ocr_result[2])
     
-    $manual_select_word = #FALSE
-    WHILE($manual_select_word == #FALSE)
+    $manual_select_word = #TRUE
+    WHILE($manual_select_word == #TRUE)
         waiting_for_items_to_click()
         photo_items()
         ocr($ocrpar)
         read_ocr_result()
         FOR($i = 0, $i < 3)
             IF($need_words[$i] != $ocr_result[$i])
-                $manual_select_word = #TRUE
+                $manual_select_word = #FALSE
                 $need_word = $need_words[$i]
                 add_item($need_word, $setX, $setY)
                 $i = 100
