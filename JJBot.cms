@@ -78,7 +78,7 @@ SUB(init)
         LOGSHOW(1, 1920, 510)
         WAITMS(300)
         $hwnd_log = WNDFIND("Лог")
-        WNDSIZE($hwnd_log,366,400)
+        WNDSIZE($hwnd_log, 366, 500)
         LOGSHOW(1, 1920, 510)
     ELSE
         WAITMS(200)
