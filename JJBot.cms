@@ -75,7 +75,7 @@ END_SUB
 SUB(init)
     LOGCLEAR
     IF($loglevel > 0)
-        LOGSHOW(1, 0, 510)
+        LOGSHOW(1, 1920, 510)
         $hwnd_log = WNDFIND("Лог")
         WNDSIZE($hwnd_log,366,400)
     END_IF
