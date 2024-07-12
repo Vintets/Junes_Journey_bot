@@ -442,6 +442,9 @@ SUB(manual_click_words)  // TODO учесть is_task_fill
         ocr($ocrpar)
         read_ocr_result()
         FOR($res_i = 0, $res_i < ARRSIZE($need_words))
+            // print("$res_i = ", $res_i)
+            // print("$need_words[$res_i] = ", $need_words[$res_i])
+            // print("$ocr_result[$res_i] = ", $ocr_result[$res_i])
             IF($need_words[$res_i] != $ocr_result[$res_i])
                 $manual_select_word = #FALSE
                 add_item($need_words[$res_i], $setX, $setY)
