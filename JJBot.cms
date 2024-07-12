@@ -185,7 +185,7 @@ SUB(is_task_fill)
         ARRPUSH($tasks, #FALSE)
     END_IF
     // task 3
-    IF_PICTURE_IN($wx1+1000,$wy1+865, $wx1+1380,$wy1+882, "textures\is_task.bmp", -1, 100)
+    IF_PICTURE_IN($wx1+1010,$wy1+865, $wx1+1390,$wy1+882, "textures\is_task.bmp", -1, 100)
         ARRPUSH($tasks, #TRUE)
     ELSE
         ARRPUSH($tasks, #FALSE)
