@@ -19,6 +19,9 @@
 // разрешение экрана рабочей области    1600x900
 // ориентация  - альбомная
 
+// номер уровня по умолчанию
+$default_level = 1
+
 // уровень логирования 0-NOTSET, 1-CRITICAL 2-ERROR 3-WARNING 4-INFO 5-DEBUG
 $loglevel = 5
 
@@ -464,7 +467,7 @@ IF($is_found == #TRUE)
     WAITMS(500)
 END_IF
 
-$input_level = INPUTBOX("Номер уровня", "9", 10)
+$input_level = INPUTBOX("Номер уровня", $default_level, 3)
 IF($input_level == "")
     LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
     HALT
