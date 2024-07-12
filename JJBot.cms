@@ -152,8 +152,8 @@ END_SUB
 SUB(get_hash_level)
     $isDataLevel = #FALSE
     
-    GETSCREEN($wx1,$wy1, $wx1+999,$wy1+4)
-    $hash_level = PXLCRC($wx1,$wy1, $wx1+999,$wy1+4)
+    GETSCREEN($wx1,$wy2-4, $wx1+999,$wy2)
+    $hash_level = PXLCRC($wx1,$wy2-4, $wx1+999,$wy2)
     LOGWRITE("hash_level ", $hash_level)
     
     $hash_level_file = INIREAD($levels_ini, "hash_level", $hash_level)
