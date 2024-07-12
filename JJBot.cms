@@ -441,8 +441,8 @@ SUB(manual_click_words)  // TODO учесть is_task_fill
         FOR($i = 0, $i < 3)
             IF($need_words[$i] != $ocr_result[$i])
                 $manual_select_word = #FALSE
-                $need_word = $need_words[$i]
-                add_item($need_word, $setX, $setY)
+                $need_new_word = $need_words[$i]
+                add_item($need_new_word, $setX, $setY)
                 $i = 100
             END_IF
         END_CYC
