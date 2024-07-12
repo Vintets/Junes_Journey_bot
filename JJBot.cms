@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 0.7 (12.07.2024)
+// Version: 0.8 (12.07.2024)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -76,8 +76,12 @@ SUB(init)
     LOGCLEAR
     IF($loglevel > 0)
         LOGSHOW(1, 1920, 510)
+        WAITMS(300)
         $hwnd_log = WNDFIND("Лог")
         WNDSIZE($hwnd_log,366,400)
+        LOGSHOW(1, 1920, 510)
+    ELSE
+        WAITMS(200)
     END_IF
     
     $imdelta_x = 0
@@ -458,7 +462,6 @@ END_SUB
 //******************************************************************************
 
 
-WAITMS(300)
 init()
 
 find_pic_nw(0,0,$win_w-1,$win_h-1, "money.bmp", 80, 0)
