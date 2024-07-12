@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 0.8 (12.07.2024)
+// Version: 0.9 (12.07.2024)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -207,9 +207,14 @@ SUB(photo_items)
     photo_items_all()
     // интервал X  477,
     // Ширина поля 417    $ipw = 417
-    SCREENSHOTFIX($wx1+ 36,$ity1, $wx1+ 453,$ity2, $ocrimg[0], 0)
-    SCREENSHOTFIX($wx1+513,$ity1, $wx1+ 930,$ity2, $ocrimg[1], 0)
-    SCREENSHOTFIX($wx1+990,$ity1, $wx1+1407,$ity2, $ocrimg[2], 0)
+    FOR($i=0, $i < 3)
+        IF($tasks[$i])
+            SCREENSHOTFIX($wx1 + 36 + ($i*477),$ity1, $wx1 + 453 + ($i*477),$ity2, $ocrimg[$i], 0)
+        END_IF
+    END_CYC
+    // SCREENSHOTFIX($wx1+ 36,$ity1, $wx1+ 453,$ity2, $ocrimg[0], 0)
+    // SCREENSHOTFIX($wx1+513,$ity1, $wx1+ 930,$ity2, $ocrimg[1], 0)
+    // SCREENSHOTFIX($wx1+990,$ity1, $wx1+1407,$ity2, $ocrimg[2], 0)
 END_SUB
 
 SUB(main_screenshot_level)
@@ -275,6 +280,20 @@ SUB(read_items)
         ARRPUSH($items, $data[1])
         ARRPUSH($items, $data[2])
     END_CYC
+END_SUB
+
+SUB(create_ocr_par)
+    $ocrpar = $ocrparbase
+    FOR($i=0, $i < 3)
+        IF($tasks[$i])
+            $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg[$i])
+        // ELSE
+        //     $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimgdummy)
+        END_IF
+    END_CYC
+    IF($loglevel >= 5)
+        LOGWRITE($ocrpar)
+    END_IF
 END_SUB
 
 SUB(ocr, $ocr_par)
@@ -356,6 +375,7 @@ END_SUB
 SUB(automat_click_words)
     // поиск извесных картинок автоматом
     photo_items()
+    create_ocr_par()
     ocr($ocrpar)
     read_ocr_result()
     //read_items()
@@ -427,10 +447,11 @@ SUB(waiting_for_items_to_click)
     WAITMS(2500)
 END_SUB
 
-SUB(manual_click_words)  // TODO учесть is_task_fill
+SUB(manual_click_words)
     // ручной поиск неизвесных картинок
     LOGWRITEC("Ручной поиск. Внимание!", 8355839)
     photo_items()
+    create_ocr_par()
     ocr($ocrpar)
     read_ocr_result()
     
@@ -443,6 +464,7 @@ SUB(manual_click_words)  // TODO учесть is_task_fill
     WHILE($manual_select_word == #TRUE)
         waiting_for_items_to_click()
         photo_items()
+        create_ocr_par()
         ocr($ocrpar)
         read_ocr_result()
         FOR($res_i = 0, $res_i < ARRSIZE($need_words))
@@ -495,12 +517,6 @@ IF($loglevel >= 5)
     LOGWRITE("Массив $items:")
     LOG_ARR("$items", ARRSIZE($items))
 END_IF
-
-// TO DO формировать запрос ocr
-$ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg[0])
-$ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg[1])
-$ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg[2])
-//LOGWRITE($ocrpar)
 
 $mainloop = #TRUE
 WHILE($mainloop == #TRUE)
