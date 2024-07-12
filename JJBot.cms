@@ -431,9 +431,6 @@ SUB(manual_click_words)  // TODO учесть is_task_fill
     read_ocr_result()
     
     UNDEFINE($need_words)
-    ARRPUSH($need_words, $ocr_result[0])
-    ARRPUSH($need_words, $ocr_result[1])
-    ARRPUSH($need_words, $ocr_result[2])
     FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
         ARRPUSH($need_words, $ocr_result[$res_i])
     END_CYC
