@@ -34,9 +34,9 @@ $test = 1
 
 //-------------------------------------------
 $ocrexe = "Capture2Text\Capture2Text_CLI.exe"  // lnk
-$ocrimg1 = "levels\ocr_img1.bmp"
-$ocrimg2 = "levels\ocr_img2.bmp"
-$ocrimg3 = "levels\ocr_img3.bmp"
+$ocrimg[0] = "levels\ocr_img1.bmp"
+$ocrimg[1] = "levels\ocr_img2.bmp"
+$ocrimg[2] = "levels\ocr_img3.bmp"
 $ocrimgdummy = "textures\ocr_imgdummy.bmp"
 $ocroutfile = "levels\ocr_result.txt"
 $levels_ini = "levels\levels.ini"
@@ -203,9 +203,9 @@ SUB(photo_items)
     photo_items_all()
     // интервал X  477,
     // Ширина поля 417    $ipw = 417
-    SCREENSHOTFIX($wx1+ 36,$ity1, $wx1+ 453,$ity2, $ocrimg1, 0)
-    SCREENSHOTFIX($wx1+513,$ity1, $wx1+ 930,$ity2, $ocrimg2, 0)
-    SCREENSHOTFIX($wx1+990,$ity1, $wx1+1407,$ity2, $ocrimg3, 0)
+    SCREENSHOTFIX($wx1+ 36,$ity1, $wx1+ 453,$ity2, $ocrimg[0], 0)
+    SCREENSHOTFIX($wx1+513,$ity1, $wx1+ 930,$ity2, $ocrimg[1], 0)
+    SCREENSHOTFIX($wx1+990,$ity1, $wx1+1407,$ity2, $ocrimg[2], 0)
 END_SUB
 
 SUB(main_screenshot_level)
@@ -494,9 +494,9 @@ IF($loglevel >= 5)
 END_IF
 
 // TO DO формировать запрос ocr
-$ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg1)
-$ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg2)
-$ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg3)
+$ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg[0])
+$ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg[1])
+$ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg[2])
 //LOGWRITE($ocrpar)
 
 $mainloop = #TRUE
