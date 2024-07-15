@@ -196,7 +196,7 @@ SUB(get_location)
 END_SUB
 
 SUB(get_hash_scene)
-    $isDataLevel = #FALSE
+    $isDataScene = #FALSE
     
     GETSCREEN($wx1,$wy2-4, $wx1+999,$wy2)
     $hash_scene = PXLCRC($wx1,$wy2-4, $wx1+999,$wy2)
@@ -204,7 +204,7 @@ SUB(get_hash_scene)
     
     $hash_scene_file = INIREAD($scenes_ini, "hash_scene", $hash_scene)
     IF($hash_scene_file != "")
-        $isDataLevel = #TRUE
+        $isDataScene = #TRUE
     END_IF
 END_SUB
 
@@ -310,7 +310,7 @@ SUB(read_data_scene)
     $level_folder = STRCONCAT($scenes_path, "level_", $scene_number)
     //LOGWRITE($items_filename)
     
-    IF($isDataLevel == #FALSE)
+    IF($isDataScene == #FALSE)
         IF($loglevel >= 3)
             LOGWRITE("Нет данных по уровню")
         END_IF
