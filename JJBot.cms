@@ -307,7 +307,7 @@ SUB(read_data_scene)
     UNDEFINE($items)
     
     $items_filename = STRCONCAT($scenes_path, $scene_number, "_", $hash_scene, ".txt")
-    $level_folder = STRCONCAT($scenes_path, "level_", $scene_number)
+    $scene_folder = STRCONCAT($scenes_path, "scene_", $scene_number)
     //LOGWRITE($items_filename)
     
     IF($isDataScene == #FALSE)
@@ -316,7 +316,7 @@ SUB(read_data_scene)
         END_IF
         INIWRITE($scenes_ini, "scene_number", $scene_number, $hash_scene)
         INIWRITE($scenes_ini, "hash_scene", $hash_scene, $hash_scene)
-        //FCREATE($level_folder)
+        //FCREATE($scene_folder)
     ELSE
         IF($loglevel >= 4)
             LOGWRITE("Найдены данные уровня ", $hash_scene_file)
