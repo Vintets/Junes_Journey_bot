@@ -26,7 +26,7 @@ $default_level = 1
 $loglevel = 5
 
 // главная задержка после клика (при автомате)
-$wait_click_found = 1000 //250
+$wait_click_found = 500 //250
 
 // тест 1 - без ожидания стадий, 2 - по скрину
 $test = 1
@@ -370,10 +370,10 @@ SUB(find_click_3words)
             
             IF($found_item == #TRUE)
                 LOGWRITEC(STRCONCAT("Найден предмет: '", $word, "' ", $item_x, "x", $item_y), 433934)
-                IF($test > 1)
-                    MOVE($wx1 + $item_x, $wy1 + $item_y)  // тест
-                ELSE
+                IF($test < 2)
                     LCLICK($wx1 + $item_x, $wy1 + $item_y)
+                ELSE
+                    MOVE($wx1 + $item_x, $wy1 + $item_y)  // тест
                 END_IF
                 WAITMS($wait_click_found)
             ELSE
@@ -541,7 +541,7 @@ SUB(passing_level_scene, $psl_level)
             is_end_mainloop()
         END_IF
     END_CYC
-    LOGWRITE("Уровень ", $level_number, " закончен.")
+    LOGWRITE("Сцена уровня ", $level_number, " пройдена.", \n, "*************************************************")
 END_SUB
 
 //==============================================================================
@@ -560,7 +560,7 @@ IF($is_found == #TRUE)
     WAITMS(500)
 END_IF
 
-$input_level = INPUTBOX("Номер уровня", $default_level, 3)
+$input_level = INPUTBOX("Номер уровня", $default_level, 2)
 IF($input_level == "")
     LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
     HALT
