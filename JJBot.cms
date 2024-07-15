@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.4 (15.07.2024)
+// Version: 1.6 (15.07.2024)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -29,7 +29,8 @@ $loglevel = 5
 $wait_click_found = 500 //250
 
 // тест 1 - без ожидания стадий, 2 - по скрину
-$test = 1
+$test = 2
+
 
 $scenes_path = "scenes\"
 
@@ -453,6 +454,15 @@ SUB(touch_for_start)
     END_IF
 END_SUB
 
+SUB(input_scene_number)
+    $input_sn = INPUTBOX("Номер уровня", $default_scene_number, 2)
+    IF($input_sn == "")
+        LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
+        HALT
+    END_IF
+    LOGWRITE("уровень: ", $input_sn)
+END_SUB
+
 SUB(add_item, $it_name, $it_x, $it_y)
     LOGWRITEC(STRCONCAT("Добавяем предмет: '", $it_name, "' ", $it_x, "x", $it_y), 16711680) // синий
     ARRPUSH($items, $it_name)
@@ -596,12 +606,7 @@ END_SUB
 
 init()
 
-$input_scene_number = INPUTBOX("Номер уровня", $default_scene_number, 2)
-IF($input_scene_number == "")
-    LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
-    HALT
-END_IF
-LOGWRITE("уровень: ", $input_scene_number)
+input_scene_number()
 
 get_location()
 IF($location == "main")
@@ -609,6 +614,6 @@ IF($location == "main")
     WAITMS(500)
 END_IF
 
-passing_hidden_object_scene($input_scene_number)
+passing_hidden_object_scene($input_sn)
 
 HALT
