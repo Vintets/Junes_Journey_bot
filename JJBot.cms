@@ -501,7 +501,7 @@ SUB(manual_click_words)
     END_CYC
 END_SUB
 
-SUB(passing_level_scene, $psl_level)
+SUB(passing_hidden_object_scene, $psl_level)
     $level_number = $psl_level
     touch_for_start()
     get_hash_level()
@@ -564,6 +564,6 @@ IF($input_level == "")
 END_IF
 LOGWRITE("уровень: ", $input_level)
 
-passing_level_scene($input_level)
+passing_hidden_object_scene($input_level)
 
 HALT
