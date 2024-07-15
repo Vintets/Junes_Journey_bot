@@ -115,8 +115,8 @@ SUB(init)
     $ity2 = $wy1 + 864
     
     // play button delta
-    $play_x = 1490
-    $play_y = 800
+    $play_x = 1495
+    $play_y = 795
     
     LOGWRITE(\n, \n, "*************************************************")
 END_SUB
