@@ -39,7 +39,7 @@ $ocrimg[1] = "levels\ocr_img2.bmp"
 $ocrimg[2] = "levels\ocr_img3.bmp"
 $ocrimgdummy = "textures\ocr_imgdummy.bmp"
 $ocroutfile = "levels\ocr_result.txt"
-$levels_ini = "levels\levels.ini"
+$scenes_ini = "levels\scenes.ini"
 $screenshots_levels_path = "levels\screenshots_levels\"
 $allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789«»"
 
@@ -160,7 +160,7 @@ SUB(get_hash_level)
     $hash_level = PXLCRC($wx1,$wy2-4, $wx1+999,$wy2)
     LOGWRITE("hash_level ", $hash_level)
     
-    $hash_level_file = INIREAD($levels_ini, "hash_level", $hash_level)
+    $hash_level_file = INIREAD($scenes_ini, "hash_level", $hash_level)
     IF($hash_level_file != "")
         $isDataLevel = #TRUE
     END_IF
@@ -272,8 +272,8 @@ SUB(read_data_level)
         IF($loglevel >= 3)
             LOGWRITE("Нет данных по уровню")
         END_IF
-        INIWRITE($levels_ini, "level", $scene_number, $hash_level)
-        INIWRITE($levels_ini, "hash_level", $hash_level, $hash_level)
+        INIWRITE($scenes_ini, "level", $scene_number, $hash_level)
+        INIWRITE($scenes_ini, "hash_level", $hash_level, $hash_level)
         //FCREATE($level_folder)
     ELSE
         IF($loglevel >= 4)
