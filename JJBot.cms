@@ -249,7 +249,11 @@ END_SUB
 
 SUB(click_found, $clf_delta_x, $clf_delta_y)
     IF($is_found == #TRUE)
-        LCLICK($found_x + $clf_delta_x, $found_y + $clf_delta_y)
+        IF($test < 2)
+            LCLICK($found_x + $clf_delta_x, $found_y + $clf_delta_y)
+        ELSE
+            MOVE($found_x + $clf_delta_x, $found_y + $clf_delta_y)  // если тест
+        END_IF
         IF($loglevel >= 5)
             LOGWRITE("Клик ", $found_x+$clf_delta_x, "  ", $found_y+$clf_delta_y)
         END_IF
