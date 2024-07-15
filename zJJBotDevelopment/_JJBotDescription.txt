@@ -25,10 +25,15 @@ cd /d "%YandexDisk%\Clickermann v4.13.14x32\projects\BigProjects\Junes_Journey_b
 # ==================================================================================================
             *** Анализ ***
 
-
+// $cpi_nums = "1 2 3"
+// $path = "D:\YandexDisk\Clickermann v4.13.14x32\projects\BigProjects\Junes_Journey_bot"
+// $param_main = STRCONCAT(" /C cd /D ", $path, " && Start Python correct_img.py ", $cpi_nums)
+// $param_main = STRCONCAT(" /C Start Python correct_img.py ", $cpi_nums)
+// LOGWRITE("$param_main ", $param_main)
+// EXECUTE("cmd.exe", $param_main)
+// HALT
 
 
 
 // *************************************************************************************************
 # ==================================================================================================
-

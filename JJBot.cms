@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.1 (12.07.2024)
+// Version: 1.2 (15.07.2024)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -196,8 +196,7 @@ SUB(is_task_fill)
 END_SUB
 
 SUB(correct_photo_items, $cpi_nums)
-    $path = "D:\YandexDisk\Clickermann v4.13.14x32\projects\BigProjects\Junes_Journey_bot"
-    $param_main = STRCONCAT(" /C cd /D ", $path, " && Start Python correct_img.py ", $cpi_nums)
+    $param_main = STRCONCAT(" /C Start Python correct_img.py ", $cpi_nums)
     // LOGWRITE("$param_main ", $param_main)
     EXECUTE("cmd.exe", $param_main)
 END_SUB
@@ -507,13 +506,6 @@ END_SUB
 
 //==============================================================================
 //******************************************************************************
-
-// $cpi_nums = "1 2 3"
-// $path = "D:\YandexDisk\Clickermann v4.13.14x32\projects\BigProjects\Junes_Journey_bot"
-// $param_main = STRCONCAT(" /C cd /D ", $path, " && Start Python correct_img.py ", $cpi_nums)
-// LOGWRITE("$param_main ", $param_main)
-// EXECUTE("cmd.exe", $param_main)
-// HALT
 
 init()
 
