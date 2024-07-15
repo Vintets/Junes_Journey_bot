@@ -232,7 +232,7 @@ SUB(photo_items)
 END_SUB
 
 SUB(main_screenshot_level)
-    $screenshot_level = STRCONCAT($screenshots_levels_path, "Level_", $input_level, "_", $hash_level, ".bmp")
+    $screenshot_level = STRCONCAT($screenshots_levels_path, "Level_", $level_number, "_", $hash_level, ".bmp")
     GETSCREEN($wx1,$wy1, $wx2,$wy2)
     SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_level, 0)
 END_SUB
@@ -260,15 +260,15 @@ END_SUB
 SUB(read_data_level)
     UNDEFINE($items)
     
-    $items_filename = STRCONCAT("levels\", $input_level, "_", $hash_level, ".txt")
-    $level_folder = STRCONCAT("levels\level_", $input_level)
+    $items_filename = STRCONCAT("levels\", $level_number, "_", $hash_level, ".txt")
+    $level_folder = STRCONCAT("levels\level_", $level_number)
     //LOGWRITE($items_filename)
     
     IF($isDataLevel == #FALSE)
         IF($loglevel >= 3)
             LOGWRITE("Нет данных по уровню")
         END_IF
-        INIWRITE($levels_ini, "level", $input_level, $hash_level)
+        INIWRITE($levels_ini, "level", $level_number, $hash_level)
         INIWRITE($levels_ini, "hash_level", $hash_level, $hash_level)
         //FCREATE($level_folder)
     ELSE
@@ -282,7 +282,7 @@ END_SUB
 SUB(read_items)
     UNDEFINE($items_str)
     UNDEFINE($items)
-    $items_filename = STRCONCAT("levels\", $input_level, "_", $hash_level, ".txt")
+    $items_filename = STRCONCAT("levels\", $level_number, "_", $hash_level, ".txt")
     TFREADARR($items_filename, $items_str)
     $items_str_size = ARRSIZE($items_str)
     IF($loglevel >= 5)
@@ -562,8 +562,7 @@ WHILE($mainloop == #TRUE)
         is_end_mainloop()
     END_IF
 END_CYC
-LOGWRITE("Уровень ", $input_level, " закончен.")
-
+LOGWRITE("Уровень ", $level_number, " закончен.")
 
 HALT
 
