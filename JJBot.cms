@@ -270,9 +270,9 @@ SUB(photo_items)
 END_SUB
 
 SUB(main_screenshot_scene)
-    $screenshot_level = STRCONCAT($screenshots_scenes_path, "Level_", $scene_number, "_", $hash_scene, ".bmp")
+    $screenshot_scene = STRCONCAT($screenshots_scenes_path, "Scene_", $scene_number, "_", $hash_scene, ".bmp")
     GETSCREEN($wx1,$wy1, $wx2,$wy2)
-    SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_level, 0)
+    SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_scene, 0)
 END_SUB
 
 SUB(click, $cldelta_x, $cldelta_y)
