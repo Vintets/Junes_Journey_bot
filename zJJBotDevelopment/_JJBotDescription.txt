@@ -3,7 +3,6 @@
 #WIN#
 cd /d "%YandexDisk%\Clickermann v4.13.14x32\projects\BigProjects\Junes_Journey_bot"
 
-
 # запуск
 
 
@@ -33,6 +32,23 @@ cd /d "%YandexDisk%\Clickermann v4.13.14x32\projects\BigProjects\Junes_Journey_b
 // EXECUTE("cmd.exe", $param_main)
 // HALT
 
+
+//GETSCREEN($wx1,$wy1, $wx2,$wy2)
+//SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "main.bmp", 0)
+
+
+# ==================================================================================================
+            *** ocr ***
+
+//Capture2Text\Capture2Text_CLI.exe --language Russian -o ocr_result.txt -i levels\ocr_img1.bmp -i levels\ocr_img2.bmp -i levels\ocr_img3.bmp --blacklist "`‘/\*'.,:;+-" --whitelist абвгдеёжзийклмнопрстуфхцчшщъыьэюя
+// out clipboard
+//$ocrparbase = "--output-format ${capture} --debug --debug-timestamp --language English --clipboard"
+
+
+// D:\YandexDisk\Programs_portable\Media\Capture2Text\Capture2Text_CLI.exe --language Russian -i img1.png  -o result.txt
+// D:\YandexDisk\Programs_portable\Media\Capture2Text\Capture2Text_CLI.exe --language Russian -i img1.bmp -i img2.bmp --clipboard
+
+// D:\YandexDisk\Programs_portable\Media\Capture2Text\Capture2Text_CLI.exe --clipboard --language English -i img1.bmp -i img2.bmp
 
 
 // *************************************************************************************************
