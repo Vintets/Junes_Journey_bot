@@ -504,6 +504,46 @@ SUB(manual_click_words)
     END_CYC
 END_SUB
 
+SUB(passing_level_scene, $psl_level)
+    $level_number = $psl_level
+    touch_for_start()
+    get_hash_level()
+    read_data_level()
+    main_screenshot_level()
+
+    read_items()
+    IF($loglevel >= 5)
+        LOGWRITE("Массив $items:")
+        LOG_ARR("$items", ARRSIZE($items))
+    END_IF
+
+    $mainloop = #TRUE
+    WHILE($mainloop == #TRUE)
+        $found_words = #TRUE  // ставим для принудительного первого пуска цикла
+        WHILE($found_words == #TRUE)
+            automat_click_words()
+            IF($test > 1)  // после тестов убрать
+                LOGWRITE("$found_words = ", $found_words)
+                $found_words = #FALSE
+            END_IF
+        END_CYC
+        
+        is_end_mainloop()
+        IF($test > 1)  // после тестов убрать
+            LOGWRITE("$mainloop = ", $mainloop)
+            // $mainloop = #FALSE
+        END_IF
+        // SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "CM_1.bmp", 0)
+        
+        // ручная часть
+        IF($mainloop == #TRUE)
+            manual_click_words()
+            is_end_mainloop()
+        END_IF
+    END_CYC
+    LOGWRITE("Уровень ", $level_number, " закончен.")
+END_SUB
+
 //==============================================================================
 //******************************************************************************
 
@@ -522,42 +562,7 @@ IF($input_level == "")
 END_IF
 LOGWRITE("уровень: ", $input_level)
 
-touch_for_start()
-get_hash_level()
-read_data_level()
-main_screenshot_level()
-
-read_items()
-IF($loglevel >= 5)
-    LOGWRITE("Массив $items:")
-    LOG_ARR("$items", ARRSIZE($items))
-END_IF
-
-$mainloop = #TRUE
-WHILE($mainloop == #TRUE)
-    $found_words = #TRUE  // ставим для принудительного первого пуска цикла
-    WHILE($found_words == #TRUE)
-        automat_click_words()
-        IF($test > 1)  // после тестов убрать
-            LOGWRITE("$found_words = ", $found_words)
-            $found_words = #FALSE
-        END_IF
-    END_CYC
-    
-    is_end_mainloop()
-    IF($test > 1)  // после тестов убрать
-        LOGWRITE("$mainloop = ", $mainloop)
-        // $mainloop = #FALSE
-    END_IF
-    // SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "CM_1.bmp", 0)
-    
-    // ручная часть
-    IF($mainloop == #TRUE)
-        manual_click_words()
-        is_end_mainloop()
-    END_IF
-END_CYC
-LOGWRITE("Уровень ", $level_number, " закончен.")
+passing_level_scene($input_level)
 
 HALT
 
