@@ -269,7 +269,7 @@ SUB(photo_items)
     correct_photo_items($correct_nums)
 END_SUB
 
-SUB(main_screenshot_level)
+SUB(main_screenshot_scene)
     $screenshot_level = STRCONCAT($screenshots_scenes_path, "Level_", $scene_number, "_", $hash_scene, ".bmp")
     GETSCREEN($wx1,$wy1, $wx2,$wy2)
     SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_level, 0)
@@ -556,7 +556,7 @@ SUB(passing_hidden_object_scene, $phos_scene_number)
     touch_for_start()
     get_hash_scene()
     read_data_level()
-    main_screenshot_level()
+    main_screenshot_scene()
 
     read_items()
     IF($loglevel >= 5)
