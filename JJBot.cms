@@ -396,6 +396,17 @@ SUB(automat_click_words)
     find_click_3words()
 END_SUB
 
+SUB(touch_for_start)
+    IF($test == 0)
+        $is_found = #FALSE
+        WHILE($is_found == #FALSE)
+            find_pic_wait(270, 420, 800, 470, "touch.bmp", 95, 0)
+        END_CYC
+        click(800, 450)
+        WAITMS(500)
+    END_IF
+END_SUB
+
 SUB(add_item, $it_name, $it_x, $it_y)
     LOGWRITEC(STRCONCAT("Добавяем предмет: '", $it_name, "' ", $it_x, "x", $it_y), 16711680) // синий
     ARRPUSH($items, $it_name)
@@ -519,15 +530,7 @@ IF($input_level == "")
 END_IF
 LOGWRITE("уровень: ", $input_level)
 
-IF($test == 0)
-    $is_found = #FALSE
-    WHILE($is_found == #FALSE)
-        find_pic_wait(270, 420, 800, 470, "touch.bmp", 95, 0)
-    END_CYC
-    click(800, 450)
-    WAITMS(500)
-END_IF
-
+touch_for_start()
 get_hash_level()
 read_data_level()
 main_screenshot_level()
