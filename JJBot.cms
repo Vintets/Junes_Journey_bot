@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.3 (15.07.2024)
+// Version: 1.4 (15.07.2024)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -195,15 +195,15 @@ SUB(get_location)
     END_IF
 END_SUB
 
-SUB(get_hash_level)
+SUB(get_hash_scene)
     $isDataLevel = #FALSE
     
     GETSCREEN($wx1,$wy2-4, $wx1+999,$wy2)
-    $hash_level = PXLCRC($wx1,$wy2-4, $wx1+999,$wy2)
-    LOGWRITE("hash_level ", $hash_level)
+    $hash_scene = PXLCRC($wx1,$wy2-4, $wx1+999,$wy2)
+    LOGWRITE("hash_scene ", $hash_scene)
     
-    $hash_level_file = INIREAD($scenes_ini, "hash_level", $hash_level)
-    IF($hash_level_file != "")
+    $hash_scene_file = INIREAD($scenes_ini, "hash_scene", $hash_scene)
+    IF($hash_scene_file != "")
         $isDataLevel = #TRUE
     END_IF
 END_SUB
@@ -270,7 +270,7 @@ SUB(photo_items)
 END_SUB
 
 SUB(main_screenshot_level)
-    $screenshot_level = STRCONCAT($screenshots_scenes_path, "Level_", $scene_number, "_", $hash_level, ".bmp")
+    $screenshot_level = STRCONCAT($screenshots_scenes_path, "Level_", $scene_number, "_", $hash_scene, ".bmp")
     GETSCREEN($wx1,$wy1, $wx2,$wy2)
     SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_level, 0)
 END_SUB
@@ -306,7 +306,7 @@ END_SUB
 SUB(read_data_level)
     UNDEFINE($items)
     
-    $items_filename = STRCONCAT($scenes_path, $scene_number, "_", $hash_level, ".txt")
+    $items_filename = STRCONCAT($scenes_path, $scene_number, "_", $hash_scene, ".txt")
     $level_folder = STRCONCAT($scenes_path, "level_", $scene_number)
     //LOGWRITE($items_filename)
     
@@ -314,12 +314,12 @@ SUB(read_data_level)
         IF($loglevel >= 3)
             LOGWRITE("Нет данных по уровню")
         END_IF
-        INIWRITE($scenes_ini, "level", $scene_number, $hash_level)
-        INIWRITE($scenes_ini, "hash_level", $hash_level, $hash_level)
+        INIWRITE($scenes_ini, "level", $scene_number, $hash_scene)
+        INIWRITE($scenes_ini, "hash_scene", $hash_scene, $hash_scene)
         //FCREATE($level_folder)
     ELSE
         IF($loglevel >= 4)
-            LOGWRITE("Найдены данные уровня ", $hash_level_file)
+            LOGWRITE("Найдены данные уровня ", $hash_scene_file)
         END_IF
         //TFREADARR($items_filename, $items)
     END_IF
@@ -328,7 +328,7 @@ END_SUB
 SUB(read_items)
     UNDEFINE($items_str)
     UNDEFINE($items)
-    $items_filename = STRCONCAT($scenes_path, $scene_number, "_", $hash_level, ".txt")
+    $items_filename = STRCONCAT($scenes_path, $scene_number, "_", $hash_scene, ".txt")
     TFREADARR($items_filename, $items_str)
     $items_str_size = ARRSIZE($items_str)
     IF($loglevel >= 5)
@@ -554,7 +554,7 @@ END_SUB
 SUB(passing_hidden_object_scene, $phos_scene_number)
     $scene_number = $phos_scene_number
     touch_for_start()
-    get_hash_level()
+    get_hash_scene()
     read_data_level()
     main_screenshot_level()
 
