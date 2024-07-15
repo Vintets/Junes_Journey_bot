@@ -31,16 +31,18 @@ $wait_click_found = 500 //250
 // тест 1 - без ожидания стадий, 2 - по скрину
 $test = 1
 
+$scenes_path = "scenes\"
+
 
 //-------------------------------------------
 $ocrexe = "Capture2Text\Capture2Text_CLI.exe"  // lnk
-$ocrimg[0] = "levels\ocr_img1.bmp"
-$ocrimg[1] = "levels\ocr_img2.bmp"
-$ocrimg[2] = "levels\ocr_img3.bmp"
+$ocrimg[0] = STRCONCAT($scenes_path, "ocr_img1.bmp")
+$ocrimg[1] = STRCONCAT($scenes_path, "ocr_img2.bmp")
+$ocrimg[2] = STRCONCAT($scenes_path, "ocr_img3.bmp")
 $ocrimgdummy = "textures\ocr_imgdummy.bmp"
-$ocroutfile = "levels\ocr_result.txt"
-$scenes_ini = "levels\scenes.ini"
-$screenshots_levels_path = "levels\screenshots_levels\"
+$ocroutfile = STRCONCAT($scenes_path, "ocr_result.txt")
+$scenes_ini = STRCONCAT($scenes_path, "scenes.ini")
+$screenshots_levels_path = STRCONCAT($scenes_path, "screenshots_levels\")
 $allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789«»"
 
 // out file
@@ -304,8 +306,8 @@ END_SUB
 SUB(read_data_level)
     UNDEFINE($items)
     
-    $items_filename = STRCONCAT("levels\", $scene_number, "_", $hash_level, ".txt")
-    $level_folder = STRCONCAT("levels\level_", $scene_number)
+    $items_filename = STRCONCAT($scenes_path, $scene_number, "_", $hash_level, ".txt")
+    $level_folder = STRCONCAT($scenes_path, "level_", $scene_number)
     //LOGWRITE($items_filename)
     
     IF($isDataLevel == #FALSE)
@@ -326,7 +328,7 @@ END_SUB
 SUB(read_items)
     UNDEFINE($items_str)
     UNDEFINE($items)
-    $items_filename = STRCONCAT("levels\", $scene_number, "_", $hash_level, ".txt")
+    $items_filename = STRCONCAT($scenes_path, $scene_number, "_", $hash_level, ".txt")
     TFREADARR($items_filename, $items_str)
     $items_str_size = ARRSIZE($items_str)
     IF($loglevel >= 5)
