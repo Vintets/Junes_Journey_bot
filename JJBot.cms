@@ -42,7 +42,7 @@ $ocrimg[2] = STRCONCAT($scenes_path, "ocr_img3.bmp")
 $ocrimgdummy = "textures\ocr_imgdummy.bmp"
 $ocroutfile = STRCONCAT($scenes_path, "ocr_result.txt")
 $scenes_ini = STRCONCAT($scenes_path, "scenes.ini")
-$screenshots_levels_path = STRCONCAT($scenes_path, "screenshots_levels\")
+$screenshots_scenes_path = STRCONCAT($scenes_path, "screenshots_scenes\")
 $allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789«»"
 
 // out file
@@ -270,7 +270,7 @@ SUB(photo_items)
 END_SUB
 
 SUB(main_screenshot_level)
-    $screenshot_level = STRCONCAT($screenshots_levels_path, "Level_", $scene_number, "_", $hash_level, ".bmp")
+    $screenshot_level = STRCONCAT($screenshots_scenes_path, "Level_", $scene_number, "_", $hash_level, ".bmp")
     GETSCREEN($wx1,$wy1, $wx2,$wy2)
     SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_level, 0)
 END_SUB
