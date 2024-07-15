@@ -314,7 +314,7 @@ SUB(read_data_scene)
         IF($loglevel >= 3)
             LOGWRITE("Нет данных по уровню")
         END_IF
-        INIWRITE($scenes_ini, "level", $scene_number, $hash_scene)
+        INIWRITE($scenes_ini, "scene_number", $scene_number, $hash_scene)
         INIWRITE($scenes_ini, "hash_scene", $hash_scene, $hash_scene)
         //FCREATE($level_folder)
     ELSE
