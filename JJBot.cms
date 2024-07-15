@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.2 (15.07.2024)
+// Version: 1.3 (15.07.2024)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -235,7 +235,11 @@ END_SUB
 
 SUB(click, $cldelta_x, $cldelta_y)
     IF($is_found == #TRUE)
-        LCLICK($wx1+$cldelta_x, $wy1+$cldelta_y)
+        IF($test < 2)
+            LCLICK($wx1+$cldelta_x, $wy1+$cldelta_y)
+        ELSE
+            MOVE($wx1+$cldelta_x, $wy1+$cldelta_y)  // если тест
+        END_IF
         IF($loglevel >= 5)
             LOGWRITE("Клик ", $wx1+$cldelta_x, "  ", $wy1+$cldelta_y)
         END_IF
@@ -548,12 +552,7 @@ init()
 
 find_pic_nw(0,0,$win_w-1,$win_h-1, "money.bmp", 80, 0)
 IF($is_found == #TRUE)
-    // click($play_x, $play_y)
-    IF($test < 2)
-        click($play_x, $play_y)
-    ELSE
-        MOVE($wx1+$play_x, $wy1+$play_y)  // тест
-    END_IF
+    click($play_x, $play_y)
     WAITMS(500)
 END_IF
 
