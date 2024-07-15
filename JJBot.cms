@@ -551,7 +551,12 @@ init()
 
 find_pic_nw(0,0,$win_w-1,$win_h-1, "money.bmp", 80, 0)
 IF($is_found == #TRUE)
-    click($play_x, $play_y)
+    // click($play_x, $play_y)
+    IF($test < 2)
+        click($play_x, $play_y)
+    ELSE
+        MOVE($wx1+$play_x, $wy1+$play_y)  // тест
+    END_IF
     WAITMS(500)
 END_IF
 
