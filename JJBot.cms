@@ -115,6 +115,8 @@ SUB(init)
     $play_x = 1495
     $play_y = 795
     
+    $location = ""
+    
     LOGWRITE(\n, \n, "*************************************************")
 END_SUB
 
@@ -150,6 +152,44 @@ SUB(find_pic_wait, $fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2,$fpw_image, $fpw_percent, $fp
     END_CYC
     IF($is_found == #FALSE)
         LOGWRITE("время истекло, картинка не найдена")
+    END_IF
+END_SUB
+
+SUB(get_location)
+    // locations:
+    // load game - экран загрузки игры
+    // *main - главный экран (остров орхидей)
+
+    // *hidden object scene - сцена поиска предметов
+    // detective - требуются детективы
+    // cafe - кафе
+    // drink - выставить напиток
+    // *touch for start - оснитесь, чтобы начать
+    // help Wanted - требуется помощь
+    // advertising - реклама
+    // advertising is over - реклама закончилась
+
+    $location = ""
+
+    IF($location = "")
+        find_pic_nw(1518,32,1562,73, "pause.bmp", 100, 7)
+        IF($is_found == #TRUE)
+            $location = "hidden object scene"
+        END_IF
+    END_IF
+
+    IF($location = "")
+        find_pic_nw(0,0,$win_w-1,$win_h-1, "money.bmp", 80, 0)
+        IF($is_found == #TRUE)
+            $location = "main"
+        END_IF
+    END_IF
+
+    IF($location = "")
+        find_pic_nw(270, 420, 800, 470, "touch.bmp", 95, 0)
+        IF($is_found == #TRUE)
+            $location = "touch for start"
+        END_IF
     END_IF
 END_SUB
 
@@ -554,18 +594,18 @@ END_SUB
 
 init()
 
-find_pic_nw(0,0,$win_w-1,$win_h-1, "money.bmp", 80, 0)
-IF($is_found == #TRUE)
-    click($play_x, $play_y)
-    WAITMS(500)
-END_IF
-
 $input_scene_number = INPUTBOX("Номер уровня", $default_scene_number, 2)
 IF($input_scene_number == "")
     LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
     HALT
 END_IF
 LOGWRITE("уровень: ", $input_scene_number)
+
+get_location()
+IF($location == "main")
+    click($play_x, $play_y)
+    WAITMS(500)
+END_IF
 
 passing_hidden_object_scene($input_scene_number)
 
