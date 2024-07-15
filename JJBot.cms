@@ -303,7 +303,7 @@ SUB(click_found, $clf_delta_x, $clf_delta_y)
     END_IF
 END_SUB
 
-SUB(read_data_level)
+SUB(read_data_scene)
     UNDEFINE($items)
     
     $items_filename = STRCONCAT($scenes_path, $scene_number, "_", $hash_scene, ".txt")
@@ -555,7 +555,7 @@ SUB(passing_hidden_object_scene, $phos_scene_number)
     $scene_number = $phos_scene_number
     touch_for_start()
     get_hash_scene()
-    read_data_level()
+    read_data_scene()
     main_screenshot_scene()
 
     read_items()
