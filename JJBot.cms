@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.6 (15.07.2024)
+// Version: 1.7 (07.02.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -12,15 +12,15 @@
 
 
 //                              Настройки
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //Настройки NoxPlayer
 // разрешение окна NoxPlayer            1604x934
 // разрешение экрана рабочей области    1600x900
 // ориентация  - альбомная
 
-// номер сцены по умолчанию
-$default_scene_number = 1
+// номер сцены по умолчанию (0 - определять автоматически последнюю сцену TODO)
+$default_scene_number = 0
 
 // уровень логирования 0-NOTSET, 1-CRITICAL 2-ERROR 3-WARNING 4-INFO 5-DEBUG
 $loglevel = 5
@@ -48,9 +48,25 @@ $allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэ
 
 // out file
 $ocrparbase = STRCONCAT(" --language Russian -o ", $ocroutfile)
+//-------------------------------------------
+
+$locations_raw_names = "location not determined, , , , ,load game, , , , ,island,scene cards,discount for advertising,advertising timer,advertising is over,touch for start,hidden object scene"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+
+SUB(critical_error, $ce_message)
+    LOGWRITE("***** Critical_error!!! ***  ", $ce_message)
+    HALT
+END_SUB
+
+SUB(set_location, $sl_location_num)
+    IF(($sl_location_num < 0) | ($sl_location_num >= ARRSIZE($locations_list)))
+        critical_error(STRCONCAT("Invalid location number ", $sl_location_num))
+    END_IF
+    $location = $sl_location_num
+    $location_name = $locations_list[$sl_location_num]
+END_SUB
 
 SUB(nox_window)
     // получение параметров NoxPlayer
@@ -118,7 +134,8 @@ SUB(init)
     $play_x = 1495
     $play_y = 795
     
-    $location = ""
+    STRSEPARATE($locations_raw_names, ",", $locations_list)
+    set_location(0)
     
     LOGWRITE(\n, \n, "*************************************************")
 END_SUB
@@ -160,39 +177,58 @@ END_SUB
 
 SUB(get_location)
     // locations:
-    // load game - экран загрузки игры
-    // *main - главный экран (остров орхидей)
+    //  0 - location not determined     - локация не определена
+    // * 5 - load game                   - экран загрузки игры
+    // 10 - island                      - главный экран (остров орхидей)
+    // 11 - scene cards                 - карточки выбора сцены
+    // *12 - discount for advertising    - скидка за рекламу
+    // *13 - advertising timer           - реклама nfqvth
+    // *14 - advertising is over         - реклама закончилась
+    // 15 - touch for start             - коснитесь, чтобы начать
+    // 16 - hidden object scene         - сцена поиска предметов
+    // *detective - требуются детективы
+    // *cafe - кафе
+    // *drink - выставить напиток
+    // *help Wanted - требуется помощь
+    // *discount for advertising - скидка за рекламу
+    // *advertising is over - реклама закончилась
 
-    // *hidden object scene - сцена поиска предметов
-    // detective - требуются детективы
-    // cafe - кафе
-    // drink - выставить напиток
-    // *touch for start - оснитесь, чтобы начать
-    // help Wanted - требуется помощь
-    // advertising - реклама
-    // advertising is over - реклама закончилась
+    set_location(0)
 
-    $location = ""
-
-    IF($location = "")
+    // hidden object scene
+    IF($location == 0)
         find_pic_nw(1518,32,1562,73, "pause.bmp", 100, 7)
         IF($is_found == #TRUE)
-            $location = "hidden object scene"
+            set_location(16)
         END_IF
     END_IF
 
-    IF($location = "")
+    // island - остров
+    IF($location == 0)
         find_pic_nw(0,0,$win_w-1,$win_h-1, "money.bmp", 80, 0)
         IF($is_found == #TRUE)
-            $location = "main"
+            set_location(10)
         END_IF
     END_IF
 
-    IF($location = "")
+    // scene cards - карточки выбора сцены
+    IF($location == 0)
+        find_pic_nw(0,0,$win_w-1,$win_h-1, ".bmp", 95, 0)
+        IF($is_found == #TRUE)
+            set_location(11)
+        END_IF
+    END_IF
+
+    // touch for start - коснитесь чтобы начать
+    IF($location == 0)
         find_pic_nw(270, 420, 800, 470, "touch.bmp", 95, 0)
         IF($is_found == #TRUE)
-            $location = "touch for start"
+            set_location(15)
         END_IF
+    END_IF
+
+    IF(($loglevel >= 3) & ($location != 0))
+        LOGWRITE("location = ", $location_name, " (", $location, ")")
     END_IF
 END_SUB
 
@@ -320,7 +356,7 @@ SUB(read_data_scene)
         //FCREATE($scene_folder)
     ELSE
         IF($loglevel >= 4)
-            LOGWRITE("Найдены данные уровня ", $hash_scene_file)
+            LOGWRITE("Найдены данные уровня ", $scene_number, "  - ", $hash_scene_file)
         END_IF
         //TFREADARR($items_filename, $items)
     END_IF
@@ -449,6 +485,7 @@ SUB(touch_for_start)
         WHILE($is_found == #FALSE)
             find_pic_wait(270, 420, 800, 470, "touch.bmp", 95, 0)
         END_CYC
+        set_location(15)  // touch
         click(800, 450)
         WAITMS(500)
     END_IF
@@ -460,7 +497,7 @@ SUB(input_scene_number)
         LOGWRITEC("Отменён выбор уровня. Стоп.", 255)
         HALT
     END_IF
-    LOGWRITE("уровень: ", $input_sn)
+    LOGWRITE("Введён уровень: ", $input_sn)
 END_SUB
 
 SUB(add_item, $it_name, $it_x, $it_y)
@@ -603,13 +640,24 @@ END_SUB
 
 //==============================================================================
 //******************************************************************************
+SUB(test_locations_list)
+    FOR($i=0, $i < 18)  // -1 to 18
+        set_location($i)
+        LOGWRITE($location, " - ", $location_name)
+    END_CYC
+    HALT
+END_SUB
+
+//======================================================================================================================
+//**********************************************************************************************************************
 
 init()
 
 input_scene_number()
+// test_locations_list()
 
 get_location()
-IF($location == "main")
+IF($location == 10)  // island
     click($play_x, $play_y)
     WAITMS(500)
 END_IF
