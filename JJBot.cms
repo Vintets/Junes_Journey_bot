@@ -70,15 +70,15 @@ END_SUB
 
 SUB(nox_window)
     // получение параметров NoxPlayer
-    $nox = WNDFIND("NoxPlayer")
-    WNDGETINFO($nox, $win_x, $win_y, $win_w, $win_h)
+    $emulator = WNDFIND("NoxPlayer")
+    WNDGETINFO($emulator, $win_x, $win_y, $win_w, $win_h)
     IF($loglevel >= 4)
-        LOGWRITE("Nox: ", $nox, ", ", $win_x, ",", $win_y, "  ", $win_w, "x", $win_h)
+        LOGWRITE("Nox: ", $emulator, ", ", $win_x, ",", $win_y, "  ", $win_w, "x", $win_h)
         // 227, 87      1604x934
         // 229, 119     1600x900
     END_IF
     
-    IF($nox == 0)
+    IF($emulator == 0)
         LOGWRITEC("Не найдено окно Nox", 255)
         HALT
     END_IF
