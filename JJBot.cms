@@ -182,16 +182,16 @@ SUB(get_location)
     // 10 - island                      - главный экран (остров орхидей)
     // 11 - scene cards                 - карточки выбора сцены
     // *12 - discount for advertising    - скидка за рекламу
-    // *13 - advertising timer           - реклама nfqvth
+    // *13 - advertising timer           - реклама таймер
     // *14 - advertising is over         - реклама закончилась
     // 15 - touch for start             - коснитесь, чтобы начать
     // 16 - hidden object scene         - сцена поиска предметов
+    // 17 - scene finish                - сцена пройдена (экран)
+    // 18 - play more                   - играть ещё (продолжить на этой же cwtyt)
     // *detective - требуются детективы
     // *cafe - кафе
     // *drink - выставить напиток
     // *help Wanted - требуется помощь
-    // *discount for advertising - скидка за рекламу
-    // *advertising is over - реклама закончилась
 
     set_location(0)
 
@@ -205,7 +205,7 @@ SUB(get_location)
 
     // island - остров
     IF($location == 0)
-        find_pic_nw(0,0,$win_w-1,$win_h-1, "money.bmp", 80, 0)
+        find_pic_nw(474,28,500,48, "money.bmp", 80, 0)
         IF($is_found == #TRUE)
             set_location(10)
         END_IF
@@ -227,7 +227,8 @@ SUB(get_location)
         END_IF
     END_IF
 
-    IF(($loglevel >= 3) & ($location != 0))
+    // IF(($loglevel >= 3) & ($location != 0))
+    IF($loglevel >= 3)
         LOGWRITE("location = ", $location_name, " (", $location, ")")
     END_IF
 END_SUB
