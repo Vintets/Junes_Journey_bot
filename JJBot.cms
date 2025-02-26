@@ -50,6 +50,11 @@ $allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэ
 $ocrparbase = STRCONCAT(" --language Russian -o ", $ocroutfile)
 //-----------------------------------------------
 
+$emulator_Nox_win_name = "NoxPlayer_Android7"   // Имя окна эмулятора NoxPlayer
+$emulator_MEmu_win_name = "MEmu main"           // Имя окна эмулятора MEmu
+$select_emulator = "Nox"  // использовать эмулятор Nox
+// $select_emulator = "MEmu"  // использовать эмулятор MEmu
+
 $locations_raw_names = "location not determined, , , , ,load game, , , , ,island,scene cards,discount for advertising,advertising timer,advertising is over,touch for start,hidden object scene"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -68,22 +73,42 @@ SUB(set_location, $sl_location_num)
     $location_name = $locations_list[$sl_location_num]
 END_SUB
 
-SUB(nox_window)
-    // получение параметров NoxPlayer
-    $emulator = WNDFIND("NoxPlayer")
+SUB(emulator_window_definition)
+    // получение параметров Nox/MEmu
+    LOGWRITE("Выбран эмулятор ", $select_emulator)
+    IF($select_emulator = "Nox")
+        $emulator_win_name = $emulator_Nox_win_name 
+        $win_frame_size = 2
+        $win_header_size = 32
+        $win_right_panel_size = 38
+    ELSE // MEmu
+        $emulator_win_name = $emulator_MEmu_win_name
+        $win_frame_size = 1
+        $win_header_size = 32
+        $win_right_panel_size = 39
+        $emulator_win_name = STRCONCAT("(", $emulator_win_name, ")")
+    END_IF
+    
+
+    $emulator = WNDFIND($emulator_win_name)
     WNDGETINFO($emulator, $win_x, $win_y, $win_w, $win_h)
     IF($loglevel >= 4)
-        LOGWRITE("Nox: ", $emulator, ", ", $win_x, ",", $win_y, "  ", $win_w, "x", $win_h)
-        // 227, 87      1604x934
-        // 229, 119     1600x900
+        LOGWRITE($select_emulator, ": ", $emulator, ", ", $win_x, ",", $win_y, "  ", $win_w, "x", $win_h)
+        // Nox
+        // 172, 75      1604x934
+        // 172, 75      1642x934
+
+        // MEmu
+        // 159, 53      1602x933
+        // 159, 53      1641x933
     END_IF
     
     IF($emulator == 0)
-        LOGWRITEC("Не найдено окно Nox", 255)
+        LOGWRITEC(STRCONCAT("Не найдено окно ", $select_emulator), 255)
         HALT
     END_IF
     IF(($win_x < 0) | ($win_y < 0))
-        LOGWRITEC("Окно Nox свёрнуто", 255)
+        LOGWRITEC(STRCONCAT("Окно ", $select_emulator, " свёрнуто"), 255)
         HALT
     END_IF
 END_SUB
@@ -105,19 +130,28 @@ SUB(init)
     
     // window NoxPlayer
     IF($test < 2)
-        nox_window()
+        emulator_window_definition()
     ELSE
-        $win_x = 160 - 2
-        $win_y = 110 - 32
-        $win_w = 1604
-        $win_h = 934
+        // со скриншота, XnView развёрнут на полный экран
+        $win_x = 160
+        $win_y = 110
+        $win_w = 1600
+        $win_h = 900
+        $win_frame_size = 0
+        $win_header_size = 0
     END_IF
     
     // window sub
-    $wx1 = $win_x + 2
-    $wy1 = $win_y + 32
-    $win_w = $win_w - 4
-    $win_h = $win_h - 34
+    $wx1 = $win_x + $win_frame_size
+    $wy1 = $win_y + $win_header_size
+    $win_w = $win_w - ($win_frame_size * 2)
+    $win_h = $win_h - ($win_header_size + $win_frame_size)
+
+    IF($win_w = 1600 + $win_right_panel_size)
+        $win_w = $win_w - $win_right_panel_size
+    END_IF
+    
+
     $wx2 = $wx1 + $win_w - 1
     $wy2 = $wy1 + $win_h - 1
     IF($loglevel >= 4)
