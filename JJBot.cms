@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.7.1 (27.02.2025)
+// Version: 1.7.2 (27.02.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -249,9 +249,14 @@ SUB(get_location)
 
     // scene cards - карточки выбора сцены
     IF($location == 0)
-        find_pic_nw(0,0,$win_w-1,$win_h-1, ".bmp", 95, 0)
+        find_pic_nw(485,810,516,840, "arrow_left.bmp", 95, 0)
         IF($is_found == #TRUE)
             set_location(11)
+        ELSE
+            find_pic_nw(1080,795,1015,826, "arrow_right.bmp", 95, 0)
+            IF($is_found == #TRUE)
+                set_location(11)
+            END_IF
         END_IF
     END_IF
 
