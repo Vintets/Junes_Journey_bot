@@ -14,10 +14,13 @@
 //                              Настройки
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//Настройки NoxPlayer
-// разрешение окна NoxPlayer            1604x934
+// Настройки эмулятора MEmu Play / NoxPlayer
 // разрешение экрана рабочей области    1600x900
 // ориентация  - альбомная
+$emulator_Nox_win_name = "NoxPlayer_Android7"   // Имя окна эмулятора NoxPlayer
+$emulator_MEmu_win_name = "MEmu main"           // Имя окна эмулятора MEmu
+// $select_emulator = "Nox"  // использовать эмулятор Nox
+$select_emulator = "MEmu"  // использовать эмулятор MEmu
 
 // номер сцены по умолчанию (0 - определять автоматически последнюю сцену TODO)
 $default_scene_number = 0
@@ -49,11 +52,6 @@ $allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэ
 // out file
 $ocrparbase = STRCONCAT(" --language Russian -o ", $ocroutfile)
 //-----------------------------------------------
-
-$emulator_Nox_win_name = "NoxPlayer_Android7"   // Имя окна эмулятора NoxPlayer
-$emulator_MEmu_win_name = "MEmu main"           // Имя окна эмулятора MEmu
-$select_emulator = "Nox"  // использовать эмулятор Nox
-// $select_emulator = "MEmu"  // использовать эмулятор MEmu
 
 $locations_raw_names = "location not determined, , , , ,load game, , , , ,island,scene cards,discount for advertising,advertising timer,advertising is over,touch for start,hidden object scene"
 
