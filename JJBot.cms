@@ -141,7 +141,7 @@ SUB(init)
     IF($select_emulator == "Test")
         $textures_version = $textures_version_Test
     END_IF
-    $textures = STRCONCAT("textures\textures_", $textures_version)
+    $textures = STRCONCAT("textures\textures_", $textures_version, "\")
 
     // получаем основные рабочие координаты
     IF($select_emulator != "Test")
@@ -199,6 +199,10 @@ SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent
     $fpnw_y1 = $wy1 + $fpnw_y1
     $fpnw_x2 = $wx1 + $fpnw_x2
     $fpnw_y2 = $wy1 + $fpnw_y2
+    IF($loglevel == 5)
+        LOGWRITE("Ищем картинку", STRCONCAT($textures, $fpnw_image))
+    END_IF
+
     GETSCREEN($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
     IF($fpnw_colorm != 0)
         COLORMODE($fpnw_colorm, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
