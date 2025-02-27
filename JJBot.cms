@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.7.2 (27.02.2025)
+// Version: 1.8.0 (27.02.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -14,14 +14,23 @@
 //                              Настройки
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// Настройки эмулятора MEmu Play / NoxPlayer
+//          *** Настройки эмулятора MEmu Play / NoxPlayer ***
 // разрешение экрана рабочей области    1600x900
 // ориентация  - альбомная
+// ----- Nox -----
 $emulator_Nox_win_name = "NoxPlayer_Android7"   // Имя окна эмулятора NoxPlayer
+$textures_version_Nox = "Nox_2024.07"           // суффикс папки с текстурами для NoxPlayer
+// ----- MEmu -----
 $emulator_MEmu_win_name = "MEmu main"           // Имя окна эмулятора MEmu
-// $select_emulator = "Nox"  // использовать эмулятор Nox
-$select_emulator = "MEmu"  // использовать эмулятор MEmu
+$textures_version_MEmu = "MEmu_2025.02.26_hd"   // суффикс папки с текстурами для MEmu
+// ----- ScreenShot -----
+$textures_version_Test = "MEmu_2025.02.26_hd"  // суффикс папки с текстурами для Test
 
+// $select_emulator = "Nox"   // использовать эмулятор Nox
+// $select_emulator = "MEmu"  // использовать эмулятор MEmu
+$select_emulator = "Test"  // по скриншоту, XnView развёрнут на полный экран
+
+//-----------------------------------------------
 // номер сцены по умолчанию (0 - определять автоматически последнюю сцену TODO)
 $default_scene_number = 0
 
@@ -31,14 +40,11 @@ $loglevel = 5
 // главная задержка после клика (при автомате)
 $wait_click_found = 500 //250
 
-// тест 1 - без ожидания стадий, 2 - по скрину
-$test = 2
-
-
+// путь к директории с данными сцен
 $scenes_path = "scenes\"
 
-
 //-----------------------------------------------
+//          *** Настройки OCR ***
 $ocrexe = "Capture2Text\Capture2Text_CLI.exe"  // lnk
 $ocrimg[0] = STRCONCAT($scenes_path, "ocr_img1.bmp")
 $ocrimg[1] = STRCONCAT($scenes_path, "ocr_img2.bmp")
@@ -122,12 +128,23 @@ SUB(init)
     ELSE
         WAITMS(200)
     END_IF
-    
+
     $imdelta_x = 0
     $imdelta_y = 0
-    
-    // window NoxPlayer
-    IF($test < 2)
+
+    IF($select_emulator == "Nox")
+        $textures_version = $textures_version_Nox
+    END_IF
+    IF($select_emulator == "MEmu")
+        $textures_version = $textures_version_MEmu
+    END_IF
+    IF($select_emulator == "Test")
+        $textures_version = $textures_version_Test
+    END_IF
+    $textures = STRCONCAT("textures\textures_", $textures_version)
+
+    // получаем основные рабочие координаты
+    IF($select_emulator != "Test")
         emulator_window_definition()
     ELSE
         // со скриншота, XnView развёрнут на полный экран
@@ -152,7 +169,6 @@ SUB(init)
     IF($win_w = 1600 + $win_right_panel_size)
         $win_w = $win_w - $win_right_panel_size
     END_IF
-    
 
     $wx2 = $wx1 + $win_w - 1
     $wy2 = $wy1 + $win_h - 1
@@ -187,7 +203,7 @@ SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent
     IF($fpnw_colorm != 0)
         COLORMODE($fpnw_colorm, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
     END_IF
-    IF_PICTURE_IN($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, STRCONCAT("textures\", $fpnw_image), 65280, $fpnw_percent)
+    IF_PICTURE_IN($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, STRCONCAT($textures, $fpnw_image), 65280, $fpnw_percent)
         $is_found = #TRUE
         $found_x = $_return1
         $found_y = $_return2
@@ -356,7 +372,7 @@ END_SUB
 
 SUB(click, $cldelta_x, $cldelta_y)
     IF($is_found == #TRUE)
-        IF($test < 2)
+        IF($select_emulator != "Test")
             LCLICK($wx1+$cldelta_x, $wy1+$cldelta_y)
         ELSE
             MOVE($wx1+$cldelta_x, $wy1+$cldelta_y)  // если тест
@@ -370,7 +386,7 @@ END_SUB
 
 SUB(click_found, $clf_delta_x, $clf_delta_y)
     IF($is_found == #TRUE)
-        IF($test < 2)
+        IF($select_emulator != "Test")
             LCLICK($found_x + $clf_delta_x, $found_y + $clf_delta_y)
         ELSE
             MOVE($found_x + $clf_delta_x, $found_y + $clf_delta_y)  // если тест
@@ -496,7 +512,7 @@ SUB(find_click_3words)
             
             IF($found_item == #TRUE)
                 LOGWRITEC(STRCONCAT("Найден предмет: '", $word, "' ", $item_x, "x", $item_y), 433934)
-                IF($test < 2)
+                IF($select_emulator != "Test")
                     LCLICK($wx1 + $item_x, $wy1 + $item_y)
                 ELSE
                     MOVE($wx1 + $item_x, $wy1 + $item_y)  // тест
@@ -522,7 +538,7 @@ SUB(automat_click_words)
 END_SUB
 
 SUB(touch_for_start)
-    IF($test == 0)
+    IF($select_emulator != "Test")
         $is_found = #FALSE
         WHILE($is_found == #FALSE)
             find_pic_wait(270, 420, 800, 470, "touch.bmp", 95, 0)
@@ -658,14 +674,14 @@ SUB(passing_hidden_object_scene, $phos_scene_number)
         $found_words = #TRUE  // ставим для принудительного первого пуска цикла
         WHILE($found_words == #TRUE)
             automat_click_words()
-            IF($test > 1)  // после тестов убрать
+            IF($select_emulator == "Test")  // после тестов убрать
                 LOGWRITE("$found_words = ", $found_words)
                 $found_words = #FALSE
             END_IF
         END_CYC
         
         is_end_mainloop()
-        IF($test > 1)  // после тестов убрать
+        IF($select_emulator == "Test")  // после тестов убрать
             LOGWRITE("$mainloop = ", $mainloop)
             // $mainloop = #FALSE
         END_IF
