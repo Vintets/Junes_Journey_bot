@@ -59,7 +59,7 @@ $allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэ
 $ocrparbase = STRCONCAT(" --language Russian -o ", $ocroutfile)
 //-----------------------------------------------
 
-$locations_raw_names = "location not determined, , , , ,load game, , , , ,island,scene cards,discount for advertising,advertising timer,advertising is over,touch for start,hidden object scene"
+$locations_raw_names = "location not determined, , , , ,load game, , , , ,island,scene cards,discount,advertising timer,advertising is over,touch for start,hidden object scene"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
@@ -237,7 +237,7 @@ SUB(get_location)
     // * 5 - load game                   - экран загрузки игры
     // 10 - island                      - главный экран (остров орхидей)
     // 11 - scene cards                 - карточки выбора сцены
-    // 12 - discount for advertising    - скидка за рекламу
+    // 12 - discount                    - скидка за рекламу
     // 13 - advertising timer           - реклама таймер
     // *14 - advertising is over         - реклама закончилась
     // 15 - touch for start             - коснитесь, чтобы начать
@@ -289,9 +289,9 @@ SUB(get_location)
         END_IF
     END_IF
 
-    // discount for advertising - скидка за рекламу
+    // discount - скидка за рекламу
     IF($location == 0)
-        find_pic_nw(410, 746, 570, 758, "discount_for_advertising.bmp", 97, 7)
+        find_pic_nw(410, 746, 570, 758, "discount.bmp", 97, 7)
         IF($is_found == #TRUE)
             set_location(12)
         END_IF
