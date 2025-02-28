@@ -237,7 +237,7 @@ SUB(get_location)
     // * 5 - load game                   - экран загрузки игры
     // 10 - island                      - главный экран (остров орхидей)
     // 11 - scene cards                 - карточки выбора сцены
-    // *12 - discount for advertising    - скидка за рекламу
+    // 12 - discount for advertising    - скидка за рекламу
     // *13 - advertising timer           - реклама таймер
     // *14 - advertising is over         - реклама закончилась
     // 15 - touch for start             - коснитесь, чтобы начать
@@ -286,6 +286,14 @@ SUB(get_location)
         find_pic_nw(270, 420, 800, 470, "touch.bmp", 95, 0)
         IF($is_found == #TRUE)
             set_location(15)
+        END_IF
+    END_IF
+
+    // discount for advertising    - скидка за рекламу
+    IF($location == 0)
+        find_pic_nw(410, 746, 570, 758, "discount_for_advertising.bmp", 97, 7)
+        IF($is_found == #TRUE)
+            set_location(12)
         END_IF
     END_IF
 
