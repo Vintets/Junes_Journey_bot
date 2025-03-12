@@ -231,8 +231,8 @@ END_SUB
 
 SUB(get_location)
     // locations:
-    //  0 - location not determined     - локация не определена
-    // * 5 - load game                   - экран загрузки игры
+    // 0 - location not determined     - локация не определена
+    // 5 - load game                   - экран загрузки игры
     // 10 - island                      - главный экран (остров орхидей)
     // 11 - scene cards                 - карточки выбора сцены
     // 12 - discount                    - скидка за рекламу
@@ -300,6 +300,14 @@ SUB(get_location)
         find_pic_nw(782, 406, 818, 442, "advertising_timer.bmp", 100, 0)
         IF($is_found == #TRUE)
             set_location(13)
+        END_IF
+    END_IF
+
+    // load game 1 - экран загрузки игры
+    IF($location == 0)
+        find_pic_nw(780, 280, 810, 305, "load_1.bmp", 100, 0)
+        IF($is_found == #TRUE)
+            set_location(5)
         END_IF
     END_IF
 
