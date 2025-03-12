@@ -65,7 +65,7 @@ $locations_raw_names = "location not determined, , , , ,load game, , , , ,island
 //≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
 
 SUB(critical_error, $ce_message)
-    LOGWRITE("***** Critical_error!!! ***  ", $ce_message)
+    LOGWRITEC(STRCONCAT("***** Critical_error!!! ***  ", $ce_message), 255)
     HALT
 END_SUB
 
@@ -108,12 +108,10 @@ SUB(emulator_window_definition)
     END_IF
     
     IF($emulator == 0)
-        LOGWRITEC(STRCONCAT("Не найдено окно ", $select_emulator), 255)
-        HALT
+        critical_error(STRCONCAT("Не найдено окно ", $select_emulator))
     END_IF
     IF(($win_x < 0) | ($win_y < 0))
-        LOGWRITEC(STRCONCAT("Окно ", $select_emulator, " свёрнуто"), 255)
-        HALT
+        critical_error(STRCONCAT("Окно ", $select_emulator, " свёрнуто"))
     END_IF
 END_SUB
 
@@ -635,9 +633,8 @@ SUB(waiting_for_items_to_click)
         
         IF(ISKEYDOWN(#ESC) == #TRUE)
             $set = #FALSE
-            LOGWRITEC("Работа прервана", 255)
             HINTPOPUP("Работа прервана")
-            HALT
+            critical_error("Работа прервана")
         END_IF
         WAITMS(30)
     END_CYC
