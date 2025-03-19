@@ -204,8 +204,11 @@ SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent
     // поиск картинки без ожидания
     $is_found = #FALSE
     set_abs_region($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
-    MOVE($wx2, $wy2)  //паркуемся
-    WAITMS(20)
+    IF($parking)
+        MOVE($wx2, $wy2)  //паркуемся
+        WAITMS(20)
+    END_IF
+
     IF($loglevel == 5)
         LOGWRITE("Ищем картинку", STRCONCAT($textures, $fpnw_image))
     END_IF
@@ -228,6 +231,9 @@ END_SUB
 
 SUB(find_pic_wait, $fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2,$fpw_image, $fpw_percent, $fpw_colorm, $fpw_wait)
     // ожидание картинки
+    MOVE($wx2, $wy2)  //паркуемся
+    WAITMS(20)
+    $parking = #FALSE
     $is_found = #FALSE
     $time_notfound = $_ms + ($fpw_wait * 1000)
     WHILE(($is_found == #FALSE) & ($time_notfound > $_ms))
@@ -236,6 +242,7 @@ SUB(find_pic_wait, $fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2,$fpw_image, $fpw_percent, $fp
     IF($is_found == #FALSE)
         LOGWRITE("время истекло, картинка не найдена")
     END_IF
+    $parking = #TRUE
 END_SUB
 
 SUB(waiting_disappear, $wd_x1,$wd_y1,$wd_x2,$wd_y2,$wd_image, $wd_percent, $wd_colorm, $wd_wait, $wd_period)
@@ -247,6 +254,7 @@ SUB(waiting_disappear, $wd_x1,$wd_y1,$wd_x2,$wd_y2,$wd_image, $wd_percent, $wd_c
     // $wd_period - частота проверки (миллисекунд)
     MOVE($wx2, $wy2)  //паркуемся
     WAITMS(20)
+    $parking = #FALSE
     $is_found = #TRUE
     $time_notfound = $_ms + ($wd_wait * 1000)
     WHILE(($is_found == #TRUE) & ($time_notfound > $_ms))
@@ -256,6 +264,7 @@ SUB(waiting_disappear, $wd_x1,$wd_y1,$wd_x2,$wd_y2,$wd_image, $wd_percent, $wd_c
     IF(($is_found == #TRUE) & ($loglevel >= 4))
         LOGWRITE("время истекло, картинка не исчезла")
     END_IF
+    $parking = #TRUE
 END_SUB
 
 SUB(get_location)
