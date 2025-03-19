@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.5 (19.03.2025)
+// Version: 1.8.6 (19.03.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -275,7 +275,7 @@ SUB(get_location)
     // 11 - scene cards                 - карточки выбора сцены
     // 12 - discount                    - скидка за рекламу
     // 13 - advertising timer           - реклама таймер
-    // *14 - advertising is over         - реклама закончилась
+    // 14 - advertising is over         - сбой рекламы
     // 15 - touch for start             - коснитесь, чтобы начать
     // 16 - hidden object scene         - сцена поиска предметов
     // 17 - scene finish                - сцена пройдена (экран)
@@ -338,6 +338,14 @@ SUB(get_location)
         find_pic_nw(782, 406, 818, 442, "advertising_timer.bmp", 100, 0)
         IF($is_found == #TRUE)
             set_location(13)
+        END_IF
+    END_IF
+
+    // advertising is over - сбой рекламы
+    IF($location == 0)
+        find_pic_nw(697, 655, 827, 661, "advertising_over.bmp", 97, 7)
+        IF($is_found == #TRUE)
+            set_location(14)
         END_IF
     END_IF
 
@@ -857,6 +865,11 @@ SUB(main)
             waiting_change_location($location)
         END_IF
 
+        // 14 advertising is over - сбой рекламы
+        IF($location == 14)
+            click(774, 674)
+            WAITMS(800)
+        END_IF
 
         // 10 island - главный экран (остров орхидей)
         IF($location == 10)
