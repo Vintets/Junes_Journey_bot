@@ -192,24 +192,29 @@ SUB(init)
     LOGWRITE(\n, \n, "*************************************************")
 END_SUB
 
+SUB(set_abs_region, $sar_x1, $sar_y1, $sar_x2, $sar_y2)
+    // задать абсолютный регион $ar_x1, $ar_y1, $ar_x2, $ar_y2
+    $ar_x1 = $wx1 + $sar_x1
+    $ar_y1 = $wy1 + $sar_y1
+    $ar_x2 = $wx1 + $sar_x2
+    $ar_y2 = $wy1 + $sar_y2
+END_SUB
+
 SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent, $fpnw_colorm)
     // поиск картинки без ожидания
     $is_found = #FALSE
-    $fpnw_x1 = $wx1 + $fpnw_x1
-    $fpnw_y1 = $wy1 + $fpnw_y1
-    $fpnw_x2 = $wx1 + $fpnw_x2
-    $fpnw_y2 = $wy1 + $fpnw_y2
+    set_abs_region($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
     MOVE($wx2, $wy2)  //паркуемся
     WAITMS(20)
     IF($loglevel == 5)
         LOGWRITE("Ищем картинку", STRCONCAT($textures, $fpnw_image))
     END_IF
 
-    GETSCREEN($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
+    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
     IF($fpnw_colorm != 0)
-        COLORMODE($fpnw_colorm, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
+        COLORMODE($fpnw_colorm, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
     END_IF
-    IF_PICTURE_IN($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, STRCONCAT($textures, $fpnw_image), 65280, $fpnw_percent)
+    IF_PICTURE_IN($ar_x1, $ar_y1, $ar_x2, $ar_y2, STRCONCAT($textures, $fpnw_image), 65280, $fpnw_percent)
         $is_found = #TRUE
         $found_x = $_return1
         $found_y = $_return2
@@ -472,14 +477,6 @@ SUB(read_items)
         ARRPUSH($items, $data[1])
         ARRPUSH($items, $data[2])
     END_CYC
-END_SUB
-
-SUB(set_abs_region, $sar_x1, $sar_y1, $sar_x2, $sar_y2)
-    // задать абсолютный регион $ar...
-    $ar_x1 = $wx1 + $sar_x1
-    $ar_y1 = $wy1 + $sar_y1
-    $ar_x2 = $wx1 + $sar_x2
-    $ar_y2 = $wy1 + $sar_y2
 END_SUB
 
 //------------------------------------------------------------------------------
