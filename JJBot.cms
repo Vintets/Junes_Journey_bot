@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.6 (19.03.2025)
+// Version: 1.8.7 (19.03.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -875,13 +875,20 @@ SUB(test_locations_list)
 END_SUB
 
 SUB(main)
-    get_location()
     $mainloop = #TRUE
     WHILE($mainloop)
+        get_location()
+
         // 5 load game 1 - экран загрузки игры
         // 13 advertising timer - реклама таймер
         IF(($location == 5) | ($location == 13))
             waiting_change_location($location)
+        END_IF
+
+        // 12 discount - скидка за рекламу
+        IF($location == 12)
+            click(490, 738)
+            WAITMS(700)
         END_IF
 
         // 14 advertising is over - сбой рекламы
@@ -894,6 +901,11 @@ SUB(main)
         IF($location == 10)
             scan_energy()
         END_IF
+
+        // 11 - scene cards                 - карточки выбора сцены
+        // 15 - touch for start             - коснитесь, чтобы начать
+        // 16 - hidden object scene         - сцена поиска предметов
+
 
         // IF($input_sn == 0)
             // TODO определить уровень
