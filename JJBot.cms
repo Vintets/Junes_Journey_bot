@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.4 (19.03.2025)
+// Version: 1.8.5 (19.03.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -343,6 +343,20 @@ SUB(get_location)
     // IF(($loglevel >= 3) & ($location != 0))
     IF($loglevel >= 3)
         LOGWRITE("location = ", $location_name, " (", $location, ")")
+    END_IF
+END_SUB
+
+SUB(waiting_change_location, $wcl_location)
+    IF($wcl_location == 5)
+        waiting_disappear(780, 280, 810, 305, "load_1.bmp", 100, 0, 40, 1000)
+        WAIT(2)
+        get_location()
+    END_IF
+
+    IF($wcl_location == 13)
+        waiting_disappear(782, 406, 818, 442, "advertising_timer.bmp", 100, 0, 40, 1000)
+        WAITMS(300)
+        get_location()
     END_IF
 END_SUB
 
@@ -825,6 +839,7 @@ SUB(test_locations_list)
 END_SUB
 
 SUB(main)
+
     scan_energy()
     // $location  $location_name
 END_SUB
@@ -834,11 +849,18 @@ END_SUB
 
 init()
 
-input_scene_number()
 // test_locations_list()
 
+//input_scene_number()
+
 get_location()
+WHILE(($location == 5) | ($location == 13))
+    waiting_change_location($location)
+END_CYC
+
+
 main()
+HALT
 IF($location == 10)  // island
     click($play_x, $play_y)
     WAITMS(500)
