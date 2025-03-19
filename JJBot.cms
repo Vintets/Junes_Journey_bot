@@ -226,10 +226,10 @@ SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent
     END_IF
 END_SUB
 
-SUB(find_pic_wait, $fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2,$fpw_image, $fpw_percent, $fpw_colorm)
+SUB(find_pic_wait, $fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2,$fpw_image, $fpw_percent, $fpw_colorm, $fpw_wait)
     // ожидание картинки
     $is_found = #FALSE
-    $time_notfound = $_ms + 20000		// 20 сек
+    $time_notfound = $_ms + ($fpw_wait * 1000)
     WHILE(($is_found == #FALSE) & ($time_notfound > $_ms))
         find_pic_nw($fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2, $fpw_image, $fpw_percent, $fpw_colorm)
     END_CYC
@@ -642,7 +642,7 @@ SUB(touch_for_start)
     IF($select_emulator != "Test")
         $is_found = #FALSE
         WHILE($is_found == #FALSE)
-            find_pic_wait(270, 420, 800, 470, "touch.bmp", 95, 0)
+            find_pic_wait(270, 420, 800, 470, "touch.bmp", 95, 0, 20)
         END_CYC
         set_location(15)  // touch
         click(800, 450)
