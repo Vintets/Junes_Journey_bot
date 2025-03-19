@@ -711,10 +711,10 @@ SUB(add_item, $it_name, $it_x, $it_y)
     TFWRITE($items_filename, $new_item)
 END_SUB
 
-SUB(is_end_mainloop)
+SUB(is_end_sceneloop)
     find_pic_nw(1518,32,1562,73, "pause.bmp", 100, 7)
     IF($is_found == #FALSE)
-        $mainloop = #FALSE
+        $sceneloop = #FALSE
     END_IF
 END_SUB
 
@@ -812,8 +812,8 @@ SUB(passing_hidden_object_scene, $phos_scene_number)
         LOG_ARR("$items", ARRSIZE($items))
     END_IF
 
-    $mainloop = #TRUE
-    WHILE($mainloop == #TRUE)
+    $sceneloop = #TRUE
+    WHILE($sceneloop == #TRUE)
         $found_words = #TRUE  // ставим для принудительного первого пуска цикла
         WHILE($found_words == #TRUE)
             automat_click_words()
@@ -823,17 +823,17 @@ SUB(passing_hidden_object_scene, $phos_scene_number)
             END_IF
         END_CYC
         
-        is_end_mainloop()
+        is_end_sceneloop()
         IF($select_emulator == "Test")  // после тестов убрать
-            LOGWRITE("$mainloop = ", $mainloop)
-            // $mainloop = #FALSE
+            LOGWRITE("$sceneloop = ", $sceneloop)
+            // $sceneloop = #FALSE
         END_IF
         // SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "CM_1.bmp", 0)
         
         // ручная часть
-        IF($mainloop == #TRUE)
+        IF($sceneloop == #TRUE)
             manual_click_words()
-            is_end_mainloop()
+            is_end_sceneloop()
         END_IF
     END_CYC
     LOGWRITE("Сцена ", $scene_number, " пройдена.", \n, "*************************************************")
