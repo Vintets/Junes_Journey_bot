@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.7 (19.03.2025)
+// Version: 1.8.8 (19.03.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -689,18 +689,6 @@ SUB(automat_click_words)
     find_click_3words()
 END_SUB
 
-SUB(touch_for_start)
-    IF($select_emulator != "Test")
-        $is_found = #FALSE
-        WHILE($is_found == #FALSE)
-            find_pic_wait(270, 420, 800, 470, "touch.bmp", 95, 0, 20)
-        END_CYC
-        set_location(15)  // touch
-        click(800, 450)
-        WAITMS(500)
-    END_IF
-END_SUB
-
 SUB(input_scene_number)
     $input_sn = INPUTBOX("Номер уровня", $default_scene_number, 2)
     IF($input_sn == "")
@@ -810,10 +798,6 @@ END_SUB
 SUB(passing_hidden_object_scene, $phos_scene_number)
     $scene_number = $phos_scene_number
 
-    IF(($location == 10) | $location == 15)
-        touch_for_start()
-    END_IF
-
     WHILE($location != 16)  // hidden object scene
         WAITMS(100)
         get_location()
@@ -897,13 +881,18 @@ SUB(main)
             WAITMS(800)
         END_IF
 
+        // 15 touch for start - коснитесь, чтобы начать
+        IF(($location == 15) & ($select_emulator != "Test"))
+            click(800, 450)
+            WAITMS(200)
+        END_IF
+
         // 10 island - главный экран (остров орхидей)
         IF($location == 10)
             scan_energy()
         END_IF
 
         // 11 - scene cards                 - карточки выбора сцены
-        // 15 - touch for start             - коснитесь, чтобы начать
         // 16 - hidden object scene         - сцена поиска предметов
 
 
