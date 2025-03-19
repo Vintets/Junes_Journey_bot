@@ -278,8 +278,8 @@ SUB(get_location)
     // 14 - advertising is over         - сбой рекламы
     // 15 - touch for start             - коснитесь, чтобы начать
     // 16 - hidden object scene         - сцена поиска предметов
-    // 17 - scene finish                - сцена пройдена (экран)
-    // 18 - play more                   - играть ещё (продолжить на этой же cwtyt)
+    // *17 - scene finish                - сцена пройдена (экран)
+    // *18 - play more                   - играть ещё (продолжить на этой же cwtyt)
     // *detective - требуются детективы
     // *cafe - кафе
     // *drink - выставить напиток
@@ -809,7 +809,16 @@ END_SUB
 
 SUB(passing_hidden_object_scene, $phos_scene_number)
     $scene_number = $phos_scene_number
-    touch_for_start()
+
+    IF(($location == 10) | $location == 15)
+        touch_for_start()
+    END_IF
+
+    WHILE($location != 16)  // hidden object scene
+        WAITMS(100)
+        get_location()
+    END_CYC
+
     get_hash_scene()
     read_data_scene()
     main_screenshot_scene()
@@ -847,6 +856,16 @@ SUB(passing_hidden_object_scene, $phos_scene_number)
     LOGWRITE("Сцена ", $scene_number, " пройдена.", \n, "*************************************************")
 END_SUB
 
+SUB(dev)
+    IF($location != 16)  // hidden object scene
+        critical_error("Не видно сцены на экране")
+    END_IF
+
+    get_hash_scene()
+    read_data_scene()
+    // main_screenshot_scene()
+END_SUB
+
 SUB(test_locations_list)
     FOR($i=0, $i < 18)  // -1 to 18
         set_location($i)
@@ -876,6 +895,14 @@ SUB(main)
             scan_energy()
         END_IF
 
+        // IF($input_sn == 0)
+            // TODO определить уровень
+        // END_IF
+        // click($play_x, $play_y)
+        // WAITMS(500)
+        // passing_hidden_object_scene($input_sn)
+
+
         IF($location == 0)
             WAITMS(500)
         END_IF
@@ -890,18 +917,10 @@ END_SUB
 init()
 
 // test_locations_list()
-
 //input_scene_number()
+// dev()
+// HALT
 
 main()
-
-HALT
-
-IF($location == 10)  // island
-    click($play_x, $play_y)
-    WAITMS(500)
-END_IF
-
-passing_hidden_object_scene($input_sn)
 
 HALT
