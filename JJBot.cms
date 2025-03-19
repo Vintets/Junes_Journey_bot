@@ -279,7 +279,7 @@ SUB(get_location)
     // 15 - touch for start             - коснитесь, чтобы начать
     // 16 - hidden object scene         - сцена поиска предметов
     // *17 - scene finish                - сцена пройдена (экран)
-    // *18 - play more                   - играть ещё (продолжить на этой же cwtyt)
+    // *18 - play more                   - играть ещё (продолжить на этой же сцене)
     // *detective - требуются детективы
     // *cafe - кафе
     // *drink - выставить напиток
@@ -287,7 +287,7 @@ SUB(get_location)
 
     set_location(0)
 
-    // hidden object scene
+    // 16 hidden object scene
     IF($location == 0)
         find_pic_nw(1518,32,1562,73, "pause.bmp", 100, 7)
         IF($is_found == #TRUE)
@@ -295,7 +295,7 @@ SUB(get_location)
         END_IF
     END_IF
 
-    // island - остров
+    // 10 island - остров
     IF($location == 0)
         find_pic_nw(474,28,500,48, "money.bmp", 80, 0)
         IF($is_found == #TRUE)
@@ -303,7 +303,7 @@ SUB(get_location)
         END_IF
     END_IF
 
-    // scene cards - карточки выбора сцены
+    // 11 scene cards - карточки выбора сцены
     IF($location == 0)
         find_pic_nw(485,810,516,840, "arrow_left.bmp", 95, 7)
         IF($is_found == #TRUE)
@@ -317,7 +317,7 @@ SUB(get_location)
         END_IF
     END_IF
 
-    // touch for start - коснитесь чтобы начать
+    // 15 touch for start - коснитесь чтобы начать
     IF($location == 0)
         find_pic_nw(270, 420, 800, 470, "touch.bmp", 95, 0)
         IF($is_found == #TRUE)
@@ -325,7 +325,7 @@ SUB(get_location)
         END_IF
     END_IF
 
-    // discount - скидка за рекламу
+    // 12 discount - скидка за рекламу
     IF($location == 0)
         find_pic_nw(410, 746, 570, 758, "discount.bmp", 97, 7)
         IF($is_found == #TRUE)
@@ -333,7 +333,7 @@ SUB(get_location)
         END_IF
     END_IF
 
-    // advertising timer - реклама таймер
+    // 13 advertising timer - реклама таймер
     IF($location == 0)
         find_pic_nw(782, 406, 818, 442, "advertising_timer.bmp", 100, 0)
         IF($is_found == #TRUE)
@@ -341,7 +341,7 @@ SUB(get_location)
         END_IF
     END_IF
 
-    // advertising is over - сбой рекламы
+    // 14 advertising is over - сбой рекламы
     IF($location == 0)
         find_pic_nw(697, 655, 827, 661, "advertising_over.bmp", 97, 7)
         IF($is_found == #TRUE)
@@ -349,7 +349,7 @@ SUB(get_location)
         END_IF
     END_IF
 
-    // load game 1 - экран загрузки игры
+    // 5 load game 1 - экран загрузки игры
     IF($location == 0)
         find_pic_nw(780, 280, 810, 305, "load_1.bmp", 100, 0)
         IF($is_found == #TRUE)
