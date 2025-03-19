@@ -358,12 +358,12 @@ END_SUB
 SUB(waiting_change_location, $wcl_location)
     IF($wcl_location == 5)
         waiting_disappear(780, 280, 810, 305, "load_1.bmp", 100, 0, 40, 1000)
-        WAIT(2)
+        WAIT(1.5)
         get_location()
     END_IF
 
     IF($wcl_location == 13)
-        waiting_disappear(782, 406, 818, 442, "advertising_timer.bmp", 100, 0, 40, 1000)
+        waiting_disappear(782, 406, 818, 442, "advertising_timer.bmp", 100, 0, 40, 2000)
         WAITMS(300)
         get_location()
     END_IF
@@ -848,8 +848,26 @@ SUB(test_locations_list)
 END_SUB
 
 SUB(main)
+    get_location()
+    $mainloop = #TRUE
+    WHILE($mainloop)
+        // 5 load game 1 - экран загрузки игры
+        // 13 advertising timer - реклама таймер
+        IF(($location == 5) | ($location == 13))
+            waiting_change_location($location)
+        END_IF
 
-    scan_energy()
+
+        // 10 island - главный экран (остров орхидей)
+        IF($location == 10)
+            scan_energy()
+        END_IF
+
+        IF($location == 0)
+            WAITMS(500)
+        END_IF
+        WAITMS(300)
+    END_CYC
     // $location  $location_name
 END_SUB
 
@@ -862,14 +880,10 @@ init()
 
 //input_scene_number()
 
-get_location()
-WHILE(($location == 5) | ($location == 13))
-    waiting_change_location($location)
-END_CYC
-
-
 main()
+
 HALT
+
 IF($location == 10)  // island
     click($play_x, $play_y)
     WAITMS(500)
