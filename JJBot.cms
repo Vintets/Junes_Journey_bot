@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.3 (19.03.2025)
+// Version: 1.8.4 (19.03.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -235,6 +235,26 @@ SUB(find_pic_wait, $fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2,$fpw_image, $fpw_percent, $fp
     END_CYC
     IF($is_found == #FALSE)
         LOGWRITE("время истекло, картинка не найдена")
+    END_IF
+END_SUB
+
+SUB(waiting_disappear, $wd_x1,$wd_y1,$wd_x2,$wd_y2,$wd_image, $wd_percent, $wd_colorm, $wd_wait, $wd_period)
+    // ожидание исчезновения картинки
+    // $wd_image - искомое изображение
+    // $wd_percent - процент совпадения
+    // $wd_colorm - режим COLORMODE
+    // $wd_wait - искать в течении (секунд)
+    // $wd_period - частота проверки (миллисекунд)
+    MOVE($wx2, $wy2)  //паркуемся
+    WAITMS(20)
+    $is_found = #TRUE
+    $time_notfound = $_ms + ($wd_wait * 1000)
+    WHILE(($is_found == #TRUE) & ($time_notfound > $_ms))
+        find_pic_nw($wd_x1,$wd_y1,$wd_x2,$wd_y2, $wd_image, $wd_percent, $wd_colorm)
+        WAITMS($wd_period)
+    END_CYC
+    IF(($is_found == #TRUE) & ($loglevel >= 4))
+        LOGWRITE("время истекло, картинка не исчезла")
     END_IF
 END_SUB
 
