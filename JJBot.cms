@@ -199,6 +199,8 @@ SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent
     $fpnw_y1 = $wy1 + $fpnw_y1
     $fpnw_x2 = $wx1 + $fpnw_x2
     $fpnw_y2 = $wy1 + $fpnw_y2
+    MOVE($wx2, $wy2)  //паркуемся
+    WAITMS(20)
     IF($loglevel == 5)
         LOGWRITE("Ищем картинку", STRCONCAT($textures, $fpnw_image))
     END_IF
@@ -322,6 +324,8 @@ END_SUB
 SUB(get_hash_scene)
     $isDataScene = #FALSE
     
+    MOVE($wx2, $wy2)  //паркуемся
+    WAITMS(10)
     GETSCREEN($wx1,$wy2-4, $wx1+999,$wy2)
     $hash_scene = PXLCRC($wx1,$wy2-4, $wx1+999,$wy2)
     LOGWRITE("hash_scene ", $hash_scene)
@@ -373,6 +377,8 @@ END_SUB
 
 SUB(photo_items)
     // сохранение снимков слов
+    MOVE($wx2, $wy2)  //паркуемся
+    WAITMS(20)
     photo_items_all()
     // интервал X  477,
     // Ширина поля 417    $ipw = 417
@@ -394,6 +400,8 @@ SUB(photo_items)
 END_SUB
 
 SUB(main_screenshot_scene)
+    MOVE($wx2+2, $wy2+2)  //паркуемся
+    WAITMS(20)
     $screenshot_scene = STRCONCAT($screenshots_scenes_path, "Scene_", $scene_number, "_", $hash_scene, ".bmp")
     GETSCREEN($wx1,$wy1, $wx2,$wy2)
     SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_scene, 0)
@@ -556,6 +564,8 @@ END_SUB
 
 SUB(capture_one, $co_colorm)
     // захватить для распознавания одиночную картинку (работает с абсолютным регионом $ar)
+    MOVE($wx2, $wy2)  //паркуемся
+    WAITMS(10)
     GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
     IF($co_colorm)
         COLORMODE($co_colorm, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
