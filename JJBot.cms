@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.2 (28.02.2025)
+// Version: 1.8.3 (19.03.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -49,11 +49,13 @@ $ocrexe = "Capture2Text\Capture2Text_CLI.exe"  // lnk
 $ocrimg[0] = STRCONCAT($scenes_path, "ocr_img1.bmp")
 $ocrimg[1] = STRCONCAT($scenes_path, "ocr_img2.bmp")
 $ocrimg[2] = STRCONCAT($scenes_path, "ocr_img3.bmp")
+$ocrimg_one = STRCONCAT($scenes_path, "ocr_img_one.bmp")
 $ocrimgdummy = "textures\ocr_imgdummy.bmp"
 $ocroutfile = STRCONCAT($scenes_path, "ocr_result.txt")
 $scenes_ini = STRCONCAT($scenes_path, "scenes.ini")
 $screenshots_scenes_path = STRCONCAT($scenes_path, "screenshots_scenes\")
 $allowed_char = " абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789«»"
+$allowed_digit = "0123456789"
 
 // out file
 $ocrparbase = STRCONCAT(" --language Russian -o ", $ocroutfile)
@@ -464,6 +466,15 @@ SUB(read_items)
     END_CYC
 END_SUB
 
+SUB(set_abs_region, $sar_x1, $sar_y1, $sar_x2, $sar_y2)
+    // задать абсолютный регион $ar...
+    $ar_x1 = $wx1 + $sar_x1
+    $ar_y1 = $wy1 + $sar_y1
+    $ar_x2 = $wx1 + $sar_x2
+    $ar_y2 = $wy1 + $sar_y2
+END_SUB
+
+//------------------------------------------------------------------------------
 SUB(create_ocr_par)
     $ocrpar = $ocrparbase
     FOR($i=0, $i < 3)
@@ -473,6 +484,13 @@ SUB(create_ocr_par)
         //     $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimgdummy)
         END_IF
     END_CYC
+    IF($loglevel >= 5)
+        LOGWRITE($ocrpar)
+    END_IF
+END_SUB
+
+SUB(create_ocr_par_one)
+    $ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg_one)
     IF($loglevel >= 5)
         LOGWRITE($ocrpar)
     END_IF
@@ -517,6 +535,55 @@ SUB(read_ocr_result)
         // LOGWRITE("Слова: -", $ocr_result[0], "-", $ocr_result[1], "-", $ocr_result[2], "-")
     END_IF
 END_SUB
+
+SUB(ocr_result_filter_one, $orfo_allowed)
+    IF($orfo_allowed != "")
+        $ocr_result = STRFILTER($ocr_result, $orfo_allowed, 1)
+    END_IF
+END_SUB
+
+SUB(read_ocr_result_one, $roro_allowed)
+    UNDEFINE($ocr_result)
+    $ocr_result = TFREAD($ocroutfile, 1)
+    ocr_result_filter_one($roro_allowed)
+    strip($ocr_result)
+    $ocr_result = $strip_str
+
+    IF($loglevel >= 4)
+        LOGWRITE("Распознаны символы: ", $ocr_result)
+    END_IF
+END_SUB
+
+SUB(capture_one, $co_colorm)
+    // захватить для распознавания одиночную картинку (работает с абсолютным регионом $ar)
+    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    IF($co_colorm)
+        COLORMODE($co_colorm, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    END_IF
+END_SUB
+
+SUB(ocr_one, $soo_allowed)
+    // распознать одиночную картинку (работает с абсолютным регионом $ar)
+    SCREENSHOTFIX($ar_x1, $ar_y1, $ar_x2, $ar_y2, $ocrimg_one, 0)
+    // correct_photo_items("4")
+    create_ocr_par_one()
+    ocr($ocrpar)
+    read_ocr_result_one($soo_allowed)
+END_SUB
+
+SUB(scan_energy)
+    UNDEFINE($energy)
+    set_abs_region(1154,31, 1232,66)
+    capture_one(7)
+    PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355711, 8388607)
+    PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355839, 8388607)
+    ocr_one($allowed_digit)
+    $energy = $ocr_result
+    IF($loglevel >= 4)
+        LOGWRITE("Энергия: ", $energy)
+    END_IF
+END_SUB
+//------------------------------------------------------------------------------
 
 SUB(find_click_3words)
     $found_words = #FALSE
@@ -730,6 +797,11 @@ SUB(test_locations_list)
     HALT
 END_SUB
 
+SUB(main)
+    scan_energy()
+    // $location  $location_name
+END_SUB
+
 //======================================================================================================================
 //**********************************************************************************************************************
 
@@ -739,6 +811,7 @@ input_scene_number()
 // test_locations_list()
 
 get_location()
+main()
 IF($location == 10)  // island
     click($play_x, $play_y)
     WAITMS(500)
