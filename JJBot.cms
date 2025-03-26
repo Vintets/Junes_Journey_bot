@@ -210,7 +210,7 @@ SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent
     END_IF
 
     IF($loglevel == 5)
-        LOGWRITE("Ищем картинку", STRCONCAT($textures, $fpnw_image))
+        LOGWRITE("Ищем картинку ", STRCONCAT($textures, $fpnw_image))
     END_IF
 
     GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
@@ -297,7 +297,8 @@ SUB(get_location)
 
     // 10 island - остров
     IF($location == 0)
-        find_pic_nw(474,28,500,48, "money.bmp", 80, 0)
+        // find_pic_nw(474,28,500,48, "money.bmp", 80, 0)
+        find_pic_nw(14,14,83,83, "avatar.bmp", 95, 0)
         IF($is_found == #TRUE)
             set_location(10)
         END_IF
