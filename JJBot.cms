@@ -279,7 +279,7 @@ SUB(get_location)
     // 15 - touch for start             - коснитесь, чтобы начать
     // 16 - hidden object scene         - сцена поиска предметов
     // 17 - scene finish                - сцена пройдена (экран)
-    // *18 - play more                   - играть ещё (продолжить на этой же сцене)
+    // 18 - play more                   - играть ещё (продолжить на этой же сцене)
     // *detective - требуются детективы
     // *cafe - кафе
     // *drink - выставить напиток
@@ -355,6 +355,14 @@ SUB(get_location)
         find_pic_nw(562, 848, 658, 854, "scene_finish.bmp", 95, 7)
         IF($is_found == #TRUE)
             set_location(17)
+        END_IF
+    END_IF
+
+    // 18 play more - играть ещё (продолжить на этой же сцене)
+    IF($location == 0)
+        find_pic_nw(268, 810, 420, 820, "play_more.bmp", 95, 7)
+        IF($is_found == #TRUE)
+            set_location(18)
         END_IF
     END_IF
 
