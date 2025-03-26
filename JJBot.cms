@@ -648,7 +648,7 @@ END_SUB
 
 SUB(scan_energy)
     UNDEFINE($energy)
-    set_abs_region(1154,31, 1232,66)
+    // set_abs_region(1154,31, 1232,66)
     capture_one(7)
     PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355711, 8388607)
     PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355839, 8388607)
@@ -911,6 +911,7 @@ SUB(main)
 
         // 10 island - главный экран (остров орхидей)
         IF($location == 10)
+            set_abs_region(1154,30, 1232,66)
             scan_energy()
         END_IF
 
