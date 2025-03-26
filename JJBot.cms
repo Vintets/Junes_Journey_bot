@@ -61,7 +61,7 @@ $allowed_digit = "0123456789"
 $ocrparbase = STRCONCAT(" --language Russian -o ", $ocroutfile)
 //-----------------------------------------------
 
-$locations_raw_names = "location not determined, , , , ,load game, , , , ,island,scene cards,discount,advertising timer,advertising is over,touch for start,hidden object scene"
+$locations_raw_names = "location not determined, , , , ,load game, , , , ,island,scene cards,discount,advertising timer,advertising is over,touch for start,hidden object scene,scene finish,play more"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
@@ -907,6 +907,13 @@ SUB(main)
         // 17 scene finish - сцена пройдена (экран)
         IF($location == 17)
             // click(330, 640)
+        END_IF
+
+        // 18 play more - играть ещё (продолжить на этой же сцене)
+        IF($location == 18)
+            print("scan_energy")
+            set_abs_region(106,30, 186,66)
+            scan_energy()
         END_IF
 
         // 10 island - главный экран (остров орхидей)
