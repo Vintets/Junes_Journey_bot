@@ -959,6 +959,12 @@ SUB(main)
         IF($location == 10)
             set_abs_region(1154,30, 1232,66)
             scan_energy()
+            IF($energy >= 10)
+                click(1490, 790)
+                WAITMS(3000)
+            ELSE
+                WAIT(60)
+            END_IF
         END_IF
 
         // 11 - scene cards                 - карточки выбора сцены
