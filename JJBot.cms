@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.9 (26.03.2025)
+// Version: 1.8.10 (27.03.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -375,7 +375,7 @@ SUB(get_location)
     END_IF
 
     // IF(($loglevel >= 3) & ($location != 0))
-    IF($loglevel >= 3)
+    IF($loglevel >= 4)
         LOGWRITE("location = ", $location_name, " (", $location, ")")
     END_IF
 END_SUB
@@ -660,6 +660,27 @@ SUB(scan_energy)
 END_SUB
 //------------------------------------------------------------------------------
 
+SUB(is_discount_play_more)
+    // проверить работу скидки от рекламы
+    // $discount_is_valid   - результат bool
+    set_abs_region(550,796, 720,836)  // 171x41  lila_color=4980
+    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    $lila_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 16744447) // 4980
+    IF($lila_color > 4800)
+        $discount_is_valid = #TRUE
+    ELSE
+        $discount_is_valid = #FALSE
+    END_IF
+
+    IF($loglevel >= 4)
+        LOGWRITE("discount_is_valid = ", $discount_is_valid)
+        IF($loglevel >= 5)
+            LOGWRITE("$lila_color = ", $lila_color)
+        END_IF
+    END_IF
+END_SUB
+
 SUB(find_click_3words)
     $found_words = #FALSE
     FOR($iocr=0, $iocr < ARRSIZE($ocr_result))
@@ -911,9 +932,27 @@ SUB(main)
 
         // 18 play more - играть ещё (продолжить на этой же сцене)
         IF($location == 18)
-            print("scan_energy")
             set_abs_region(106,30, 186,66)
             scan_energy()
+            go_to_island = #FALSE
+            IF($energy >= 10)
+                is_discount_play_more()
+                IF($discount_is_valid)
+                    // играть
+                    click(700, 822)
+                    WAITMS(1000)
+                ELSE
+                    go_to_island = #TRUE
+                END_IF
+            ELSE
+                go_to_island = #TRUE
+            END_IF
+
+            IF(go_to_island)
+                // назад на остров
+                click(280, 822)
+                WAITMS(1000)
+            END_IF
         END_IF
 
         // 10 island - главный экран (остров орхидей)
