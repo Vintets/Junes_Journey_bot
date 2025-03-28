@@ -222,7 +222,9 @@ SUB(init)
     // создаём массив $locations_list
     STRSEPARATE($locations_raw_names, ",", $locations_list)
     set_location(0)
-    
+
+    $energy = -1
+
     // создаём массив $scenes_in_tome_list
     STRSEPARATE($scenes_in_tome_count, ",", $scenes_in_tome_list)
     IF($loglevel >= 5)
