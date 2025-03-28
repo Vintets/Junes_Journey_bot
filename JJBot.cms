@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.11 (28.03.2025)
+// Version: 1.8.12 (28.03.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -115,6 +115,38 @@ SUB(emulator_window_definition)
     END_IF
     IF(($win_x < 0) | ($win_y < 0))
         critical_error(STRCONCAT("Окно ", $select_emulator, " свёрнуто"))
+    END_IF
+END_SUB
+
+SUB(parse_scene_number, $p_scene_number)
+    // return:
+    // $scene_tome =
+    // $scene_chapter =
+    // $scene_chapter_position =
+
+    // calc Том
+    FOR($i=0, $i < ARRSIZE($scenes_total_list))
+        IF($p_scene_number > $scenes_total_list[$i])
+            $scene_tome = $i + 1
+            // LOGWRITE("total = ", $scenes_total_list[$i], "  $scene_tome = ", $scene_tome)
+        END_IF
+    END_CYC
+
+    // calc Номер сцены в текущем томе (промежуточное значение)
+    $scene_in_current_tome = $p_scene_number - $scenes_total_list[$scene_tome - 1]
+
+    // calc Глава
+    $scene_chapter = INT(($scene_in_current_tome - 1) / 5) + 1
+
+    // calc Позиция в главе
+    $scene_chapter_position = $scene_in_current_tome - (($scene_chapter - 1) * 5)
+
+    IF($loglevel >= 5)
+        LOGWRITE("Расчёт сцены:    ", $p_scene_number)
+        LOGWRITE("Том:             ", $scene_tome)
+        LOGWRITE("Сцена в томе:    ", $scene_in_current_tome)
+        LOGWRITE("Глава:           ", $scene_chapter)
+        LOGWRITE("Позиция в главе: ", $scene_chapter_position, \n)
     END_IF
 END_SUB
 
