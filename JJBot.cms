@@ -992,7 +992,8 @@ SUB(main)
 
         // 17 scene finish - сцена пройдена (экран)
         IF($location == 17)
-            // click(330, 640)
+            click(330, 640)
+            WAITMS(200)
         END_IF
 
         // 18 play more - играть ещё (продолжить на этой же сцене)
