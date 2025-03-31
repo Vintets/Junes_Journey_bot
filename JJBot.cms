@@ -34,6 +34,9 @@ $select_emulator = "Test"  // по скриншоту, XnView развёрнут
 // номер сцены по умолчанию (0 - определять автоматически последнюю сцену TODO)
 $default_scene_number = 848
 
+// копить энергию перед отправкой решения сцен
+$accumulate_energy = 10
+
 // уровень логирования 0-NOTSET, 1-CRITICAL 2-ERROR 3-WARNING 4-INFO 5-DEBUG
 $loglevel = 5
 
@@ -1001,7 +1004,7 @@ SUB(main)
             set_abs_region(106,30, 186,66)
             scan_energy()
             go_to_island = #FALSE
-            IF($energy >= 10)
+            IF($energy >= $accumulate_energy)
                 is_discount_play_more()
                 IF($discount_is_valid)
                     // играть
@@ -1025,7 +1028,7 @@ SUB(main)
         IF($location == 10)
             set_abs_region(1154,30, 1232,66)
             scan_energy()
-            IF($energy >= 10)
+            IF($energy >= $accumulate_energy)
                 click(1490, 790)
                 WAITMS(3000)
             ELSE
