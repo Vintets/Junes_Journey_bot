@@ -729,13 +729,34 @@ END_SUB
 //------------------------------------------------------------------------------
 
 SUB(is_discount_play_more)
-    // проверить работу скидки от рекламы
+    // проверить работу скидки от рекламы на экране play_more
     // $discount_is_valid   - результат bool
     set_abs_region(550,796, 720,836)  // 171x41  lila_color=4980
     GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
     COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
     $lila_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 16744447) // 4980
     IF($lila_color > 4800)
+        $discount_is_valid = #TRUE
+    ELSE
+        $discount_is_valid = #FALSE
+    END_IF
+
+    IF($loglevel >= 4)
+        LOGWRITE("discount_is_valid = ", $discount_is_valid)
+        IF($loglevel >= 5)
+            LOGWRITE("$lila_color = ", $lila_color)
+        END_IF
+    END_IF
+END_SUB
+
+SUB(is_discount_scene_cards)
+    // проверить работу скидки от рекламы на экране scene_cards
+    // $discount_is_valid   - результат bool
+    set_abs_region(1270,818, 1440,858)  // lila_color=1636/1537   1398x lila_color=307
+    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    $lila_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 16744447)
+    IF($lila_color >= 200)
         $discount_is_valid = #TRUE
     ELSE
         $discount_is_valid = #FALSE
