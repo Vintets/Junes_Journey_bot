@@ -325,11 +325,11 @@ SUB(waiting_disappear, $wd_x1,$wd_y1,$wd_x2,$wd_y2,$wd_image, $wd_percent, $wd_c
     $parking = #FALSE
     $is_found = #TRUE
     $time_notfound = $_ms + ($wd_wait * 1000)
-    WHILE(($is_found == #TRUE) & ($time_notfound > $_ms))
+    WHILE(($is_found) & ($time_notfound > $_ms))
         find_pic_nw($wd_x1,$wd_y1,$wd_x2,$wd_y2, $wd_image, $wd_percent, $wd_colorm)
         WAITMS($wd_period)
     END_CYC
-    IF(($is_found == #TRUE) & ($loglevel >= 4))
+    IF(($is_found) & ($loglevel >= 4))
         LOGWRITE("время истекло, картинка не исчезла")
     END_IF
     $parking = #TRUE
@@ -358,7 +358,7 @@ SUB(get_location)
     // 16 hidden object scene
     IF($location == 0)
         find_pic_nw(1518,32,1562,73, "pause.bmp", 100, 7)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(16)
         END_IF
     END_IF
@@ -367,7 +367,7 @@ SUB(get_location)
     IF($location == 0)
         // find_pic_nw(474,28,500,48, "money.bmp", 80, 0)
         find_pic_nw(14,14,83,83, "avatar.bmp", 95, 0)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(10)
         END_IF
     END_IF
@@ -375,13 +375,13 @@ SUB(get_location)
     // 11 scene cards - карточки выбора сцены
     IF($location == 0)
         find_pic_nw(485,810,516,840, "arrow_left.bmp", 95, 7)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(11)
         END_IF
     END_IF
     IF($location == 0)
         find_pic_nw(1080,795,1115,826, "arrow_right.bmp", 95, 7)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(11)
         END_IF
     END_IF
@@ -389,7 +389,7 @@ SUB(get_location)
     // 15 touch for start - коснитесь чтобы начать
     IF($location == 0)
         find_pic_nw(270, 420, 800, 470, "touch.bmp", 95, 0)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(15)
         END_IF
     END_IF
@@ -397,7 +397,7 @@ SUB(get_location)
     // 12 discount - скидка за рекламу
     IF($location == 0)
         find_pic_nw(410, 746, 570, 758, "discount.bmp", 97, 7)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(12)
         END_IF
     END_IF
@@ -405,7 +405,7 @@ SUB(get_location)
     // 13 advertising timer - реклама таймер
     IF($location == 0)
         find_pic_nw(782, 406, 818, 442, "advertising_timer.bmp", 100, 0)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(13)
         END_IF
     END_IF
@@ -413,7 +413,7 @@ SUB(get_location)
     // 14 advertising is over - сбой рекламы
     IF($location == 0)
         find_pic_nw(697, 655, 827, 661, "advertising_over.bmp", 97, 7)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(14)
         END_IF
     END_IF
@@ -421,7 +421,7 @@ SUB(get_location)
     // 17 scene finish - сцена пройдена (экран)
     IF($location == 0)
         find_pic_nw(562, 848, 658, 854, "scene_finish.bmp", 95, 7)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(17)
         END_IF
     END_IF
@@ -429,7 +429,7 @@ SUB(get_location)
     // 18 play more - играть ещё (продолжить на этой же сцене)
     IF($location == 0)
         find_pic_nw(268, 810, 420, 820, "play_more.bmp", 95, 7)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(18)
         END_IF
     END_IF
@@ -437,7 +437,7 @@ SUB(get_location)
     // 5 load game 1 - экран загрузки игры
     IF($location == 0)
         find_pic_nw(780, 280, 810, 305, "load_1.bmp", 100, 0)
-        IF($is_found == #TRUE)
+        IF($is_found)
             set_location(5)
         END_IF
     END_IF
@@ -549,7 +549,7 @@ SUB(main_screenshot_scene)
 END_SUB
 
 SUB(click, $cldelta_x, $cldelta_y)
-    IF($is_found == #TRUE)
+    IF($is_found)
         IF($select_emulator != "Test")
             LCLICK($wx1+$cldelta_x, $wy1+$cldelta_y)
         ELSE
@@ -563,7 +563,7 @@ SUB(click, $cldelta_x, $cldelta_y)
 END_SUB
 
 SUB(click_found, $clf_delta_x, $clf_delta_y)
-    IF($is_found == #TRUE)
+    IF($is_found)
         IF($select_emulator != "Test")
             LCLICK($found_x + $clf_delta_x, $found_y + $clf_delta_y)
         ELSE
