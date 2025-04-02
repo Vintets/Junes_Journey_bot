@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.13 (28.03.2025)
+// Version: 1.8.14 (28.03.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -73,6 +73,16 @@ $scenes_in_tome_count = "500,250,125"  // количество сцен в то�
 SUB(critical_error, $ce_message)
     LOGWRITEC(STRCONCAT("***** Critical_error!!! ***  ", $ce_message), 255)
     HALT
+END_SUB
+
+SUB(log_region, $lr_x1, $lr_y1, $lr_x2, $lr_y2)
+    IF($loglevel >= 4)
+        $lr_x1 = $wx1 + $lr_x1
+        $lr_y1 = $wy1 + $lr_y1
+        $lr_x2 = $wx1 + $lr_x2
+        $lr_y2 = $wy1 + $lr_y2
+        LOGWRITE("Задана область:  ", $lr_x1, ",", $lr_y1, ", ", $lr_x2, ",", $lr_y2)
+    END_IF
 END_SUB
 
 SUB(set_location, $sl_location_num)
@@ -770,6 +780,84 @@ SUB(is_discount_scene_cards)
     END_IF
 END_SUB
 
+SUB(add_card, $ac_found_x, $ac_found_y)
+    // return $scr_fx, $scr_fy
+
+    IF($discount_is_valid)
+        // blue
+        // 17:59:03 Найдено  key_scene_play_blue.bmp  в 1322/838
+        // 17:59:04 Найдено  key_scene_play_blue.bmp  в 403/844
+        // 17:59:05 Найдено  key_scene_play_blue.bmp  в 850/869
+
+        // клик +120 -16
+        // экранные
+        // y=838   +138 (=1460)  -240 (=598)
+        // y=844   +138 (= 541)  -246 (=598)
+        // y=869   +154 (=1004)  -267 (=602)
+        // относительные  160 110   dy = 31
+        // y=728   +138 (=1300)  -240 (=488)
+        // y=734   +138 (= 381)  -246 (=488)
+        // y=759   +154 (= 844)  -267 (=492)
+        $scr_fx = $ac_found_x - $wx1
+        $scr_fy = $ac_found_y - $wy1
+        $scr_fx = $scr_fx + 154 - INT(((760 - $scr_fy) * 0.516129) + 0.9)
+        $scr_fy = $scr_fy - 268 + INT(((760 - $scr_fy) * 0.8709677) + 0.5)
+    ELSE
+        // green
+        // 9:43:38 Найдено  key_scene_play_green.bmp  в 1257/796
+        // 9:43:39 Найдено  key_scene_play_green.bmp  в 795/815
+    END_IF
+    ARRPUSH($cards, $scr_fx)
+    ARRPUSH($cards, $scr_fy)
+    ARRPUSH($cards, $ac_found_x + 120)
+    ARRPUSH($cards, $ac_found_y - 16)
+END_SUB
+
+SUB(find_card_positions)
+    UNDEFINE($cards)
+    is_discount_scene_cards()
+    IF($discount_is_valid)
+        $type_key_scene_play = "key_scene_play_blue.bmp"
+    ELSE
+        $type_key_scene_play = "key_scene_play_green.bmp"
+    END_IF
+    LOGWRITE("type_key = ", $type_key_scene_play)
+
+    set_abs_region(0,652, $win_w,764)
+    log_region(0,652, $win_w,764)
+    IF($parking)
+        MOVE($wx2, $wy2)  //паркуемся
+        WAITMS(20)
+    END_IF
+    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    $is_found = #TRUE
+    WHILE($is_found)
+        IF($loglevel == 5)
+            LOGWRITE("Ищем картинку ", STRCONCAT($textures, $type_key_scene_play))
+        END_IF
+        IF_PICTURE_IN($ar_x1, $ar_y1, $ar_x2, $ar_y2, STRCONCAT($textures, $type_key_scene_play), -1, 100)
+            $is_found = #TRUE
+            $found_x = $_return1
+            $found_y = $_return2
+            IF($loglevel >= 5)
+                LOGWRITE("Найдено  ", $type_key_scene_play, "  в ", $_return1, "/", $_return2)
+            END_IF
+        ELSE
+            $is_found = #FALSE
+            WAITMS(20)
+        END_IF
+
+        IF($is_found)
+            MOVE($found_x, $found_y)
+            // add_card($found_x, $found_y)
+            // MOVE($wx1 + $scr_fx, $wy1 + $scr_fy)
+            WAITMS(1000)
+            PXLREPLACE($found_x - 5 ,$ar_y1, $found_x + 340,$ar_y2, -1, 0)  // ширина 340+5
+        END_IF
+    END_CYC
+END_SUB
+
 SUB(find_click_3words)
     $found_words = #FALSE
     FOR($iocr=0, $iocr < ARRSIZE($ocr_result))
@@ -1057,9 +1145,31 @@ SUB(main)
             END_IF
         END_IF
 
-        // 11 - scene cards                 - карточки выбора сцены
-        // 16 - hidden object scene         - сцена поиска предметов
+        // 11 scene cards - карточки выбора сцены
+        IF($location == 11)
+            IF($energy == -1)
+                set_abs_region(996,30, 1072,66)
+                scan_energy()
+            END_IF
 
+            IF($energy >= $accumulate_energy)
+                find_card_positions()
+
+                HALT
+
+                // ...
+            END_IF
+
+            // parse_scene_number($target_scene_number)
+            // $scene_tome = $scene_tome
+            // $scene_chapter = $scene_chapter
+            // $scene_chapter_position = $scene_chapter_position
+
+            HALT
+
+        END_IF
+
+        // 16 hidden object scene - сцена поиска предметов
 
         // IF($input_sn == 0)
             // TODO определить уровень
@@ -1085,6 +1195,7 @@ init()
 // test_locations_list()
 //input_scene_number()
 // dev()
+// is_discount_scene_cards()
 // HALT
 
 main()
