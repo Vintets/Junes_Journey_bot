@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.8.14 (28.03.2025)
+// Version: 1.9.0 (02.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -781,34 +781,29 @@ SUB(is_discount_scene_cards)
 END_SUB
 
 SUB(add_card, $ac_found_x, $ac_found_y)
-    // return $scr_fx, $scr_fy
+    // return $card_center_x, $card_center_y
 
     IF($discount_is_valid)
         // blue
-        // 17:59:03 Найдено  key_scene_play_blue.bmp  в 1322/838
-        // 17:59:04 Найдено  key_scene_play_blue.bmp  в 403/844
-        // 17:59:05 Найдено  key_scene_play_blue.bmp  в 850/869
-
         // клик +120 -16
-        // экранные
-        // y=838   +138 (=1460)  -240 (=598)
-        // y=844   +138 (= 541)  -246 (=598)
-        // y=869   +154 (=1004)  -267 (=602)
-        // относительные  160 110   dy = 31
-        // y=728   +138 (=1300)  -240 (=488)
-        // y=734   +138 (= 381)  -246 (=488)
-        // y=759   +154 (= 844)  -267 (=492)
-        $scr_fx = $ac_found_x - $wx1
-        $scr_fy = $ac_found_y - $wy1
-        $scr_fx = $scr_fx + 154 - INT(((760 - $scr_fy) * 0.516129) + 0.9)
-        $scr_fy = $scr_fy - 268 + INT(((760 - $scr_fy) * 0.8709677) + 0.5)
+        $relative_found_x = $ac_found_x - $wx1  // 135-152 = 17
+        $field_center = $win_w / 2 - 152
+        $card_delta_x = ABS($relative_found_x - $field_center)
+        PRINT("$card_delta_x ", $card_delta_x)
+        $delta_w = INT(($card_delta_x * 0.035) + 0.9)
+        $card_center_x = $relative_found_x + 152 - $delta_w
+        PRINT("$delta_w ", $delta_w)
+        PRINT("$card_center_x ", $card_center_x)
+        // max dy  6 px
+        $delta_h = INT($card_delta_x * 0.009)
+        $card_center_y = 492 - $delta_h
+        PRINT("$delta_h ", $delta_h)
+        PRINT("$card_center_y ", $card_center_y)
     ELSE
         // green
-        // 9:43:38 Найдено  key_scene_play_green.bmp  в 1257/796
-        // 9:43:39 Найдено  key_scene_play_green.bmp  в 795/815
     END_IF
-    ARRPUSH($cards, $scr_fx)
-    ARRPUSH($cards, $scr_fy)
+    ARRPUSH($cards, $card_center_x)
+    ARRPUSH($cards, $card_center_y)
     ARRPUSH($cards, $ac_found_x + 120)
     ARRPUSH($cards, $ac_found_y - 16)
 END_SUB
@@ -825,37 +820,15 @@ SUB(find_card_positions)
 
     set_abs_region(0,652, $win_w,764)
     log_region(0,652, $win_w,764)
-    IF($parking)
-        MOVE($wx2, $wy2)  //паркуемся
-        WAITMS(20)
-    END_IF
-    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    $is_found = #TRUE
-    WHILE($is_found)
-        IF($loglevel == 5)
-            LOGWRITE("Ищем картинку ", STRCONCAT($textures, $type_key_scene_play))
-        END_IF
-        IF_PICTURE_IN($ar_x1, $ar_y1, $ar_x2, $ar_y2, STRCONCAT($textures, $type_key_scene_play), -1, 100)
-            $is_found = #TRUE
-            $found_x = $_return1
-            $found_y = $_return2
-            IF($loglevel >= 5)
-                LOGWRITE("Найдено  ", $type_key_scene_play, "  в ", $_return1, "/", $_return2)
-            END_IF
-        ELSE
-            $is_found = #FALSE
-            WAITMS(20)
-        END_IF
 
-        IF($is_found)
-            MOVE($found_x, $found_y)
-            // add_card($found_x, $found_y)
-            // MOVE($wx1 + $scr_fx, $wy1 + $scr_fy)
-            WAITMS(1000)
-            PXLREPLACE($found_x - 5 ,$ar_y1, $found_x + 340,$ar_y2, -1, 0)  // ширина 340+5
-        END_IF
-    END_CYC
+    find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 7)
+    IF($is_found)
+        UNDEFINE($card_positions)
+        // MOVE($found_x, $found_y)
+        add_card($found_x, $found_y)
+        MOVE($wx1 + $card_center_x, $wy1 + $card_center_y)
+        WAITMS(1000)
+    END_IF
 END_SUB
 
 SUB(find_click_3words)
