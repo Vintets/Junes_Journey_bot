@@ -642,9 +642,9 @@ END_SUB
 
 SUB(create_ocr_par_one)
     $ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg_one)
-    IF($loglevel >= 5)
-        LOGWRITE($ocrpar)
-    END_IF
+    // IF($loglevel >= 5)
+    //     LOGWRITE($ocrpar)
+    // END_IF
 END_SUB
 
 SUB(ocr, $ocr_par)
