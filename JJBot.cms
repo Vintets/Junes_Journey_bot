@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.3 (03.04.2025)
+// Version: 1.9.4 (03.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -742,6 +742,17 @@ SUB(scan_energy)
         LOGWRITE("Энергия: ", $energy)
     END_IF
 END_SUB
+
+SUB(scan_scene_number)
+    // return $card_scene_number
+    UNDEFINE($card_scene_number)
+    capture_one(7)
+    ocr_one($allowed_digit)
+    $card_scene_number = $ocr_result
+    IF($loglevel >= 4)
+        LOGWRITE("Номер карточки сцены: ", $card_scene_number)
+    END_IF
+END_SUB
 //------------------------------------------------------------------------------
 
 SUB(is_discount_play_more)
@@ -786,12 +797,12 @@ SUB(is_discount_scene_cards)
     END_IF
 END_SUB
 
-SUB(add_card, $ac_card_x, $ac_card_y, $ac_found_x, $ac_found_y)
+SUB(add_card, $ac_card_scene_number, $ac_card_x, $ac_card_y, $ac_found_x, $ac_found_y)
     ARRPUSH($cards, $ac_card_x)
     ARRPUSH($cards, $ac_card_y)
     ARRPUSH($cards, $ac_found_x + 120)
     ARRPUSH($cards, $ac_found_y - 16)
-    ARRPUSH($cards, 0)  // место под номер уровня
+    ARRPUSH($cards, $ac_card_scene_number)  // место под номер уровня
 END_SUB
 
 SUB(find_primary_card)
@@ -817,7 +828,11 @@ SUB(find_primary_card)
         PRINT("$delta_h ", $delta_h)
         PRINT("$card_center_y ", $card_center_y)
 
-        add_card($card_center_x, $card_center_y, $found_x, $found_y)
+        // 54x34  +-27 +-17
+        set_abs_region($card_center_x-25, $card_center_y-16, $card_center_x+25, $card_center_y+16)
+        scan_scene_number()
+
+        add_card($card_scene_number, $card_center_x, $card_center_y, $found_x, $found_y)
         rel_move($card_center_x, $card_center_y)
         // MOVE($found_x, $found_y)
         WAITMS(1000)
