@@ -800,8 +800,8 @@ END_SUB
 SUB(add_card, $ac_card_scene_number, $ac_card_x, $ac_card_y, $ac_found_x, $ac_found_y)
     ARRPUSH($cards, $ac_card_x)
     ARRPUSH($cards, $ac_card_y)
-    ARRPUSH($cards, $ac_found_x + 120)
-    ARRPUSH($cards, $ac_found_y - 16)
+    ARRPUSH($cards, $ac_found_x)
+    ARRPUSH($cards, $ac_found_y)
     ARRPUSH($cards, $ac_card_scene_number)  // место под номер уровня
 END_SUB
 
@@ -832,7 +832,7 @@ SUB(find_primary_card)
         set_abs_region($card_center_x-25, $card_center_y-16, $card_center_x+25, $card_center_y+16)
         scan_scene_number()
 
-        add_card($card_scene_number, $card_center_x, $card_center_y, $found_x, $found_y)
+        add_card($card_scene_number, $card_center_x, $card_center_y, $found_x+120, $found_y-16)
         rel_move($card_center_x, $card_center_y)
         // MOVE($found_x, $found_y)
         WAITMS(1000)
