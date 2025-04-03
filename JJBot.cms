@@ -731,8 +731,8 @@ SUB(ocr_one, $soo_allowed)
 END_SUB
 
 SUB(scan_energy)
+    // return $energy
     UNDEFINE($energy)
-    // set_abs_region(1154,31, 1232,66)
     capture_one(7)
     PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355711, 8388607)
     PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355839, 8388607)
@@ -847,7 +847,9 @@ SUB(find_card_positions)
     ELSE
         $type_key_scene_play = "key_scene_play_green.bmp"
     END_IF
-    LOGWRITE("type_key = ", $type_key_scene_play)
+    IF($loglevel >= 5)
+        LOGWRITE("type_key = ", $type_key_scene_play)
+    END_IF
 
     find_primary_card()
 END_SUB
