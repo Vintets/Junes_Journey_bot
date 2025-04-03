@@ -798,11 +798,11 @@ SUB(is_discount_scene_cards)
 END_SUB
 
 SUB(add_card, $ac_card_scene_number, $ac_card_x, $ac_card_y, $ac_found_x, $ac_found_y)
+    ARRPUSH($cards, $ac_card_scene_number)  // место под номер уровня
     ARRPUSH($cards, $ac_card_x)
     ARRPUSH($cards, $ac_card_y)
     ARRPUSH($cards, $ac_found_x)
     ARRPUSH($cards, $ac_found_y)
-    ARRPUSH($cards, $ac_card_scene_number)  // место под номер уровня
 END_SUB
 
 SUB(find_primary_card)
