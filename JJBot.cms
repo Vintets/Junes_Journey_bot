@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.1 (03.04.2025)
+// Version: 1.9.2 (03.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -784,32 +784,46 @@ SUB(is_discount_scene_cards)
     END_IF
 END_SUB
 
-SUB(add_card, $ac_found_x, $ac_found_y)
-    // return $card_center_x, $card_center_y
-
-    IF($discount_is_valid)
-        // blue
-        // клик +120 -16
-        $relative_found_x = $ac_found_x - $wx1  // 135-152 = 17
-        $field_center = $win_w / 2 - 152
-        $card_delta_x = ABS($relative_found_x - $field_center)
-        PRINT("$card_delta_x ", $card_delta_x)
-        $delta_w = INT(($card_delta_x * 0.035) + 0.9)
-        $card_center_x = $relative_found_x + 152 - $delta_w
-        PRINT("$delta_w ", $delta_w)
-        PRINT("$card_center_x ", $card_center_x)
-        // max dy  6 px
-        $delta_h = INT($card_delta_x * 0.009)
-        $card_center_y = 492 - $delta_h
-        PRINT("$delta_h ", $delta_h)
-        PRINT("$card_center_y ", $card_center_y)
-    ELSE
-        // green
-    END_IF
-    ARRPUSH($cards, $card_center_x)
-    ARRPUSH($cards, $card_center_y)
+SUB(add_card, $ac_card_x, $ac_card_y, $ac_found_x, $ac_found_y)
+    ARRPUSH($cards, $ac_card_x)
+    ARRPUSH($cards, $ac_card_y)
     ARRPUSH($cards, $ac_found_x + 120)
     ARRPUSH($cards, $ac_found_y - 16)
+    ARRPUSH($cards, 0)  // место под номер уровня
+END_SUB
+
+SUB(find_primary_card)
+    set_abs_region(0,652, $win_w,764)
+    log_region(0,652, $win_w,764)
+
+    find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 7)
+    IF($is_found)
+        // result block: $card_center_x, $card_center_y
+        IF($discount_is_valid)
+            // blue
+            // клик +120 -16
+            $relative_found_x = $found_x - $wx1  // 135-152 = 17
+            $field_center = $win_w / 2 - 152
+            $card_delta_x = ABS($relative_found_x - $field_center)
+            PRINT("$card_delta_x ", $card_delta_x)
+            $delta_w = INT(($card_delta_x * 0.035) + 0.9)
+            $card_center_x = $relative_found_x + 152 - $delta_w
+            PRINT("$delta_w ", $delta_w)
+            PRINT("$card_center_x ", $card_center_x)
+            // max dy  6 px
+            $delta_h = INT($card_delta_x * 0.009)
+            $card_center_y = 492 - $delta_h
+            PRINT("$delta_h ", $delta_h)
+            PRINT("$card_center_y ", $card_center_y)
+        ELSE
+            // green
+        END_IF
+
+        add_card($card_center_x, $card_center_y, $found_x, $found_y)
+        rel_move($card_center_x, $card_center_y)
+        // MOVE($found_x, $found_y)
+        WAITMS(1000)
+    END_IF
 END_SUB
 
 SUB(find_card_positions)
@@ -822,17 +836,7 @@ SUB(find_card_positions)
     END_IF
     LOGWRITE("type_key = ", $type_key_scene_play)
 
-    set_abs_region(0,652, $win_w,764)
-    log_region(0,652, $win_w,764)
-
-    find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 7)
-    IF($is_found)
-        UNDEFINE($card_positions)
-        // MOVE($found_x, $found_y)
-        add_card($found_x, $found_y)
-        MOVE($wx1 + $card_center_x, $wy1 + $card_center_y)
-        WAITMS(1000)
-    END_IF
+    find_primary_card()
 END_SUB
 
 SUB(find_click_3words)
