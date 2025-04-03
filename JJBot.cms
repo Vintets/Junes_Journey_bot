@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.4 (03.04.2025)
+// Version: 1.9.5 (03.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -806,6 +806,17 @@ SUB(add_card, $ac_card_scene_number, $ac_card_x, $ac_card_y, $ac_found_x, $ac_fo
 END_SUB
 
 SUB(find_primary_card)
+    UNDEFINE($cards)
+    is_discount_scene_cards()
+    IF($discount_is_valid)
+        $type_key_scene_play = "key_scene_play_blue.bmp"
+    ELSE
+        $type_key_scene_play = "key_scene_play_green.bmp"
+    END_IF
+    IF($loglevel >= 5)
+        LOGWRITE("type_key = ", $type_key_scene_play)
+    END_IF
+
     set_abs_region(0,652, $win_w,764)
     log_region(0,652, $win_w,764)
 
@@ -837,21 +848,6 @@ SUB(find_primary_card)
         // MOVE($found_x, $found_y)
         WAITMS(1000)
     END_IF
-END_SUB
-
-SUB(find_card_positions)
-    UNDEFINE($cards)
-    is_discount_scene_cards()
-    IF($discount_is_valid)
-        $type_key_scene_play = "key_scene_play_blue.bmp"
-    ELSE
-        $type_key_scene_play = "key_scene_play_green.bmp"
-    END_IF
-    IF($loglevel >= 5)
-        LOGWRITE("type_key = ", $type_key_scene_play)
-    END_IF
-
-    find_primary_card()
 END_SUB
 
 SUB(find_click_3words)
@@ -1149,7 +1145,7 @@ SUB(main)
             END_IF
 
             IF($energy >= $accumulate_energy)
-                find_card_positions()
+                find_primary_card()
 
                 HALT
 
