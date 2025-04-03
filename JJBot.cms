@@ -801,25 +801,21 @@ SUB(find_primary_card)
     find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 6)
     IF($is_found)
         // result block: $card_center_x, $card_center_y
-        IF($discount_is_valid)
-            // blue
-            // клик +120 -16
-            $relative_found_x = $found_x - $wx1  // 135-152 = 17
-            $field_center = $win_w / 2 - 152
-            $card_delta_x = ABS($relative_found_x - $field_center)
-            PRINT("$card_delta_x ", $card_delta_x)
-            $delta_w = INT(($card_delta_x * 0.035) + 0.9)
-            $card_center_x = $relative_found_x + 152 - $delta_w
-            PRINT("$delta_w ", $delta_w)
-            PRINT("$card_center_x ", $card_center_x)
-            // max dy  6 px
-            $delta_h = INT($card_delta_x * 0.009)
-            $card_center_y = 492 - $delta_h
-            PRINT("$delta_h ", $delta_h)
-            PRINT("$card_center_y ", $card_center_y)
-        ELSE
-            // green
-        END_IF
+
+        // клик +120 -16
+        $relative_found_x = $found_x - $wx1  // 135-152 = 17
+        $field_center = $win_w / 2 - 152
+        $card_delta_x = ABS($relative_found_x - $field_center)
+        PRINT("$card_delta_x ", $card_delta_x)
+        $delta_w = INT(($card_delta_x * 0.035) + 0.9)
+        $card_center_x = $relative_found_x + 152 - $delta_w
+        PRINT("$delta_w ", $delta_w)
+        PRINT("$card_center_x ", $card_center_x)
+        // max dy  6 px
+        $delta_h = INT($card_delta_x * 0.009)
+        $card_center_y = 492 - $delta_h
+        PRINT("$delta_h ", $delta_h)
+        PRINT("$card_center_y ", $card_center_y)
 
         add_card($card_center_x, $card_center_y, $found_x, $found_y)
         rel_move($card_center_x, $card_center_y)
