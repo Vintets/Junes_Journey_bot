@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.6 (03.04.2025)
+// Version: 1.9.7 (03.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -76,7 +76,7 @@ SUB(critical_error, $ce_message)
 END_SUB
 
 SUB(log_region, $lr_x1, $lr_y1, $lr_x2, $lr_y2)
-    IF($loglevel >= 4)
+    IF($loglevel >= 5)
         $lr_x1 = $wx1 + $lr_x1
         $lr_y1 = $wy1 + $lr_y1
         $lr_x2 = $wx1 + $lr_x2
@@ -155,6 +155,7 @@ SUB(parse_scene_number, $p_scene_number)
     $scene_chapter_position = $scene_in_current_tome - (($scene_chapter - 1) * 5)
 
     IF($loglevel >= 5)
+        LOGWRITE()
         LOGWRITE("Расчёт сцены:    ", $p_scene_number)
         LOGWRITE("Том:             ", $scene_tome)
         LOGWRITE("Сцена в томе:    ", $scene_in_current_tome)
@@ -706,7 +707,7 @@ SUB(read_ocr_result_one, $roro_allowed)
     strip($ocr_result)
     $ocr_result = $strip_str
 
-    IF($loglevel >= 4)
+    IF($loglevel >= 5)
         LOGWRITE("Распознаны символы: ", $ocr_result)
     END_IF
 END_SUB
@@ -789,11 +790,9 @@ SUB(is_discount_scene_cards)
         $discount_is_valid = #FALSE
     END_IF
 
-    IF($loglevel >= 4)
+    IF($loglevel >= 5)
         LOGWRITE("discount_is_valid = ", $discount_is_valid)
-        IF($loglevel >= 5)
-            LOGWRITE("$lila_color = ", $lila_color)
-        END_IF
+        LOGWRITE("$lila_color = ", $lila_color)
     END_IF
 END_SUB
 
@@ -828,16 +827,20 @@ SUB(find_primary_card)
         $relative_found_x = $found_x - $wx1  // 135-152 = 17
         $field_center = $win_w / 2 - 152
         $card_delta_x = ABS($relative_found_x - $field_center)
-        PRINT("$card_delta_x ", $card_delta_x)
         $delta_w = INT(($card_delta_x * 0.035) + 0.9)
         $card_center_x = $relative_found_x + 152 - $delta_w
-        PRINT("$delta_w ", $delta_w)
-        PRINT("$card_center_x ", $card_center_x)
         // max dy  6 px
         $delta_h = INT($card_delta_x * 0.009)
         $card_center_y = 492 - $delta_h
-        PRINT("$delta_h ", $delta_h)
-        PRINT("$card_center_y ", $card_center_y)
+        IF($loglevel >= 5)
+            LOGWRITE()
+            LOGWRITE("Данные расчёта первичной карты:")
+            LOGWRITE("   $card_delta_x ", $card_delta_x)
+            LOGWRITE("   $delta_w ", $delta_w)
+            LOGWRITE("   $card_center_x ", $card_center_x)
+            LOGWRITE("   $delta_h ", $delta_h)
+            LOGWRITE("   $card_center_y ", $card_center_y)
+        END_IF
 
         // 54x34  +-27 +-17
         set_abs_region($card_center_x-25, $card_center_y-16, $card_center_x+25, $card_center_y+16)
