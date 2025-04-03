@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.5 (03.04.2025)
+// Version: 1.9.6 (03.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1065,6 +1065,16 @@ SUB(test_locations_list)
     HALT
 END_SUB
 
+SUB(change_tome, $ct_scene_tome)
+    // TODO
+    // $target_scene_tome
+END_SUB
+
+SUB(change_chapter, $cc_scene_chapter)
+    // TODO
+    // $target_scene_chapter
+END_SUB
+
 SUB(main)
     $mainloop = #TRUE
     WHILE($mainloop)
@@ -1144,21 +1154,45 @@ SUB(main)
                 scan_energy()
             END_IF
 
+            $no_changes_location11 = #TRUE
             IF($energy >= $accumulate_energy)
                 find_primary_card()
+                IF(ARRSIZE($cards) > 1)
+                    parse_scene_number($cards[0])
 
-                HALT
+                    IF($scene_tome != $target_scene_tome)
+                        $no_changes_location11 = #FALSE
+                        IF($loglevel >= 4)
+                            LOGWRITE("Номер тома не совпадает! ", $scene_tome, " вместо ", $target_scene_tome)
+                        END_IF
+                        change_tome($scene_tome)  // TODO
+                    END_IF
 
-                // ...
+                    IF(($no_changes_location11) & ($scene_chapter != $target_scene_chapter))
+                        $no_changes_location11 = #FALSE
+                        IF($loglevel >= 4)
+                            LOGWRITE("Номер главы не совпадает! ", $scene_chapter, " вместо ", $target_scene_chapter)
+                        END_IF
+                        change_chapter($scene_chapter)  // TODO
+                    END_IF
+                ELSE
+                    $no_changes_location11 = #FALSE
+                    WAITMS(500)
+                END_IF
+            ELSE
+                $no_changes_location11 = #FALSE
+                // назад на остров (закрыть scene cards)
+                click(1542, 56)
+                WAITMS(1000)
             END_IF
 
-            // parse_scene_number($target_scene_number)
-            // $scene_tome = $scene_tome
-            // $scene_chapter = $scene_chapter
-            // $scene_chapter_position = $scene_chapter_position
-
+            IF($no_changes_location11)
+                // TODO
+                // просмотр рекламы
+                // переход к поиску предметов
+            END_IF
+            
             HALT
-
         END_IF
 
         // 16 hidden object scene - сцена поиска предметов
@@ -1193,3 +1227,8 @@ init()
 main()
 
 HALT
+
+
+IF($loglevel >= 4)
+    //
+END_IF
