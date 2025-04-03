@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.2 (03.04.2025)
+// Version: 1.9.3 (03.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -644,8 +644,10 @@ SUB(create_ocr_par)
     END_IF
 END_SUB
 
-SUB(create_ocr_par_one)
-    $ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg_one)
+SUB(create_ocr_par_one, $copo_allowed)
+    $ocrpar = STRCONCAT($ocrparbase, " --whitelist ", $copo_allowed)
+    $ocrpar = STRCONCAT($ocrpar, " -i ", $ocrimg_one)
+    // $ocrpar = STRCONCAT($ocrparbase, " -i ", $ocrimg_one)
     // IF($loglevel >= 5)
     //     LOGWRITE($ocrpar)
     // END_IF
@@ -723,7 +725,7 @@ SUB(ocr_one, $soo_allowed)
     // распознать одиночную картинку (работает с абсолютным регионом $ar)
     SCREENSHOTFIX($ar_x1, $ar_y1, $ar_x2, $ar_y2, $ocrimg_one, 0)
     // correct_photo_items("4")
-    create_ocr_par_one()
+    create_ocr_par_one($soo_allowed)
     ocr($ocrpar)
     read_ocr_result_one($soo_allowed)
 END_SUB
