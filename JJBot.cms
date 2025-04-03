@@ -558,12 +558,16 @@ SUB(main_screenshot_scene)
     SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_scene, 0)
 END_SUB
 
+SUB(rel_move, $rm_x, $rm_y)
+    MOVE($wx1 + $cldelta_x, $wy1 + $cldelta_y)
+END_SUB
+
 SUB(click, $cldelta_x, $cldelta_y)
     IF($is_found)
         IF($select_emulator != "Test")
             LCLICK($wx1+$cldelta_x, $wy1+$cldelta_y)
         ELSE
-            MOVE($wx1+$cldelta_x, $wy1+$cldelta_y)  // если тест
+            rel_move($cldelta_x, $cldelta_y)  // если тест
         END_IF
         IF($loglevel >= 5)
             LOGWRITE("Клик ", $wx1+$cldelta_x, "  ", $wy1+$cldelta_y)
