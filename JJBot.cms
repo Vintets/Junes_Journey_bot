@@ -798,7 +798,7 @@ SUB(find_primary_card)
     set_abs_region(0,652, $win_w,764)
     log_region(0,652, $win_w,764)
 
-    find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 7)
+    find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 6)
     IF($is_found)
         // result block: $card_center_x, $card_center_y
         IF($discount_is_valid)
