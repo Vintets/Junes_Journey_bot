@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.0 (02.04.2025)
+// Version: 1.9.1 (03.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -558,8 +558,8 @@ SUB(main_screenshot_scene)
     SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, $screenshot_scene, 0)
 END_SUB
 
-SUB(rel_move, $rm_x, $rm_y)
-    MOVE($wx1 + $cldelta_x, $wy1 + $cldelta_y)
+SUB(rel_move, $rm_delta_x, $rm_delta_y)
+    MOVE($wx1 + $rm_delta_x, $wy1 + $rm_delta_y)
 END_SUB
 
 SUB(click, $cldelta_x, $cldelta_y)
