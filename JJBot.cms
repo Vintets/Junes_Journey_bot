@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.7 (03.04.2025)
+// Version: 1.9.8 (10.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -754,6 +754,18 @@ SUB(scan_scene_number)
         LOGWRITE("Номер карточки сцены: ", $card_scene_number)
     END_IF
 END_SUB
+
+SUB(scan_current_scene_chapter)
+    // return $current_scene_chapter
+    UNDEFINE($current_scene_chapter)
+    set_abs_region(772, 789, 823, 840)
+    capture_one(6)
+    ocr_one($allowed_digit)
+    $current_scene_chapter = $ocr_result
+    IF($loglevel >= 4)
+        LOGWRITE("Текущая глава: ", $current_scene_chapter)
+    END_IF
+END_SUB
 //------------------------------------------------------------------------------
 
 SUB(is_discount_play_more)
@@ -1076,6 +1088,8 @@ END_SUB
 SUB(change_chapter, $cc_scene_chapter)
     // TODO
     // $target_scene_chapter
+    scan_current_scene_chapter()
+    // $current_scene_chapter
 END_SUB
 
 SUB(main)
@@ -1164,7 +1178,7 @@ SUB(main)
                     parse_scene_number($cards[0])
 
                     IF($scene_tome != $target_scene_tome)
-                        $no_changes_location11 = #FALSE
+                        // $no_changes_location11 = #FALSE // временно отключил, для проверки переключения главы
                         IF($loglevel >= 4)
                             LOGWRITE("Номер тома не совпадает! ", $scene_tome, " вместо ", $target_scene_tome)
                         END_IF
