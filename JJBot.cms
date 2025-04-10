@@ -97,7 +97,7 @@ SUB(emulator_window_definition)
     // получение параметров Nox/MEmu
     LOGWRITE("Выбран эмулятор ", $select_emulator)
     IF($select_emulator = "Nox")
-        $emulator_win_name = $emulator_Nox_win_name 
+        $emulator_win_name = $emulator_Nox_win_name
         $win_frame_size = 2
         $win_header_size = 32
         $win_right_panel_size = 38
@@ -108,7 +108,7 @@ SUB(emulator_window_definition)
         $win_right_panel_size = 39
         $emulator_win_name = STRCONCAT("(", $emulator_win_name, ")")
     END_IF
-    
+
 
     $emulator = WNDFIND($emulator_win_name)
     WNDGETINFO($emulator, $win_x, $win_y, $win_w, $win_h)
@@ -122,7 +122,7 @@ SUB(emulator_window_definition)
         // 159, 53      1602x933
         // 159, 53      1641x933
     END_IF
-    
+
     IF($emulator == 0)
         critical_error(STRCONCAT("Не найдено окно ", $select_emulator))
     END_IF
@@ -206,7 +206,7 @@ SUB(init)
             LOGWRITE("ScreenShot: ", $win_x, ",", $win_y, "  ", $win_w, "x", $win_h)
         END_IF
     END_IF
-    
+
     // window sub
     $wx1 = $win_x + $win_frame_size
     $wy1 = $win_y + $win_header_size
@@ -475,13 +475,13 @@ END_SUB
 
 SUB(get_hash_scene)
     $isDataScene = #FALSE
-    
+
     MOVE($wx2, $wy2)  //паркуемся
     WAITMS(10)
     GETSCREEN($wx1,$wy2-4, $wx1+999,$wy2)
     $hash_scene = PXLCRC($wx1,$wy2-4, $wx1+999,$wy2)
     LOGWRITE("hash_scene ", $hash_scene)
-    
+
     $hash_scene_file = INIREAD($scenes_ini, "hash_scene", $hash_scene)
     IF($hash_scene_file != "")
         $isDataScene = #TRUE
@@ -593,11 +593,11 @@ END_SUB
 
 SUB(read_data_scene)
     UNDEFINE($items)
-    
+
     $items_filename = STRCONCAT($scenes_path, $scene_number, "_", $hash_scene, ".txt")
     $scene_folder = STRCONCAT($scenes_path, "scene_", $scene_number)
     //LOGWRITE($items_filename)
-    
+
     IF($isDataScene == #FALSE)
         IF($loglevel >= 3)
             LOGWRITE("Нет данных по уровню")
@@ -657,7 +657,7 @@ END_SUB
 SUB(ocr, $ocr_par)
     EXECUTE($ocrexe, $ocr_par)
     WAITMS(100)
-    
+
     $waitw = $_time_t + 10 //Ждать $ocrexe не больше секунд
     WHILE(WNDFIND($ocrexe) > 0 & $waitw >= $_time_t)
         WAITMS(50)
@@ -871,7 +871,7 @@ SUB(find_click_3words)
                     $found_words = #TRUE
                 END_IF
             END_CYC
-            
+
             IF($found_item == #TRUE)
                 LOGWRITEC(STRCONCAT("Найден предмет: '", $word, "' ", $item_x, "x", $item_y), 433934)
                 IF($select_emulator != "Test")
@@ -949,7 +949,7 @@ SUB(waiting_for_items_to_click)
             $wait_time = $_time_t + 10
             WAITMS(50)
         END_IF
-        
+
         IF(ISKEYDOWN(1) == #TRUE)
             $setX = $_xmouse - $wx1
             $setY = $_ymouse - $wy1
@@ -957,11 +957,11 @@ SUB(waiting_for_items_to_click)
             WHILE(ISKEYDOWN(1) == #TRUE)  // ожидаем отпускания LM
                 WAITMS(50)
             END_CYC
-            
+
             check_pause_zone()
             check_help_zone()
         END_IF
-        
+
         IF(ISKEYDOWN(#ESC) == #TRUE)
             $set = #FALSE
             HINTPOPUP("Работа прервана")
@@ -979,12 +979,12 @@ SUB(manual_click_words)
     create_ocr_par()
     ocr($ocrpar)
     read_ocr_result()
-    
+
     UNDEFINE($need_words)
     FOR($res_i=0, $res_i < ARRSIZE($ocr_result))
         ARRPUSH($need_words, $ocr_result[$res_i])
     END_CYC
-    
+
     $manual_select_word = #TRUE
     WHILE($manual_select_word == #TRUE)
         waiting_for_items_to_click()
@@ -1033,14 +1033,14 @@ SUB(passing_hidden_object_scene, $phos_scene_number)
                 $found_words = #FALSE
             END_IF
         END_CYC
-        
+
         is_end_sceneloop()
         IF($select_emulator == "Test")  // после тестов убрать
             LOGWRITE("$sceneloop = ", $sceneloop)
             // $sceneloop = #FALSE
         END_IF
         // SCREENSHOTFIX($wx1,$wy1, $wx2,$wy2, "CM_1.bmp", 0)
-        
+
         // ручная часть
         IF($sceneloop == #TRUE)
             manual_click_words()
@@ -1194,7 +1194,7 @@ SUB(main)
                 // просмотр рекламы
                 // переход к поиску предметов
             END_IF
-            
+
             HALT
         END_IF
 
