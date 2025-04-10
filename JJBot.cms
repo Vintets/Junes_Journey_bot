@@ -1092,19 +1092,19 @@ SUB(change_chapter, $cc_scene_chapter)
         IF(ABS($current_scene_chapter - $target_scene_chapter) == 1)
             // разница в 1 главу
             IF($current_scene_chapter > $target_scene_chapter)
-                click(694, 816)
+                click(502, 816)
                 WAITMS($cc_delay)
             ELSE
-                click(905, 816)
+                click(1096, 816)
                 WAITMS($cc_delay)
             END_IF
         ELSE
             // разница в главах больше 1
             IF($current_scene_chapter > $target_scene_chapter)
-                click(502, 816)
+                click(606, 816)
                 WAITMS($cc_delay)
             ELSE
-                click(1096, 816)
+                click(990, 816)
                 WAITMS($cc_delay)
             END_IF
             scan_current_scene_chapter()
