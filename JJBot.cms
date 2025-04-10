@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.8 (10.04.2025)
+// Version: 1.9.9 (10.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1086,10 +1086,30 @@ SUB(change_tome, $ct_scene_tome)
 END_SUB
 
 SUB(change_chapter, $cc_scene_chapter)
-    // TODO
-    // $target_scene_chapter
-    scan_current_scene_chapter()
-    // $current_scene_chapter
+    $current_scene_chapter = $cc_scene_chapter
+    $cc_delay = 2000  // задержка после клика по элементам перемещения между главами
+    WHILE($current_scene_chapter != $target_scene_chapter)
+        IF(ABS($current_scene_chapter - $target_scene_chapter) == 1)
+            // разница в 1 главу
+            IF($current_scene_chapter > $target_scene_chapter)
+                click(694, 816)
+                WAITMS($cc_delay)
+            ELSE
+                click(905, 816)
+                WAITMS($cc_delay)
+            END_IF
+        ELSE
+            // разница в главах больше 1
+            IF($current_scene_chapter > $target_scene_chapter)
+                click(502, 816)
+                WAITMS($cc_delay)
+            ELSE
+                click(1096, 816)
+                WAITMS($cc_delay)
+            END_IF
+            scan_current_scene_chapter()
+        END_IF
+    END_CYC
 END_SUB
 
 SUB(main)
