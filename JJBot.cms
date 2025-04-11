@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.13 (11.04.2025)
+// Version: 1.9.15 (11.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -276,6 +276,13 @@ SUB(init)
     ELSE
         $target_scene_number = 0
     END_IF
+
+    // constant color colormode 7
+    $color_green = 8388479
+    $color_lila = 16744447
+    $color_red = 8355839
+    $color_yellow = 8388607
+    $color_black = 8355711
 
     LOGWRITE(\n, \n, "*************************************************")
 END_SUB
@@ -744,8 +751,8 @@ SUB(scan_energy)
     // return $energy
     UNDEFINE($energy)
     capture_one(7)
-    PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355711, 8388607)
-    PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355839, 8388607)
+    PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, $color_black, $color_yellow)
+    PXLREPLACE($ar_x1, $ar_y1, $ar_x2, $ar_y2, $color_red, $color_yellow)
     ocr_one($allowed_digit)
     $energy = $ocr_result
     IF($loglevel >= 4)
@@ -869,7 +876,7 @@ SUB(waiting_for_items_to_click)
     WHILE($set == #TRUE)
         IF($wait_time < $_time_t)
             //HINTPOPUP("Внимание! Готов принять команду")
-            LOGWRITEC("Внимание! Готов принять команду", 8355839)
+            LOGWRITEC("Внимание! Готов принять команду", $color_red)
             $wait_time = $_time_t + 10
             WAITMS(50)
         END_IF
@@ -898,7 +905,7 @@ END_SUB
 
 SUB(manual_click_words)
     // ручной поиск неизвесных картинок
-    LOGWRITEC("Ручной поиск. Внимание!", 8355839)
+    LOGWRITEC("Ручной поиск. Внимание!", $color_red)
     photo_items()
     create_ocr_par()
     ocr($ocrpar)
@@ -999,7 +1006,7 @@ SUB(is_chapter_inactive)
     log_region(0,652, $win_w,764)
     GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
     COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    $ici_green_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8388479)
+    $ici_green_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, $color_green)
     IF($loglevel >= 5)
         LOGWRITE("is_chapter_inactive. $ici_green_pixel = ", $ici_green_pixel)
     END_IF
@@ -1009,7 +1016,7 @@ SUB(is_chapter_inactive)
         log_region(0,652, $win_w,764)
         GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
         COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
-        $ici_red_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355839)
+        $ici_red_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, $color_red)
         IF($loglevel >= 5)
             LOGWRITE("is_chapter_inactive. $red_color = ", $ici_red_pixel)
         END_IF
@@ -1058,7 +1065,7 @@ SUB(is_discount_play_more)
     set_abs_region(550,796, 720,836)  // 171x41  lila_pixel=4980
     GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
     COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    $lila_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 16744447) // 4980
+    $lila_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, $color_lila) // 4980
     IF($lila_pixel > 4800)
         $discount_is_valid = #TRUE
     ELSE
@@ -1079,7 +1086,7 @@ SUB(is_discount_scene_cards)
     set_abs_region(1270,818, 1440,858)  // lila_pixel=1636/1537   1398x lila_pixel=307
     GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
     COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    $lila_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 16744447)
+    $lila_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, $color_lila)
     IF($lila_pixel >= 200)
         $discount_is_valid = #TRUE
     ELSE
