@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.10 (11.04.2025)
+// Version: 1.9.11 (11.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -128,6 +128,15 @@ SUB(emulator_window_definition)
     END_IF
     IF(($win_x < 0) | ($win_y < 0))
         critical_error(STRCONCAT("Окно ", $select_emulator, " свёрнуто"))
+    END_IF
+END_SUB
+
+SUB(restore_target_scene_number)
+    IF($target_scene_number != $default_scene_number)
+        $target_scene_number = $default_scene_number
+        IF($loglevel >= 5)
+            LOGWRITE("Восстановлен номер сцены по умолчанию - ", $target_scene_number)
+        END_IF
     END_IF
 END_SUB
 
@@ -1214,6 +1223,7 @@ SUB(main)
 
         // 11 scene cards - карточки выбора сцены
         IF($location == 11)
+            restore_target_scene_number()
             IF($energy == -1)
                 set_abs_region(996,30, 1072,66)
                 scan_energy()
