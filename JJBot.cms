@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.12 (11.04.2025)
+// Version: 1.9.13 (11.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1155,7 +1155,17 @@ SUB(find_secondary_cards)
 END_SUB
 
 SUB(jump_to_scene, $jts_target_scene_number)
-    // TODO
+    FOR($jts_card=0, $jts_card < ARRSIZE($cards), 5)
+        IF($cards[$jts_card] == $jts_target_scene_number)
+            $jts_card = 100
+            click($cards[$jts_card+3], $cards[$jts_card+4])
+            WAIT(3)
+        END_IF
+    END_CYC
+
+    IF($jts_card < 100)
+        critical_error(STRCONCAT("Невозможно запустить сцену № ", $jts_target_scene_number), "  её нет среди найденных сцен на экране")
+    END_IF
 END_SUB
 
 SUB(main)
