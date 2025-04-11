@@ -1092,12 +1092,12 @@ SUB(is_discount_scene_cards)
     END_IF
 END_SUB
 
-SUB(add_card, $ac_card_scene_number, $ac_card_x, $ac_card_y, $ac_go_x, $ac_go_y)
+SUB(add_card, $ac_card_scene_number, $ac_card_x, $ac_card_y, $ac_jump_x, $ac_jump_y)
     ARRPUSH($cards, $ac_card_scene_number)  // номер уровня
     ARRPUSH($cards, $ac_card_x)
     ARRPUSH($cards, $ac_card_y)
-    ARRPUSH($cards, $ac_go_x)  // кнопка запуска
-    ARRPUSH($cards, $ac_go_y)  // кнопка запуска
+    ARRPUSH($cards, $ac_jump_x)  // кнопка запуска
+    ARRPUSH($cards, $ac_jump_y)  // кнопка запуска
 END_SUB
 
 SUB(find_primary_card)
