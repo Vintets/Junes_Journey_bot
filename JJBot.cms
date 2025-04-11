@@ -1238,7 +1238,7 @@ SUB(main)
                         IF($loglevel >= 4)
                             LOGWRITE("Номер главы не совпадает! ", $scene_chapter, " вместо ", $target_scene_chapter)
                         END_IF
-                        change_chapter($scene_chapter)  // TODO
+                        change_chapter($scene_chapter)
                     END_IF
                 ELSE
                     is_chapter_inactive()
