@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.11 (11.04.2025)
+// Version: 1.9.12 (11.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1150,6 +1150,14 @@ SUB(find_primary_card)
     END_IF
 END_SUB
 
+SUB(find_secondary_cards)
+    // TODO
+END_SUB
+
+SUB(jump_to_scene, $jts_target_scene_number)
+    // TODO
+END_SUB
+
 SUB(main)
     $mainloop = #TRUE
     WHILE($mainloop)
@@ -1237,7 +1245,7 @@ SUB(main)
                     parse_scene_number($cards[0])
 
                     IF($scene_tome != $target_scene_tome)
-                        // $no_changes_location11 = #FALSE // временно отключил, для проверки переключения главы
+                        $no_changes_location11 = #FALSE // временно отключить, для проверки переключения главы
                         IF($loglevel >= 4)
                             LOGWRITE("Номер тома не совпадает! ", $scene_tome, " вместо ", $target_scene_tome)
                         END_IF
@@ -1264,12 +1272,27 @@ SUB(main)
             END_IF
 
             IF($no_changes_location11)
-                // TODO
-                // просмотр рекламы
-                // переход к поиску предметов
-            END_IF
+                // Сюда попадаем если:
+                //      есть энергия,
+                //      нашлась primary_card,
+                //      том совпадает,
+                //      глава совпадает.
+                is_discount_scene_cards()
 
-            HALT
+                // просмотр рекламы
+                IF($discount_is_valid == #FALSE)
+                    click(1524, 820)
+                    WAITMS(800)
+                END_IF
+
+                // переход к поиску предметов
+                IF($discount_is_valid)
+                    IF($cards[0] != $target_scene_number)
+                        find_secondary_cards()
+                    END_IF
+                    jump_to_scene($target_scene_number)
+                END_IF
+            END_IF
         END_IF
 
         // 16 hidden object scene - сцена поиска предметов
