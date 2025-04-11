@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.9 (10.04.2025)
+// Version: 1.9.10 (11.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -983,6 +983,33 @@ SUB(test_locations_list)
     HALT
 END_SUB
 
+SUB(is_chapter_inactive)
+    // проверить активна ли текущая глава
+    // если нет - останов
+    set_abs_region(200,602, 572,640)  // 373x39  all 14547  green_color=11800/10800
+    log_region(0,652, $win_w,764)
+    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    $ici_green_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8388479)
+    IF($loglevel >= 5)
+        LOGWRITE("is_chapter_inactive. $green_color = ", $ici_green_color)
+    END_IF
+    IF($ici_green_color > 5900)
+        // Step 2
+        set_abs_region(1078,300, 1487,489)  // 410x190  all 77900  red_color=47844
+        log_region(0,652, $win_w,764)
+        GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
+        COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
+        $ici_red_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355839)
+        IF($loglevel >= 5)
+            LOGWRITE("is_chapter_inactive. $red_color = ", $ici_red_color)
+        END_IF
+        IF($ici_red_color > 40000)
+            critical_error(STRCONCAT("Невозможно выбрать заданную главу ", $target_scene_chapter))
+        END_IF
+    END_IF
+END_SUB
+
 SUB(change_tome, $ct_scene_tome)
     // TODO
     // $target_scene_tome
@@ -1012,6 +1039,7 @@ SUB(change_chapter, $cc_scene_chapter)
             END_IF
             scan_current_scene_chapter()
         END_IF
+        is_chapter_inactive()
     END_CYC
 END_SUB
 
@@ -1213,6 +1241,7 @@ SUB(main)
                         change_chapter($scene_chapter)  // TODO
                     END_IF
                 ELSE
+                    is_chapter_inactive()
                     $no_changes_location11 = #FALSE
                     WAITMS(500)
                 END_IF
