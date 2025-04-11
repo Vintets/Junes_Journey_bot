@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.16 (11.04.2025)
+// Version: 1.9.17 (11.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -33,7 +33,7 @@ $select_emulator = "Test"  // по скриншоту, XnView развёрнут
 
 //-----------------------------------------------
 // номер сцены по умолчанию (0 - определять автоматически последнюю сцену TODO)
-$default_scene_number = 848
+$default_scene_number = 6  // 848
 
 // копить энергию перед отправкой решения сцен
 $accumulate_energy = 10
@@ -1238,6 +1238,50 @@ SUB(find_secondary_cards)
     END_CYC
 END_SUB
 
+SUB(scene_is_arrey_cards, $siac_target_scene_number)
+    // return $scene_is_arrey, $card_min, $card_max
+    $scene_is_arrey = #FALSE
+    $card_min = 100000
+    $card_max = 0
+    FOR($jts_card=0, $jts_card < ARRSIZE($cards), 5)
+        IF($cards[$jts_card] == $siac_target_scene_number)
+            $scene_is_arrey = #TRUE
+        ELSE
+            IF($cards[$jts_card] < $card_min)
+                $card_min = $cards[$jts_card]
+            END_IF
+            IF($cards[$jts_card] > $card_max)
+                $card_max = $cards[$jts_card]
+            END_IF
+        END_IF
+    END_CYC
+    IF($loglevel >= 5)
+        LOGWRITE("$scene_is_arrey ", $scene_is_arrey)
+        LOGWRITE("$card_min/$card_max ", $card_min, " / ", $card_max)
+    END_IF
+END_SUB
+
+SUB(find_suitable_scene, $fss_target_scene_number)
+    find_secondary_cards()
+    scene_is_arrey_cards($fss_target_scene_number)
+    WHILE($scene_is_arrey == #FALSE)
+        $fss_y = $wy1 + 480
+        IF($fss_target_scene_number < $card_min)
+            LDOWN($wx1 + 300, $fss_y)
+            WAITMS(50)
+            m_move($wx1 + 1300, $fss_y)
+            LUP($_xmouse, $_ymouse)
+        END_IF
+        IF($fss_target_scene_number > $card_max)
+            LDOWN($wx1 + 1300, $fss_y)
+            WAITMS(50)
+            m_move($wx1 + 300, $fss_y)
+            LUP($_xmouse, $_ymouse)
+        END_IF
+        scene_is_arrey_cards($fss_target_scene_number)
+    END_CYC
+END_SUB
+
 SUB(jump_to_scene, $jts_target_scene_number)
     FOR($jts_card=0, $jts_card < ARRSIZE($cards), 5)
         IF($cards[$jts_card] == $jts_target_scene_number)
@@ -1335,6 +1379,7 @@ SUB(main)
             $no_changes_location11 = #TRUE
             IF($energy >= $accumulate_energy)
                 find_primary_card()
+                // find_suitable_scene($target_scene_number) // тест find_suitable_scene()
                 IF(ARRSIZE($cards) > 1)
                     parse_scene_number($cards[0])
 
@@ -1382,7 +1427,7 @@ SUB(main)
                 // переход к поиску предметов
                 IF($discount_is_valid)
                     IF($cards[0] != $target_scene_number)
-                        find_secondary_cards()
+                        find_suitable_scene($target_scene_number)
                     END_IF
                     jump_to_scene($target_scene_number)
                 END_IF
