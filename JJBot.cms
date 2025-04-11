@@ -995,15 +995,15 @@ END_SUB
 SUB(is_chapter_inactive)
     // проверить активна ли текущая глава
     // если нет - останов
-    set_abs_region(200,602, 572,640)  // 373x39  all 14547  green_color=11800/10800
+    set_abs_region(200,602, 572,640)  // 373x39  all 14547  ici_green_pixel=11800/10800
     log_region(0,652, $win_w,764)
     GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
     COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    $ici_green_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8388479)
+    $ici_green_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8388479)
     IF($loglevel >= 5)
-        LOGWRITE("is_chapter_inactive. $green_color = ", $ici_green_color)
+        LOGWRITE("is_chapter_inactive. $ici_green_pixel = ", $ici_green_pixel)
     END_IF
-    IF($ici_green_color > 5900)
+    IF($ici_green_pixel > 5900)
         // Step 2
         set_abs_region(1078,300, 1487,489)  // 410x190  all 77900  red_color=47844
         log_region(0,652, $win_w,764)
