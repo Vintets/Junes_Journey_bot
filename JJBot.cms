@@ -1009,11 +1009,11 @@ SUB(is_chapter_inactive)
         log_region(0,652, $win_w,764)
         GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
         COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
-        $ici_red_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355839)
+        $ici_red_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 8355839)
         IF($loglevel >= 5)
-            LOGWRITE("is_chapter_inactive. $red_color = ", $ici_red_color)
+            LOGWRITE("is_chapter_inactive. $red_color = ", $ici_red_pixel)
         END_IF
-        IF($ici_red_color > 40000)
+        IF($ici_red_pixel > 40000)
             critical_error(STRCONCAT("Невозможно выбрать заданную главу ", $target_scene_chapter))
         END_IF
     END_IF
