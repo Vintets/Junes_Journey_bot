@@ -768,103 +768,6 @@ SUB(scan_current_scene_chapter)
 END_SUB
 //------------------------------------------------------------------------------
 
-SUB(is_discount_play_more)
-    // проверить работу скидки от рекламы на экране play_more
-    // $discount_is_valid   - результат bool
-    set_abs_region(550,796, 720,836)  // 171x41  lila_color=4980
-    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    $lila_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 16744447) // 4980
-    IF($lila_color > 4800)
-        $discount_is_valid = #TRUE
-    ELSE
-        $discount_is_valid = #FALSE
-    END_IF
-
-    IF($loglevel >= 4)
-        LOGWRITE("discount_is_valid = ", $discount_is_valid)
-        IF($loglevel >= 5)
-            LOGWRITE("$lila_color = ", $lila_color)
-        END_IF
-    END_IF
-END_SUB
-
-SUB(is_discount_scene_cards)
-    // проверить работу скидки от рекламы на экране scene_cards
-    // $discount_is_valid   - результат bool
-    set_abs_region(1270,818, 1440,858)  // lila_color=1636/1537   1398x lila_color=307
-    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
-    $lila_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 16744447)
-    IF($lila_color >= 200)
-        $discount_is_valid = #TRUE
-    ELSE
-        $discount_is_valid = #FALSE
-    END_IF
-
-    IF($loglevel >= 5)
-        LOGWRITE("discount_is_valid = ", $discount_is_valid)
-        LOGWRITE("$lila_color = ", $lila_color)
-    END_IF
-END_SUB
-
-SUB(add_card, $ac_card_scene_number, $ac_card_x, $ac_card_y, $ac_found_x, $ac_found_y)
-    ARRPUSH($cards, $ac_card_scene_number)  // место под номер уровня
-    ARRPUSH($cards, $ac_card_x)
-    ARRPUSH($cards, $ac_card_y)
-    ARRPUSH($cards, $ac_found_x)
-    ARRPUSH($cards, $ac_found_y)
-END_SUB
-
-SUB(find_primary_card)
-    UNDEFINE($cards)
-    is_discount_scene_cards()
-    IF($discount_is_valid)
-        $type_key_scene_play = "key_scene_play_blue.bmp"
-    ELSE
-        $type_key_scene_play = "key_scene_play_green.bmp"
-    END_IF
-    IF($loglevel >= 5)
-        LOGWRITE("type_key = ", $type_key_scene_play)
-    END_IF
-
-    set_abs_region(0,652, $win_w,764)
-    log_region(0,652, $win_w,764)
-
-    find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 6)
-    IF($is_found)
-        // result block: $card_center_x, $card_center_y
-
-        // клик +120 -16
-        $relative_found_x = $found_x - $wx1  // 135-152 = 17
-        $field_center = $win_w / 2 - 152
-        $card_delta_x = ABS($relative_found_x - $field_center)
-        $delta_w = INT(($card_delta_x * 0.035) + 0.9)
-        $card_center_x = $relative_found_x + 152 - $delta_w
-        // max dy  6 px
-        $delta_h = INT($card_delta_x * 0.009)
-        $card_center_y = 492 - $delta_h
-        IF($loglevel >= 5)
-            LOGWRITE()
-            LOGWRITE("Данные расчёта первичной карты:")
-            LOGWRITE("   $card_delta_x ", $card_delta_x)
-            LOGWRITE("   $delta_w ", $delta_w)
-            LOGWRITE("   $card_center_x ", $card_center_x)
-            LOGWRITE("   $delta_h ", $delta_h)
-            LOGWRITE("   $card_center_y ", $card_center_y)
-        END_IF
-
-        // 54x34  +-27 +-17
-        set_abs_region($card_center_x-25, $card_center_y-16, $card_center_x+25, $card_center_y+16)
-        scan_scene_number()
-
-        add_card($card_scene_number, $card_center_x, $card_center_y, $found_x+120, $found_y-16)
-        rel_move($card_center_x, $card_center_y)
-        // MOVE($found_x, $found_y)
-        WAITMS(1000)
-    END_IF
-END_SUB
-
 SUB(find_click_3words)
     $found_words = #FALSE
     FOR($iocr=0, $iocr < ARRSIZE($ocr_result))
@@ -1110,6 +1013,103 @@ SUB(change_chapter, $cc_scene_chapter)
             scan_current_scene_chapter()
         END_IF
     END_CYC
+END_SUB
+
+SUB(is_discount_play_more)
+    // проверить работу скидки от рекламы на экране play_more
+    // $discount_is_valid   - результат bool
+    set_abs_region(550,796, 720,836)  // 171x41  lila_color=4980
+    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    $lila_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 16744447) // 4980
+    IF($lila_color > 4800)
+        $discount_is_valid = #TRUE
+    ELSE
+        $discount_is_valid = #FALSE
+    END_IF
+
+    IF($loglevel >= 4)
+        LOGWRITE("discount_is_valid = ", $discount_is_valid)
+        IF($loglevel >= 5)
+            LOGWRITE("$lila_color = ", $lila_color)
+        END_IF
+    END_IF
+END_SUB
+
+SUB(is_discount_scene_cards)
+    // проверить работу скидки от рекламы на экране scene_cards
+    // $discount_is_valid   - результат bool
+    set_abs_region(1270,818, 1440,858)  // lila_color=1636/1537   1398x lila_color=307
+    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    $lila_color = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, 16744447)
+    IF($lila_color >= 200)
+        $discount_is_valid = #TRUE
+    ELSE
+        $discount_is_valid = #FALSE
+    END_IF
+
+    IF($loglevel >= 5)
+        LOGWRITE("discount_is_valid = ", $discount_is_valid)
+        LOGWRITE("$lila_color = ", $lila_color)
+    END_IF
+END_SUB
+
+SUB(add_card, $ac_card_scene_number, $ac_card_x, $ac_card_y, $ac_found_x, $ac_found_y)
+    ARRPUSH($cards, $ac_card_scene_number)  // место под номер уровня
+    ARRPUSH($cards, $ac_card_x)
+    ARRPUSH($cards, $ac_card_y)
+    ARRPUSH($cards, $ac_found_x)
+    ARRPUSH($cards, $ac_found_y)
+END_SUB
+
+SUB(find_primary_card)
+    UNDEFINE($cards)
+    is_discount_scene_cards()
+    IF($discount_is_valid)
+        $type_key_scene_play = "key_scene_play_blue.bmp"
+    ELSE
+        $type_key_scene_play = "key_scene_play_green.bmp"
+    END_IF
+    IF($loglevel >= 5)
+        LOGWRITE("type_key = ", $type_key_scene_play)
+    END_IF
+
+    set_abs_region(0,652, $win_w,764)
+    log_region(0,652, $win_w,764)
+
+    find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 6)
+    IF($is_found)
+        // result block: $card_center_x, $card_center_y
+
+        // клик +120 -16
+        $relative_found_x = $found_x - $wx1  // 135-152 = 17
+        $field_center = $win_w / 2 - 152
+        $card_delta_x = ABS($relative_found_x - $field_center)
+        $delta_w = INT(($card_delta_x * 0.035) + 0.9)
+        $card_center_x = $relative_found_x + 152 - $delta_w
+        // max dy  6 px
+        $delta_h = INT($card_delta_x * 0.009)
+        $card_center_y = 492 - $delta_h
+        IF($loglevel >= 5)
+            LOGWRITE()
+            LOGWRITE("Данные расчёта первичной карты:")
+            LOGWRITE("   $card_delta_x ", $card_delta_x)
+            LOGWRITE("   $delta_w ", $delta_w)
+            LOGWRITE("   $card_center_x ", $card_center_x)
+            LOGWRITE("   $delta_h ", $delta_h)
+            LOGWRITE("   $card_center_y ", $card_center_y)
+        END_IF
+
+        // 54x34  +-27 +-17
+        set_abs_region($card_center_x-25, $card_center_y-16, $card_center_x+25, $card_center_y+16)
+        scan_scene_number()
+
+        add_card($card_scene_number, $card_center_x, $card_center_y, $found_x+120, $found_y-16)
+        rel_move($card_center_x, $card_center_y)
+        // MOVE($found_x, $found_y)
+        WAITMS(1000)
+    END_IF
 END_SUB
 
 SUB(main)
