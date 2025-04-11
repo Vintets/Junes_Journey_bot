@@ -577,6 +577,7 @@ END_SUB
 
 SUB(rel_move, $rm_delta_x, $rm_delta_y)
     MOVE($wx1 + $rm_delta_x, $wy1 + $rm_delta_y)
+    WAITMS(700)
 END_SUB
 
 SUB(click, $cldelta_x, $cldelta_y)
