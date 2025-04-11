@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.15 (11.04.2025)
+// Version: 1.9.16 (11.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1125,7 +1125,7 @@ SUB(find_primary_card)
 
     find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 6)
     IF($is_found)
-        // result block: $card_center_x, $card_center_y
+        // result block: $card_center_x, $card_center_y +card_jump x/y
 
         // клик +120 -16
         $relative_found_x = $found_x - $wx1  // 135-152 = 17
@@ -1154,12 +1154,87 @@ SUB(find_primary_card)
         add_card($card_scene_number, $card_center_x, $card_center_y, $relative_found_x+120, $relative_found_y-16)
         rel_move($card_center_x, $card_center_y)
         // MOVE($found_x, $found_y)
-        WAITMS(1000)
+        WAITMS(700)
     END_IF
 END_SUB
 
+SUB(candidat_calc)
+    $candidat_delta_x = ABS($candidat_center_x - $field_center)
+    $delta_w = INT(($candidat_delta_x * 0.035))
+    $delta_h = INT($candidat_delta_x * 0.009)
+    $candidat_center_x = $candidat_center_x + $fsc_iter  // $fsc_iter * 1px
+    $candidat_center_y = 492 - $delta_h
+
+    IF($loglevel >= 5)
+        LOGWRITE()
+        LOGWRITE("Данные расчёта вторичной карты:")
+        LOGWRITE("   $candidat_number ", $candidat_number)
+        LOGWRITE("   $candidat_delta_x ", $candidat_delta_x)
+        LOGWRITE("   $delta_w ", $delta_w)
+        LOGWRITE("   $candidat_center_x ", $candidat_center_x)
+        LOGWRITE("   $delta_h ", $delta_h)
+        LOGWRITE("   $candidat_center_y ", $candidat_center_y)
+    END_IF
+
+    set_abs_region($candidat_center_x - 134, 652, $candidat_center_x + 134, 764)
+    log_region($candidat_center_x - 134, 652, $candidat_center_x + 134, 764)
+    GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    COLORMODE(7, $ar_x1, $ar_y1, $ar_x2, $ar_y2)
+    $jump_pixel = PXLCOUNT($ar_x1, $ar_y1, $ar_x2, $ar_y2, $fsc_color)  // 6300/12500
+    IF($loglevel >= 5)
+        LOGWRITE("discount_is_valid = ", $discount_is_valid)
+        LOGWRITE("$jump_pixel = ", $jump_pixel)
+    END_IF
+
+    IF(($candidat_number > 0) & ($jump_pixel > 5500))
+        $bad_candidat = #FALSE
+        $delta_jump_h = INT($candidat_delta_x * 0.084)
+        $candidat_jump_y = 740 - $delta_jump_h
+        add_card($candidat_number, $candidat_center_x, $candidat_center_y, $candidat_center_x, $candidat_jump_y)
+        rel_move($candidat_center_x, $candidat_jump_y)
+        LOGWRITE("$delta_jump_h ", $delta_jump_h)
+        LOGWRITE("candidat_jump = ", $candidat_center_x, " / ", $candidat_jump_y)
+    ELSE
+        $bad_candidat = #TRUE
+    END_IF
+END_SUB
+
+
 SUB(find_secondary_cards)
-    // TODO
+    $field_center = $win_w / 2
+    $first_card_number = $cards[0]
+    $first_card_center_x = $cards[1]
+    // $first_card_center_y = $cards[2]
+    // $first_card_delta_x = ABS($relative_found_x - $field_center)
+    IF($discount_is_valid)
+        $fsc_color = $color_lila
+    ELSE
+        $fsc_color = $color_green
+    END_IF
+
+    $fsc_iter = 0
+    FOR($candidat_center_x=$first_card_center_x-460, $candidat_center_x > 25, -460)
+        $fsc_iter = $fsc_iter + 1
+        $candidat_number = $first_card_number - $fsc_iter
+        IF($candidat_number > 0)
+            candidat_calc()
+        ELSE
+            $bad_candidat = #TRUE
+        END_IF
+        IF($bad_candidat)
+            $candidat_center_x = 0
+        END_IF
+    END_CYC
+
+    $fsc_iter = 0
+    FOR($candidat_center_x=$first_card_center_x+460, $candidat_center_x < ($win_w - 25), 460)
+        $fsc_iter = $fsc_iter + 1
+        $candidat_number = $first_card_number + $fsc_iter
+        candidat_calc()
+        IF($bad_candidat)
+            $candidat_center_x = 10000
+        END_IF
+    END_CYC
 END_SUB
 
 SUB(jump_to_scene, $jts_target_scene_number)
