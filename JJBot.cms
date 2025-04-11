@@ -9,6 +9,7 @@
 
 #include "arrey.cms"
 #include "string.cms"
+#include "m-move.cms"
 
 
 //                              Настройки
