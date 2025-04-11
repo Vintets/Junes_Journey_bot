@@ -1121,6 +1121,7 @@ SUB(find_primary_card)
 
         // клик +120 -16
         $relative_found_x = $found_x - $wx1  // 135-152 = 17
+        $relative_found_y = $found_y - $wy1
         $field_center = $win_w / 2 - 152
         $card_delta_x = ABS($relative_found_x - $field_center)
         $delta_w = INT(($card_delta_x * 0.035) + 0.9)
@@ -1142,7 +1143,7 @@ SUB(find_primary_card)
         set_abs_region($card_center_x-25, $card_center_y-16, $card_center_x+25, $card_center_y+16)
         scan_scene_number()
 
-        add_card($card_scene_number, $card_center_x, $card_center_y, $found_x+120, $found_y-16)
+        add_card($card_scene_number, $card_center_x, $card_center_y, $relative_found_x+120, $relative_found_y-16)
         rel_move($card_center_x, $card_center_y)
         // MOVE($found_x, $found_y)
         WAITMS(1000)
