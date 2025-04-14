@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.10.0 (14.04.2025)
+// Version: 1.10.1 (14.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1153,7 +1153,9 @@ SUB(find_primary_card)
         scan_scene_number()
 
         add_card($card_scene_number, $card_center_x, $card_center_y, $relative_found_x+120, $relative_found_y-16)
-        rel_move($card_center_x, $card_center_y)
+        IF($select_emulator != "Test")
+            rel_move($card_center_x, $card_center_y)
+        END_IF
         // MOVE($found_x, $found_y)
         WAITMS(700)
     END_IF
@@ -1192,7 +1194,9 @@ SUB(candidat_calc)
         $delta_jump_h = INT($candidat_delta_x * 0.084)
         $candidat_jump_y = 740 - $delta_jump_h
         add_card($candidat_number, $candidat_center_x, $candidat_center_y, $candidat_center_x, $candidat_jump_y)
-        rel_move($candidat_center_x, $candidat_jump_y)
+        IF($select_emulator != "Test")
+            rel_move($candidat_center_x, $candidat_jump_y)
+        END_IF
         IF($loglevel >= 5)
             LOGWRITE("$delta_jump_h ", $delta_jump_h)
             LOGWRITE("candidat_jump = ", $candidat_center_x, " / ", $candidat_jump_y)
