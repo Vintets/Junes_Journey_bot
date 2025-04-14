@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.19 (14.04.2025)
+// Version: 1.9.20 (14.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1268,16 +1268,10 @@ SUB(find_suitable_scene, $fss_target_scene_number)
     WHILE($scene_is_arrey == #FALSE)
         $fss_y = $wy1 + 480
         IF($fss_target_scene_number < $card_min)
-            LDOWN($wx1 + 300, $fss_y)
-            WAITMS(50)
-            m_move($wx1 + 1300, $fss_y)
-            LUP($_xmouse, $_ymouse)
+            grab_and_move($wx1 + 300, $fss_y, $wx1 + 1300, $fss_y)
         END_IF
         IF($fss_target_scene_number > $card_max)
-            LDOWN($wx1 + 1300, $fss_y)
-            WAITMS(50)
-            m_move($wx1 + 300, $fss_y)
-            LUP($_xmouse, $_ymouse)
+            grab_and_move($wx1 + 1300, $fss_y, $wx1 + 300, $fss_y)
         END_IF
         scene_is_arrey_cards($fss_target_scene_number)
     END_CYC
