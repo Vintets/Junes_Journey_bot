@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.18 (11.04.2025)
+// Version: 1.9.19 (14.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1380,10 +1380,9 @@ SUB(main)
             $no_changes_location11 = #TRUE
             IF($energy >= $accumulate_energy)
                 find_primary_card()
-                // find_suitable_scene($target_scene_number) // тест find_suitable_scene()
                 IF(ARRSIZE($cards) > 1)
                     parse_scene_number($cards[0])
-
+                    // find_suitable_scene($target_scene_number) // тест find_suitable_scene()
                     IF($scene_tome != $target_scene_tome)
                         $no_changes_location11 = #FALSE // временно отключить, для проверки переключения главы
                         IF($loglevel >= 4)
