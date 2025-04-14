@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.21 (14.04.2025)
+// Version: 1.9.22 (14.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1202,6 +1202,25 @@ SUB(candidat_calc)
     END_IF
 END_SUB
 
+SUB(check_range_in_chapter, $cric_candidat_number)
+    $range_in_chapter = #TRUE
+    // calc Номер сцены-кандидата в текущем томе (промежуточное значение)
+    $cric_scene_in_current_tome = $cric_candidat_number - $scenes_total_list[$scene_tome - 1]
+    // calc Позиция сцены-кандидата в главе
+    $cric_scene_chapter_position = $cric_scene_in_current_tome - (($scene_chapter - 1) * 5)
+
+    IF($cric_scene_chapter_position > 5)
+        $range_in_chapter = #FALSE
+    END_IF
+
+    IF($loglevel >= 5)
+        LOGWRITE("check_range_in_chapter")
+        LOGWRITE("$cric_candidat_number ", $cric_candidat_number)
+        LOGWRITE("$cric_scene_in_current_tome ", $cric_scene_in_current_tome)
+        LOGWRITE("$cric_scene_chapter_position ", $cric_scene_chapter_position)
+    END_IF
+END_SUB
+
 SUB(find_secondary_cards)
     $field_center = $win_w / 2
     $first_card_number = $cards[0]
@@ -1225,6 +1244,9 @@ SUB(find_secondary_cards)
         END_IF
         IF($bad_candidat)
             $candidat_center_x = 0
+            IF($loglevel >= 5)
+                LOGWRITE("candidat ", $candidat_number, "  is BAD!")
+            END_IF
         END_IF
     END_CYC
 
@@ -1232,9 +1254,17 @@ SUB(find_secondary_cards)
     FOR($candidat_center_x=$first_card_center_x+460, $candidat_center_x < ($win_w - 25), 460)
         $fsc_iter = $fsc_iter + 1
         $candidat_number = $first_card_number + $fsc_iter
-        candidat_calc()
+        check_range_in_chapter($candidat_number)
+        IF(($candidat_number > 0) & ($range_in_chapter))
+            candidat_calc()
+        ELSE
+            $bad_candidat = #TRUE
+        END_IF
         IF($bad_candidat)
             $candidat_center_x = 10000
+            IF($loglevel >= 5)
+                LOGWRITE("candidat ", $candidat_number, "  is BAD!")
+            END_IF
         END_IF
     END_CYC
 END_SUB
