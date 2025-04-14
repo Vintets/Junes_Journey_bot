@@ -1,15 +1,15 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.9.22 (14.04.2025)
+// Version: 1.10.0 (14.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
 #define \n: STRCONCAT(char(13),char(10))
 #define @TAB: char(9)
 
-#include "arrey.cms"
-#include "string.cms"
-#include "m-move.cms"
+#include "libs\arrey.cms"
+#include "libs\string.cms"
+#include "libs\m-move.cms"
 
 
 //                              Настройки
