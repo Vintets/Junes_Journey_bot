@@ -1,6 +1,6 @@
 ﻿//#name "m-move"
 // Author: VINT
-// Version: 1.4 (28.02.2013)
+// Version: 1.5 (14.04.2025)
 // Скрипт для Clickermann v4.9 005
 // подключение m-move:
 // #include "..\Libs\m-move.cms"
@@ -9,34 +9,34 @@
 SUB(m_move_old, $MOVE_END_X, $MOVE_END_Y)
     // Пример вызова:
     // m_move_old(150, 150)
-    
+
     $MOVE_SPEED = 16		// множитель скорости в попугаях меньше-быстрее. Можно дробный
     $MOVE_Start_X = $_xmouse
     $MOVE_Start_Y = $_ymouse
     $MOVE_X = $MOVE_Start_X
     $MOVE_Y = $MOVE_Start_Y
-    
+
     $dist = DIST($MOVE_END_X, $MOVE_END_Y, $MOVE_Start_X, $MOVE_Start_Y)
-    
+
     $MOVE_SPEEDVAR = INT((SQRT($dist)) / $MOVE_SPEED)
     //LOGWRITE("dist  ", $dist)
     //LOGWRITE("MOVE_SPEEDVAR  ", $MOVE_SPEEDVAR)
-    
+
     IF($MOVE_SPEEDVAR < 1)
         $MOVE_SPEEDVAR = 1
     END_IF
-    
+
     $MOVE_step = ($dist-1) / $MOVE_SPEEDVAR
     $MOVE_X_step = ($MOVE_END_X-$MOVE_Start_X) / $MOVE_step
     $MOVE_Y_step = ($MOVE_END_Y-$MOVE_Start_Y) / $MOVE_step
-    
+
     FOR($MOVE_i=0, $MOVE_i < INT($MOVE_step))
         $MOVE_X = $MOVE_X + $MOVE_X_step
         $MOVE_Y = $MOVE_Y + $MOVE_Y_step
         MOVE(ROUND($MOVE_X,0), ROUND($MOVE_Y,0))
         WAITMS(1)
     END_CYC
-    
+
     MOVE($MOVE_END_X, $MOVE_END_Y)		//Передвинуть окончательно в заданную точку
 END_SUB
 
@@ -45,13 +45,13 @@ SUB(mouse_move, $MOVE_END_X, $MOVE_END_Y)
     $MOVE_Start_Y = $_ymouse
     $MOVE_X = $MOVE_Start_X
     $MOVE_Y = $MOVE_Start_Y
-    
+
     $dist = DIST($MOVE_END_X, $MOVE_END_Y, $MOVE_Start_X, $MOVE_Start_Y)
     $MOVE_step = ($dist-1) / INT(SQRT($dist))
     //LOGWRITE("$MOVE_step  ", $MOVE_step)
     $MOVE_X_step = ($MOVE_END_X-$MOVE_Start_X) / $MOVE_step
     $MOVE_Y_step = ($MOVE_END_Y-$MOVE_Start_Y) / $MOVE_step
-    
+
     FOR($MOVE_i=0, $MOVE_i < INT($MOVE_step))
         $MOVE_X = $MOVE_X + $MOVE_X_step
         $MOVE_Y = $MOVE_Y + $MOVE_Y_step
@@ -61,7 +61,7 @@ SUB(mouse_move, $MOVE_END_X, $MOVE_END_Y)
 END_SUB
 
 SUB(m_move, $M_X, $M_Y)
-    $rnwait = RND(6,15) // случайная скорость
+    $rnwait = RND(2, 6) // случайная скорость
     $MOVE_MID_X = INT(($_xmouse+$M_X)/2)
     $MOVE_MID_Y = INT(($_ymouse+$M_Y)/2)
     $otx = INT(ABS($_xmouse - $M_X) * 0.12)
@@ -98,3 +98,13 @@ SUB(m_mclick, $MOVE_END_X, $MOVE_END_Y)
     WAITMS(30)
 END_SUB
 
+SUB(grab_and_move, $gam_start_x, $gam_start_y, $gam_finish_x, $gam_finish_y)
+    // Зажать ЛКМ и сдвинуть экран
+    // Пример вызова:
+    // grab_and_move($_xmouse, $_ymouse, 150, 150)
+
+    LDOWN($gam_start_x, $gam_start_y)
+    WAITMS(30)
+    m_move($gam_finish_x, $gam_finish_y)
+    LUP($gam_finish_x, $gam_finish_y)
+END_SUB
