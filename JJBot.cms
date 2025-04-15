@@ -1391,7 +1391,7 @@ SUB(main)
             set_abs_region(1154,30, 1232,66)
             scan_energy()
             IF($energy >= $accumulate_energy)
-                click(1490, 790)
+                click($play_x, $play_y)
                 WAITMS(3000)
             ELSE
                 WAIT(60)
