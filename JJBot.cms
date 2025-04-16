@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.10.1 (14.04.2025)
+// Version: 1.10.2 (16.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -983,16 +983,6 @@ SUB(passing_hidden_object_scene, $phos_scene_number)
     LOGWRITE("Сцена ", $scene_number, " пройдена.", \n, "*************************************************")
 END_SUB
 
-SUB(dev)
-    IF($location != 16)  // hidden object scene
-        critical_error("Не видно сцены на экране")
-    END_IF
-
-    get_hash_scene()
-    read_data_scene()
-    // main_screenshot_scene()
-END_SUB
-
 SUB(test_locations_list)
     FOR($i=0, $i < 18)  // -1 to 18
         set_location($i)
@@ -1481,17 +1471,27 @@ SUB(main)
     // $location  $location_name
 END_SUB
 
+SUB(dev)
+    // test_locations_list()
+    // input_scene_number()
+    // is_discount_scene_cards()
+    get_location()
+    IF($location != 16)  // hidden object scene
+        critical_error("Не видно сцены на экране")
+    END_IF
+
+    get_hash_scene()
+    read_data_scene()
+
+    // main_screenshot_scene()
+    HALT
+END_SUB
+
 //======================================================================================================================
 //**********************************************************************************************************************
 
 init()
-
-// test_locations_list()
-//input_scene_number()
-// dev()
-// is_discount_scene_cards()
-// HALT
-
+dev()
 main()
 
 HALT
