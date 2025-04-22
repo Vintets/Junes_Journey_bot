@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.11.3 (22.04.2025)
+// Version: 1.11.4 (22.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -944,13 +944,13 @@ SUB(manual_click_words)
     END_CYC
 END_SUB
 
-SUB(passing_hidden_object_scene, $phos_scene_number)
-    $scene_number = $phos_scene_number
 
     WHILE($location != 16)  // hidden object scene
         WAITMS(100)
         get_location()
     END_CYC
+SUB(passing_hidden_object_scene)
+    $scene_number = $target_scene_number
 
     get_hash_scene()
     read_data_scene()
