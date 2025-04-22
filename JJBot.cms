@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.11.2 (22.04.2025)
+// Version: 1.11.3 (22.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1224,9 +1224,9 @@ END_SUB
 
 SUB(find_secondary_cards)
     $field_center = $win_w / 2
-    $first_card_number = $cards[0]
-    $first_card_center_x = $cards[1]
-    // $first_card_center_y = $cards[2]
+    // $first_card_number = $pr_card_scene_number
+    // $first_card_center_x = $pr_card_center_x
+    // $first_card_center_y = $pr_card_center_y
     // $first_card_delta_x = ABS($relative_found_x - $field_center)
     IF($discount_is_valid)
         $fsc_color = $color_lila
@@ -1235,9 +1235,9 @@ SUB(find_secondary_cards)
     END_IF
 
     $fsc_iter = 0
-    FOR($candidat_center_x=$first_card_center_x-460, $candidat_center_x > 25, -460)
+    FOR($candidat_center_x=$pr_card_center_x-460, $candidat_center_x > 25, -460)
         $fsc_iter = $fsc_iter + 1
-        $candidat_number = $first_card_number - $fsc_iter
+        $candidat_number = $pr_card_scene_number - $fsc_iter
         IF($candidat_number > 0)
             candidat_calc()
         ELSE
@@ -1252,9 +1252,9 @@ SUB(find_secondary_cards)
     END_CYC
 
     $fsc_iter = 0
-    FOR($candidat_center_x=$first_card_center_x+460, $candidat_center_x < ($win_w - 25), 460)
+    FOR($candidat_center_x=$pr_card_center_x+460, $candidat_center_x < ($win_w - 25), 460)
         $fsc_iter = $fsc_iter + 1
-        $candidat_number = $first_card_number + $fsc_iter
+        $candidat_number = $pr_card_scene_number + $fsc_iter
         check_range_in_chapter($candidat_number)
         IF(($candidat_number > 0) & ($range_in_chapter))
             candidat_calc()
