@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.11.1 (22.04.2025)
+// Version: 1.11.2 (22.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -1121,7 +1121,7 @@ SUB(find_primary_card)
 
     find_pic_nw(0,652, $win_w,764, $type_key_scene_play, 100, 6)
     IF($is_found)
-        // result block: $card_center_x, $card_center_y +card_jump x/y
+        // result block: $pr_card_center_x, $pr_card_center_y +card_jump x/y
 
         // клик +120 -16
         $relative_found_x = $found_x - $wx1  // 135-152 = 17
@@ -1129,27 +1129,29 @@ SUB(find_primary_card)
         $field_center = $win_w / 2 - 152
         $card_delta_x = ABS($relative_found_x - $field_center)
         $delta_w = INT(($card_delta_x * 0.035) + 0.9)
-        $card_center_x = $relative_found_x + 152 - $delta_w
+        $pr_card_center_x = $relative_found_x + 152 - $delta_w
         // max dy  6 px
         $delta_h = INT($card_delta_x * 0.009)
-        $card_center_y = 492 - $delta_h
+        $pr_card_center_y = 492 - $delta_h
         IF($loglevel >= 5)
             LOGWRITE()
             LOGWRITE("Данные расчёта первичной карты:")
             LOGWRITE("   $card_delta_x ", $card_delta_x)
             LOGWRITE("   $delta_w ", $delta_w)
-            LOGWRITE("   $card_center_x ", $card_center_x)
+            LOGWRITE("   $pr_card_center_x ", $pr_card_center_x)
             LOGWRITE("   $delta_h ", $delta_h)
-            LOGWRITE("   $card_center_y ", $card_center_y)
+            LOGWRITE("   $pr_card_center_y ", $pr_card_center_y)
         END_IF
 
         // 54x34  +-27 +-17
-        set_abs_region($card_center_x-25, $card_center_y-16, $card_center_x+25, $card_center_y+16)
+        set_abs_region($pr_card_center_x-25, $pr_card_center_y-16, $pr_card_center_x+25, $pr_card_center_y+16)
         scan_scene_number()
 
-        add_card($card_scene_number, $card_center_x, $card_center_y, $relative_found_x+120, $relative_found_y-16)
+        $pr_card_scene_number = $card_scene_number
+
+        add_card($pr_card_scene_number, $pr_card_center_x, $pr_card_center_y, $relative_found_x+120, $relative_found_y-16)
         IF($select_emulator != "Test")
-            rel_move($card_center_x, $card_center_y)
+            rel_move($pr_card_center_x, $pr_card_center_y)
         END_IF
         // MOVE($found_x, $found_y)
         WAITMS(700)
