@@ -442,7 +442,7 @@ SUB(get_location)
 
     // 13 advertising timer - реклама таймер
     IF($location == 0)
-        find_pic_nw(782, 406, 818, 442, "advertising_timer_cm8.bmp", 95, 8)
+        find_pic_nw(780, 406, 818, 450, "advertising_timer_cm8.bmp", 95, 8)
         IF($is_found)
             set_location(13)
         END_IF
@@ -494,7 +494,7 @@ SUB(waiting_change_location, $wcl_location)
     END_IF
 
     IF($wcl_location == 13)
-        waiting_disappear(782, 406, 818, 442, "advertising_timer_cm8.bmp", 95, 8, 40, 2000)
+        waiting_disappear(780, 406, 818, 450, "advertising_timer_cm8.bmp", 95, 8, 40, 3000)
         WAITMS(300)
         get_location()
     END_IF
