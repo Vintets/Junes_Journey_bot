@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.11.0 (22.04.2025)
+// Version: 1.11.1 (22.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -395,6 +395,12 @@ SUB(get_location)
     IF($location == 0)
         // find_pic_nw(474,28,500,48, "money.bmp", 80, 0)
         find_pic_nw(14,14,83,83, "avatar.bmp", 95, 0)
+        IF($is_found)
+            set_location(10)
+        END_IF
+    END_IF
+      IF($location == 0)
+        find_pic_nw(14,14,83,83, "avatar_default.bmp", 95, 0)
         IF($is_found)
             set_location(10)
         END_IF
