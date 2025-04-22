@@ -1106,7 +1106,6 @@ SUB(add_card, $ac_card_scene_number, $ac_card_x, $ac_card_y, $ac_jump_x, $ac_jum
 END_SUB
 
 SUB(find_primary_card)
-    UNDEFINE($cards)
     is_discount_scene_cards()
     IF($discount_is_valid)
         $type_key_scene_play = "key_scene_play_blue.bmp"
@@ -1404,6 +1403,7 @@ SUB(main)
 
             $no_changes_location11 = #TRUE
             IF($energy >= $accumulate_energy)
+                UNDEFINE($cards)
                 find_primary_card()
                 IF(ARRSIZE($cards) > 1)
                     parse_scene_number($cards[0])
