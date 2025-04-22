@@ -32,7 +32,7 @@ $textures_version_Test = "MEmu_2025.02.26_hd"  // суффикс папки с �
 $select_emulator = "Test"  // по скриншоту, XnView развёрнут на полный экран
 
 //-----------------------------------------------
-// номер сцены по умолчанию (0 - определять автоматически последнюю сцену TODO)
+// номер сцены по умолчанию (0 - определять автоматически последнюю сцену TODO:)
 $default_scene_number = 6  // 848
 
 // копить энергию перед отправкой решения сцен
@@ -1029,7 +1029,7 @@ SUB(is_chapter_inactive)
 END_SUB
 
 SUB(change_tome, $ct_scene_tome)
-    // TODO
+    // TODO:
     // $target_scene_tome
 END_SUB
 
@@ -1420,7 +1420,7 @@ SUB(main)
                         IF($loglevel >= 4)
                             LOGWRITE("Номер тома не совпадает! ", $scene_tome, " вместо ", $target_scene_tome)
                         END_IF
-                        change_tome($scene_tome)  // TODO
+                        change_tome($scene_tome)  // TODO:
                     END_IF
 
                     IF(($no_changes_location11) & ($scene_chapter != $target_scene_chapter))
@@ -1472,7 +1472,7 @@ SUB(main)
         END_IF
 
         // IF($input_sn == 0)
-            // TODO определить уровень
+            // TODO: определить уровень
         // END_IF
 
         IF($location == 0)
