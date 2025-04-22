@@ -107,4 +107,5 @@ SUB(grab_and_move, $gam_start_x, $gam_start_y, $gam_finish_x, $gam_finish_y)
     WAITMS(30)
     m_move($gam_finish_x, $gam_finish_y)
     LUP($gam_finish_x, $gam_finish_y)
+    WAITMS(30)
 END_SUB
