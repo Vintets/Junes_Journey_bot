@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.11.4 (22.04.2025)
+// Version: 1.11.5 (22.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -74,6 +74,11 @@ $scenes_in_tome_count = "500,250,125"  // количество сцен в то�
 SUB(critical_error, $ce_message)
     LOGWRITEC(STRCONCAT("***** Critical_error!!! ***  ", $ce_message), 255)
     HALT
+END_SUB
+
+SUB(parking)
+    MOVE($wx2, $wy2)  //паркуемся
+    WAITMS(20)
 END_SUB
 
 SUB(log_region, $lr_x1, $lr_y1, $lr_x2, $lr_y2)
@@ -301,8 +306,7 @@ SUB(find_pic_nw, $fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2, $fpnw_image, $fpnw_percent
     $is_found = #FALSE
     set_abs_region($fpnw_x1,$fpnw_y1,$fpnw_x2,$fpnw_y2)
     IF($parking)
-        MOVE($wx2, $wy2)  //паркуемся
-        WAITMS(20)
+        parking()
     END_IF
 
     IF($loglevel == 5)
@@ -327,7 +331,7 @@ END_SUB
 
 SUB(find_pic_wait, $fpw_x1,$fpw_y1,$fpw_x2,$fpw_y2,$fpw_image, $fpw_percent, $fpw_colorm, $fpw_wait)
     // ожидание картинки
-    MOVE($wx2, $wy2)  //паркуемся
+    parking()
     WAITMS(20)
     $parking = #FALSE
     $is_found = #FALSE
@@ -348,7 +352,7 @@ SUB(waiting_disappear, $wd_x1,$wd_y1,$wd_x2,$wd_y2,$wd_image, $wd_percent, $wd_c
     // $wd_colorm - режим COLORMODE
     // $wd_wait - искать в течении (секунд)
     // $wd_period - частота проверки (миллисекунд)
-    MOVE($wx2, $wy2)  //паркуемся
+    parking()
     WAITMS(20)
     $parking = #FALSE
     $is_found = #TRUE
@@ -499,7 +503,7 @@ END_SUB
 SUB(get_hash_scene)
     $isDataScene = #FALSE
 
-    MOVE($wx2, $wy2)  //паркуемся
+    parking()
     WAITMS(10)
     GETSCREEN($wx1,$wy2-4, $wx1+999,$wy2)
     $hash_scene = PXLCRC($wx1,$wy2-4, $wx1+999,$wy2)
@@ -552,7 +556,7 @@ END_SUB
 
 SUB(photo_items)
     // сохранение снимков слов
-    MOVE($wx2, $wy2)  //паркуемся
+    parking()
     WAITMS(20)
     photo_items_all()
     // интервал X  477,
@@ -738,7 +742,7 @@ END_SUB
 
 SUB(capture_one, $co_colorm)
     // захватить для распознавания одиночную картинку (работает с абсолютным регионом $ar)
-    MOVE($wx2, $wy2)  //паркуемся
+    parking()
     WAITMS(10)
     GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
     IF($co_colorm)
@@ -1176,6 +1180,7 @@ SUB(candidat_calc)
         LOGWRITE("   $candidat_center_y ", $candidat_center_y)
     END_IF
 
+    parking()
     set_abs_region($candidat_center_x - 134, 652, $candidat_center_x + 134, 764)
     log_region($candidat_center_x - 134, 652, $candidat_center_x + 134, 764)
     GETSCREEN($ar_x1, $ar_y1, $ar_x2, $ar_y2)
