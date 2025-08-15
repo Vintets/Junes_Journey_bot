@@ -1,6 +1,6 @@
 ﻿#name "Junes Journey bot"
 // Author: Vint
-// Version: 1.11.5 (22.04.2025)
+// Version: 1.11.6 (22.04.2025)
 // Скрипт для Clickermann v4.14.003b
 
 #define @CRLF: STRCONCAT(char(13),char(10))
@@ -252,6 +252,7 @@ SUB(init)
     STRSEPARATE($locations_raw_names, ",", $locations_list)
     set_location(0)
 
+    $parking = #TRUE
     $energy = -1
 
     // создаём массив $scenes_in_tome_list
@@ -948,11 +949,6 @@ SUB(manual_click_words)
     END_CYC
 END_SUB
 
-
-    WHILE($location != 16)  // hidden object scene
-        WAITMS(100)
-        get_location()
-    END_CYC
 SUB(passing_hidden_object_scene)
     $scene_number = $target_scene_number
 
@@ -1305,12 +1301,18 @@ SUB(find_suitable_scene, $fss_target_scene_number)
         $fss_y = $wy1 + 480
         IF($fss_target_scene_number < $card_min)
             grab_and_move($wx1 + 300, $fss_y, $wx1 + 1300, $fss_y)
+            WAITMS(400)
         END_IF
         IF($fss_target_scene_number > $card_max)
             grab_and_move($wx1 + 1300, $fss_y, $wx1 + 300, $fss_y)
+            WAITMS(400)
         END_IF
-        find_secondary_cards()
+        find_primary_card()
         scene_is_arrey_cards($fss_target_scene_number)
+        IF($scene_is_arrey == #FALSE)
+            find_secondary_cards()
+            scene_is_arrey_cards($fss_target_scene_number)
+        END_IF
     END_CYC
 END_SUB
 
